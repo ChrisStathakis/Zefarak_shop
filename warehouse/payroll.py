@@ -1,5 +1,6 @@
 from django.db import models
 from django.dispatch import receiver
+from django.shortcuts import reverse
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.dispatch import receiver
@@ -30,7 +31,7 @@ CURRENCY = settings.CURRENCY
 
 
 class Occupation(models.Model):
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    store = models.ManyToManyField(Store, null=True, blank=True)
     active = models.BooleanField(default=True)
     title = models.CharField(max_length=64, verbose_name='Occupation')
     notes = models.TextField(blank=True, null=True, verbose_name='Notes')
@@ -40,7 +41,6 @@ class Occupation(models.Model):
 
     class Meta:
         app_label = 'warehouse'
-        unique_together = ['title', 'store']
         verbose_name_plural = "3. Occupations"
         verbose_name = 'Occupation'
 
@@ -48,13 +48,16 @@ class Occupation(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.balance = self.person_set.all().aggregate(Sum('balance'))['balance__sum'] \
-            if self.person_set.all().exists() else 0
+        self.balance = self.employees.all().aggregate(Sum('balance'))['balance__sum'] \
+            if self.employees.exists() else 0
         super().save(*args, *kwargs)
 
     def tag_balance(self):
         return '%s %s' % (self.balance, CURRENCY)
     tag_balance.short_description = 'Balance'
+
+    def get_edit_url(self):
+        return reverse('warehouse:occupation_edit', kwargs={'pk': self.id})
 
     @staticmethod
     def filters_data(request, queryset):
@@ -71,7 +74,7 @@ class Employee(models.Model):
     phone = models.CharField(max_length=10, verbose_name='Phone', blank=True)
     phone1 = models.CharField(max_length=10, verbose_name='Cell Phone', blank=True)
     date_started = models.DateField(default=timezone.now, verbose_name='Date started')
-    occupation = models.ForeignKey(Occupation, null=True, verbose_name='Occupation', on_delete=models.PROTECT)
+    occupation = models.ForeignKey(Occupation, null=True, verbose_name='Occupation', on_delete=models.PROTECT, related_name='employees')
     balance = models.DecimalField(max_digits=50, decimal_places=2, default=0, verbose_name='Balance')
     vacation_days = models.IntegerField(default=0, verbose_name='Remaining Vacation Days')
 
@@ -103,6 +106,12 @@ class Employee(models.Model):
     def tag_occupation(self):
         return f'{self.occupation.title}'
 
+    def get_edit_url(self):
+        return reverse('warehouse:payroll_employee_edit', kwargs={'pk': self.id})
+
+    def get_payroll_create_url(self):
+        return reverse('warehouse:employee_create_payroll', kwargs={'pk': self.id})
+
     @staticmethod
     def filters_data(request, queryset):
         search_name = request.GET.get('search_name', None)
@@ -126,27 +135,22 @@ class Payroll(DefaultOrderModel):
         ordering = ['is_paid', '-date_expired', ]
 
     def __str__(self):
-        return '%s %s' % (self.date_expired, self.person.title)
+        return '%s %s' % (self.date_expired, self.employee.title)
 
     def save(self, *args, **kwargs):
         self.final_value = self.value
         self.paid_value = self.final_value if self.is_paid else 0
         super(Payroll, self).save(*args, **kwargs)
-        self.person.save()
+        self.employee.save()
 
     def tag_model(self):
-        return f'Payroll - {self.person.title}'
+        return f'Payroll - {self.employee.title}'
 
     def tag_person(self):
-        return f'{self.person.title}'
+        return f'{self.employee.title}'
 
     def update_category(self):
-        self.person.update_balance()
-
-    def destroy_payments(self):
-        queryset = self.payment_orders.all()
-        for payment in queryset:
-            payment.delete()
+        self.employee.update_balance()
 
     def tag_value(self):
         return '%s %s' % (self.value, CURRENCY)

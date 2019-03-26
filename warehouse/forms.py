@@ -1,7 +1,7 @@
 from django import forms
 from datetime import datetime
 from .billing import BillInvoice, BillCategory
-from .payroll import Employee, Occupation
+from .payroll import Employee, Occupation, Payroll
 from site_settings.models import Store
 
 
@@ -45,3 +45,20 @@ class EmployeeForm(BaseForm, forms.ModelForm):
         fields = '__all__'
         exclude = ['balance', 'date_started', 'vacation_days']
 
+
+class OccupationForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = Occupation
+        fields = ['title', 'active', 'store', 'notes']
+
+
+class PayrollForm(BaseForm, forms.ModelForm):
+    employee = forms.ModelChoiceField(queryset=Employee.objects.all(), widget=forms.HiddenInput())
+    date_expired = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = Payroll
+        fields = ['date_expired', 'category', 'title', 'payment_method', 'value',
+                  'employee', 'is_paid'
+                  ]

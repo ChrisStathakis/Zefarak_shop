@@ -32,7 +32,7 @@
             <div class="col-lg-8 col-md-8">
                 <div class="card">
                     <div class="header">
-                        <div class="title">List <a href="{% url 'warehouse:payroll_employee_create' %}" class="btn btn-success">Create Employee</a></div>
+                        <div class="title">List <a href="{% url 'warehouse:occupation_create' %}" class="btn btn-success">Create Occupation</a></div>
                     </div>
                     <div id='container_data' class="content">
                         <table class="table">
@@ -40,9 +40,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <th>Occupation</th>
-                                    <th>CellPhone</th>
-                                    <th>Phone</th>
                                     <th>Remaining</th>
                                     <th>Actions</th>
                                 </tr>
@@ -52,10 +49,7 @@
                                     <tr>
                                         <td>{{ ele.id }}</td>
                                         <td>{{ ele }}</td>
-                                        <td>{{ ele.occupation }}</td>
-                                        <td>{{ ele.phone1 }}</td>
-                                        <td>{{ ele.phone }}</td>
-                                        <td>{{ ele.tag_balance }}</td>
+                                        <td>{{ ele.tag_final_value }}</td>
                                         <td><a href="{{ ele.get_edit_url }}" class="btn btn-primary">Edit</a></td>
                                     </tr>
                                 {% endfor %}
@@ -65,57 +59,8 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-4" id='result_container'>
-
             </div>
         </div>
-    </div>
+        </div>
 </div>
 {% endblock content %}
-
-{% block extra_js %}
-<script>
-    $('.ajax_button').click(function(event) {
-        event.preventDefault();
-        console.log('feg')
-        const btn = $(this);
-        const href = btn.attr('data-href');
-        $.ajax({
-            url: href,
-            dataType: 'json',
-            success: function(data) {
-                $('#result_container').html(data.result)
-            }
-        })
-    });
-
-    $('.delete_button').click(function(event) {
-        event.preventDefault();
-        console.log('delete');
-        const btn = $(this);
-        const href = btn.attr('data-href');
-        $.ajax({
-            url: href,
-            dataType: 'json',
-
-            success: function(data) {
-                $('#result_container').html(data.result)
-            }
-        })
-    });
-
-    $('.search_button').keyup(function(event){
-        event.preventDefault()
-        const btn = $(this)
-        let search_name = btn.val()
-        console.log(search_name)
-        $.ajax({
-            url: btn.attr('data-href')+ '?search_name='+ search_name,
-            dataType: 'json',
-            success: function(data) {
-                $('#container_data').html(data.table)
-            }
-
-        })
-    })
-</script>
-{% endblock extra_js %}

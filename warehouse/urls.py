@@ -4,7 +4,10 @@ from .views import (
     CreateBillingInvoiceView, BillInvoiceEditView, quick_billing_pay,
     delete_bill_invoice_view, CreateBillingCategoryView, EditBillingCategoryView, delete_bill_category_view
     )
-from .payroll_views import PayrollHomepageView, EmployeeListView, EmployeeCreateView
+from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreateView, EmployeeEditView, delete_employee,
+                            OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
+                            PayrollCreateView
+                            )
 
 
 app_name = 'warehouse'
@@ -24,8 +27,17 @@ urlpatterns = [
 
     # payroll views
     path('payroll/homepage/', PayrollHomepageView.as_view(), name='payroll_homepage'),
+    path('payroll/employee-card/', EmployeeListCardView.as_view(), name='employee-card-list'),
     path('payroll/employee-list/', EmployeeListView.as_view(), name='payroll_employee'),
     path('payroll/employee-create/', EmployeeCreateView.as_view(), name='payroll_employee_create'),
+    path('payroll/employee-edit/<int:pk>/', EmployeeEditView.as_view(), name='payroll_employee_edit'),
+    path('payroll/employee-delete/<int:pk>/', delete_employee, name='payroll_employee_delete'),
 
+    path('payroll/occupation-list/', OccupationListView.as_view(), name='occupation_list'),
+    path('payroll/occupation-create/', OccupationCreateView.as_view(), name='occupation_create'),
+    path('payroll/occupation-edit/<int:pk>/', OccupationUpdateView.as_view(), name='occupation_edit'),
+    path('payroll/occupation-delete/<int:pk>/', delete_occupation, name='occupation_delete'),
+
+    path('payroll/create/<int:pk>/', PayrollCreateView.as_view(), name='employee_create_payroll')
 
     ]

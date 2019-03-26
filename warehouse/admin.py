@@ -50,14 +50,14 @@ class BillInvoiceAdmin(admin.ModelAdmin):
 
 @admin.register(Occupation)
 class OccupationAdmin(admin.ModelAdmin):
-    list_display = ['title', 'store', 'active']
-    list_filter = ['active', 'store']
+    list_display = ['title',  'active']
+    list_filter = ['active', ]
     fields = ['active', 'title', 'notes']
 
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ['title', 'phone', 'occupation', 'tag_balance', 'active']
+    list_display = ['title', 'phone', 'tag_balance', 'active']
     list_select_related = ['occupation']
     list_filter = ['occupation', 'active']
     readonly_fields = ['tag_balance', 'timestamp', 'edited']

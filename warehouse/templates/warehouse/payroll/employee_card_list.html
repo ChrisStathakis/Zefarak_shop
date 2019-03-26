@@ -1,0 +1,42 @@
+{% extends 'warehouse/dashboard.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    {% for employee in object_list %}
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <div class="icon-big icon-danger text-center">
+                                                <i class="ti-android"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="numbers">
+                                                <p>{{ employee }}</p>
+                                                <p>{{ employee.occupation }}</p>
+                                                <p>{{ employee.tag_balance }}</p>
+                                            </div>
+                                            <a href="{{ employee.get_payroll_create_url }}" class="btn btn-success">Add Payroll</a>
+                                        </div>
+                                    </div>
+                                    <div class="footer">
+                                        <hr>
+                                        <div class="stats">
+                                            <a href=""><i class="ti-link"></i>Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

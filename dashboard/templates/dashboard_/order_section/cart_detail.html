@@ -1,0 +1,91 @@
+{% extends 'dashboard_/order_section/cart_page.html' %}
+
+{% block content %}
+
+     <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <div class="title">
+                                <h4>{{ object }}</h4>
+                                <p>Timestamp... {{ object.timestamp }}</p>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h6>Cart Items</h6>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in object.cart_items.all %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product }}</td>
+                                            <td>{{ product.qty }}</td>
+                                            <td>{{ product.tag_total_value }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr><td colspan="4">No data</td> </tr>
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <div class="title">
+                                <a href='{% url "dashboard_:carts" %}' class='btn btn-warning'>Back</a>
+                                <h4>{{ retail_order|default_if_none:'No order' }}</h4>
+                                <p>Timestamp... {{ retail_order.timestamp|default_if_none:' ' }}</p>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h6>Order Items</h6>
+                            {% if retail_order %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in retail_order.order_items.all %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product }}</td>
+                                            <td>{{ product.qty }}</td>
+                                            <td>{{ product.tag_final_value }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr><td colspan="4">No data</td> </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <a href="{{ retail_order.get_dashboard_url }}" class="btn btn-primary">Go to Order</a>
+                            {% else %}
+                                <br>
+                                <a href="" class="btn btn-primary">Create Order</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+
+{% endblock %}

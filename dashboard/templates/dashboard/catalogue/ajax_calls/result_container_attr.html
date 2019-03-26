@@ -1,0 +1,60 @@
+<div class="card">
+    <div class="header">
+        <div class="title">Selected</div>
+    </div>
+    <div class="content">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>qty</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ele in selected_data %}
+                <tr>
+                    <td>{{ ele.id }}</td>
+                    <td>{{ ele }}</td>
+                    <td><input class="form-control edit_button" data-href="{% url 'dashboard:ajax_manage_qty_attribute' ele.id %}" type="number" value="{{ ele.qty }}"></td>
+                    <td><button data-href="{% url 'dashboard:ajax_manage_attribute' 'delete' attr_class.id ele.title.id  %}" class="btn btn-warning delete_button">Delete</button></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No Data</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    $('.edit_button').keyup(function(event){
+        console.log('hey edit this shit!');
+        event.preventDefault();
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        const data = '';
+        $.ajax({
+            method: 'GET',
+            dataType: 'json',
+            url: href + '?'+ ''
+        })
+    })
+
+    $('.delete_button').click(function(event) {
+        event.preventDefault();
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        $.ajax({
+            url: href,
+            dataType: 'json',
+            success: function(data) {
+                $('#result_container').html(data.result)
+            }
+        })
+    });
+</script>

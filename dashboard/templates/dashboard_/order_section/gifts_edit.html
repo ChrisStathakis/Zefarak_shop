@@ -1,0 +1,112 @@
+{% extends 'dashboard_/../../dashboard/dashboard.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="header">
+                            <h3 class="header text-center title">Edit <a href="{% url 'dashboard_:gift_view' %}" class="btn btn-warning">Back</a> </h3>
+                        </div>
+                        <div class="content">
+                            <form method="post">{% csrf_token %}
+                                {{ form }}
+                                <button type="submit" class="btn btn-raised btn-success">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Products Affected</h4>
+                        </div>
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in related_products %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product }}</td>
+                                            <td>{{ order.category }}</td>
+                                            <td><a class="btn btn-warning" href="{% url 'dashboard_:gift_detail_pro' instance.id product.id 2 2 %}">Remove</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for product in products %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product }}</td>
+                                            <td>{{ order.category }}</td>
+                                            <td><a class="btn btn-primary" href="{% url 'dashboard_:gift_detail_pro' instance.id product.id 2 1 %}">Add</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    {% if messages %}
+                        <div class="card">
+                            <div class="header">
+                                {% for message in messages %}
+                                    <p class="text-center">{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Gifts</h4>
+                        </div>
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% if gift %}
+                                    <tr>
+                                        <td>#</td>
+                                        <td>{{ gift }}</td>
+                                        <td>{{ gift.category }}</td>
+                                        <td><a class="btn btn-warning" href="{% url 'dashboard_:gift_detail_pro' instance.id gift.id 1 2 %}">Remove</a></td>
+                                    </tr>
+                                {% endif %}
+                                {% for product in products %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product }}</td>
+                                            <td>{{ order.category }}</td>
+                                            <td><a class="btn btn-primary" href="{% url 'dashboard_:gift_detail_pro' instance.id product.id 1 1 %}">Add</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+               </div>
+           </div>
+       </div>
+   </div>
+
+{% endblock %}

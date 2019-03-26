@@ -1,0 +1,36 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category in instance.categories.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ category }}</td>
+                <td><button data-url="{% url 'dashboard_:ajax_coupon_edit' instance.id category.id 'delete' %}" class="btn btn-warning trigger_button">Delete</button></td>
+             </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">No Categories Selected</td>
+             </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('.trigger_button').click(function(event){
+       var btn = $(this);
+        href = btn.attr('data-url')
+        $.ajax({
+            dataType: 'json',
+            url: href,
+            success: function(response) {
+                 $('#ajax_container').html(response.table_data)
+            }
+        })
+    })
+</script>

@@ -1,0 +1,41 @@
+{% extends 'dashboard_/../dashboard/dashboard.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <h4 class="text-center text-center">{{ page_title }}</h4>
+                        <div class="content">
+                            <form method='post' enctype="multipart/form-data" >{% csrf_token %}
+                                {{ form.errors }}
+                                {{ form }}
+                                <button type='sumbit' class="btn btn-success">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="content">
+                            <a href="{{ back_url }}" class="btn btn-primary">Back</a>
+                            <a href="{{ delete_url }}" class="btn btn-warning" onclick="return confirm('Are you sure?');">Delete</a>
+                        </div>
+                    </div>
+                    {% if instance.image %}
+                        <div class="card">
+                        <div class="header">Current Image</div>
+                        <div class="content">
+                           <img src="{{ instance.image.url }}" class="img-responsive img-rounded img-thumbnail">
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,39 @@
+
+<div class="pagination">
+    <span class="step-links">
+        {% if queryset.has_previous %}
+            <a class="btn btn-primary" href="?page=1">&laquo; first</a>
+            <a class="btn btn-primary" href="?page={{ queryset.previous_page_number }}">previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ queryset.number }} of {{ queryset.paginator.num_pages }}.
+        </span>
+        {% if queryset.has_next %}
+            <a class="btn btn-primary" href="?page={{ queryset.next_page_number }}">next</a>
+            <a class="btn btn-primary" href="?page={{ queryset.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <label>Date from</label>
+        <input name='date_start'
+               type='date'
+               class="form-control"
+                {% if date_start %} value="{{ date_start }}" {% endif%}
+        />
+    </div>
+    <div class="col-md-6">
+        <label>Date until</label>
+        <input name="date_end"
+               type='date'
+               class="form-control"
+                {% if date_end %} value="{{ date_end }}" {% endif %}
+        />
+    </div>
+</div>
+<div class="form-group">
+    <input type="text" {% if search_name %}value="{{ search_name }}"{% endif %}
+           placeholder="Search" class="form-control" name="search_name"
+    />
+</div>

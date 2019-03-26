@@ -1,0 +1,34 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category in instance.category_site.all %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category }}</td>
+                <td><button data-href="{% url 'dashboard_:category_site_add_or_remove' instance.id category.id 'remove' %}" class="btn btn-warning category_press">Delete</button></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('.category_press').click(function(event) {
+        event.preventDefault()
+        console.log('clicked!')
+        const btn = $(this)
+        const href = btn.attr('data-href')
+        $.ajax({
+            url: href,
+            dataType: 'json',
+            success: function(data) {
+                $('#category_container').html(data.table)
+            }
+        })
+    })
+</script>

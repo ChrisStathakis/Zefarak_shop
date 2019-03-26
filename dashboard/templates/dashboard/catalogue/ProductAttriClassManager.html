@@ -1,0 +1,128 @@
+{% extends "dashboard/dashboard.html" %}
+
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class='col-lg-6'>
+                <div class="card">
+                    <div class="header">
+                        <h3>Product.. {{ instance }} - {{ page_title }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="header">
+                        <a href="{% url 'dashboard:product_detail' instance.id %}" class="btn btn-primary">Back</a>
+                    </div>
+                    <div class="content">
+                        <form method='GET'>
+                            <input data-href="" type='text' class='form-control search_button' name='search_name' placeholder="Search">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="card">
+                    <div class="header">
+                        <div class="title">List</div>
+                    </div>
+                    <div id='container_data' class="content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in object_list %}
+                                    <tr>
+                                        <td>{{ ele.id }}</td>
+                                        <td>{{ ele }}</td>
+                                        <td><button data-href="{% url 'dashboard:ajax_manage_attribute' 'add' attr_class.id ele.id %}" class="btn btn-success ajax_button">Add</button></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6" id='result_container'>
+                {% include 'dashboard/catalogue/ajax_calls/result_container_attr.html' %}
+            </div>
+        </div>
+        </div>
+</div>
+{% endblock content %}
+    
+{% block extra_js %}
+<script>
+    $('.ajax_button').click(function(event) {
+        event.preventDefault();
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        $.ajax({
+            url: href,
+            dataType: 'json',
+            success: function(data) {
+                $('#result_container').html(data.result)
+            }
+        })
+    });
+
+    $('.delete_button').click(function(event) {
+        event.preventDefault();
+        console.log('delete')
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        $.ajax({
+            url: href,
+            dataType: 'json',
+            success: function(data) {
+                $('#result_container').html(data.result)
+            }
+        })
+    });
+
+    $('.search_button').keyup(function(event){
+        event.preventDefault();
+        const btn = $(this);
+        let search_name = btn.val();
+        console.log(search_name);
+        $.ajax({
+            url: btn.attr('data-href')+ '?search_name='+ search_name,
+            dataType: 'json',
+            success: function(data) {
+                $('#container_data').html(data.table)
+            }
+
+        })
+    });
+
+    $('.edit_button').keyup(function(event){
+        console.log('hey edit this shit!');
+        event.preventDefault();
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        const data = btn.closest('input').val();
+        if(data>0){
+            $.ajax({
+            method: 'GET',
+            dataType: 'json',
+            url: href + '?qty='+data,
+            success: function (data) {
+                $('#result_container').html(data.result)
+            }
+        })
+        }
+
+    })
+</script>
+{% endblock extra_js %}

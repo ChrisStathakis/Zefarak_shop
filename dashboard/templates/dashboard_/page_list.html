@@ -1,0 +1,59 @@
+{% extends 'dashboard_/products_list.html' %} {% load static %}
+
+
+{% block content %}
+   <div class="content">
+       <div class="container-fluid">
+           <div class="row">
+               <div class="col-md-8">
+                   <div class="card">
+                       <div class="header">
+                           <h4 class="title text-center">{{ title }}</h4>
+                           <p class="category"><a href="{{ create_url }}" class="btn btn-success">{{ create_title }}</a></p>
+                       </div>
+                       <div class="content table-responsive table-full-width">
+                           <table class="table table-striped">
+                               <thead>
+                                    <tr>
+
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                               </thead>
+                               <tbody>
+                                {% for object in object_list %}
+                                    <tr>
+                                        <td>{{ object.id }}</td>
+                                        <td>{{ object }}</td>
+                                        <td><a href="{{ object.get_absolute_admin_url }}" class="btn btn-primary">Edit</a></td>
+                                    </tr>
+                                {% endfor %}
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-4">
+                   <div class="card">
+                       <div class="header">
+                            <h4>Filters</h4>
+                       </div>
+                       <div class="content">
+                           <form method="get">
+                               {% include 'dashboard_/../dashboard/include/pagination.html' %}
+                               <div class="form-group">
+                                   <input type="text" {% if search_name %}value="{{ search_name }}"{% endif %}
+                                          placeholder="Search" class="form-control" name="search_name"/>
+                               </div>
+                               <button type="submit" class="btn btn-primary">Submit</button>
+                               <a href="{% url 'dashboard_:categories' %}" class="btn btn-danger">Reset Filters</a>
+                           </form>
+                       </div>
+                   </div>
+
+               </div>
+           </div>
+       </div>
+   </div>
+{% endblock %}

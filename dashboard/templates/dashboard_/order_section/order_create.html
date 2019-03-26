@@ -1,0 +1,280 @@
+{% extends 'dashboard_/products_list.html' %} {% load static %}
+
+{% block content %}
+    <style>
+        .form-control {
+            background-color: #ddd
+        }
+    </style>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-12">
+                    <div class="card">
+                        <div class="header"><div class="title text-center"><h3>{{ profile.tag_full_name }}</h3></div></div>
+                        <div class="content">
+                            <h3 class="text-center">Διεύθυνση... {{ profile.tag_full_address }}  , Τηλέφωνο... {{ profile.tag_phones }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title">Προσθήκη Προϊόντος</h4>
+                        </div>
+                        <div class="content">
+                            <form method="get">
+                                <input class="form-control" placeholder="Search" type="text" name="search_name">
+                            </form>
+                            <table class="table">
+                                 <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Image</th>
+                                        <th>Sku</th>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for product in object_list %}
+                                    <tr>
+                                        <td>{{ product.id }}</td>
+                                        <td><a href="{{ product.get_absolute_url }}" target="_blank">
+                                            {% if product.image %}
+                                            <img class="img-thumbnail" style="width: 80px;height: 60px;" src="{{ product.image.url }}">
+                                            {% else %}
+                                            <img class="img-thumbnail" style="width: 80px;height: 60px;" src="{% static 'home/no_image.png' %}">
+                                            {% endif %}
+                                            </a>
+                                        </td>
+                                        <td>{{ product.sku }}</td>
+                                        <td>{{ product }}</td>
+                                        <td>{{ product.tag_final_price }}</td>
+                                        <td><a {% if product.size %} href="{% url 'dashboard_:add_with_size' instance.id product.id %}"
+                                            
+                                            {% else %} href="{% url 'dashboard_:add_or_create' instance.id product.id 1  %}" {% endif %} class="btn btn-success">Add</a></td>
+                                    </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5">No Products Selected</td>
+                                        </tr>
+                                    {% endfor %}
+                                 </tbody>
+                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    {% block card_section %}
+                        <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Πληροφορίες Παραστατικού</h4>
+                            <br><br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Είδος... {{ instance.get_order_type_display }}</h6>
+                                    <br><br>
+                                    <a href="{% url 'dashboard_:print_invoice' instance.id %}"
+                                       class="btn btn-success"><i class="fa fa-print"></i>Print
+                                    </a>
+                                    <a href="{% url 'dashboard_:order_change_status' instance.id 2 %}" class="btn btn-primary">
+                                        <i class="fa fa-edit"></i>In Progress
+                                    </a>
+                                    <a href="{% url 'dashboard_:order_change_status' instance.id 3 %}"
+                                       class="btn btn-success">
+                                        <i class="fa fa-check"></i>Ready
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6> Κατάσταση... {{ instance.get_status_display }} </h6>
+                                    <br><br>
+                                    <a href="{% url 'dashboard_:order_change_status' instance.id 4 %}"
+                                       class="btn btn-success">
+                                        <i class="fa fa-check"></i>Αποστολή
+                                    </a>
+                                    <a href="{% url 'dashboard_:order_change_status' instance.id 8 %}"
+                                       class="btn btn-success">
+                                        <i class="fa fa-check"></i>Ολοκλήρώθηκε
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Τίτλος</td>
+                                        <th>{{ instance.title }}</th>
+                                        <td>Ημερομηνία</td>
+                                        <th>{{ instance.date_expired|date }}</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Αξία Προϊόντων</td>
+                                        <th>{{ instance.tag_value }}</th>
+                                        <td>Έξοδα Μεταφόρας - Έξοδα Αντικαταβολήε</td>
+                                        <th>{{ instance.tag_shipping_value }} - {{ instance.tag_payment_value }}</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Τρόπος Μεταφοράς</td>
+                                        <th>{{ instance.shipping }}</th>
+                                        <td>Τρόπος Πληρωμής</td>
+                                        <th>{{ instance.payment_method }}</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Σινολική Έκπτωση από Κουπόνια {{ instance.tag_discount }}</td>
+                                        <th>{% for coupon in instance.coupons.all %}{{ coupon }}, {% endfor %}</th>
+                                        <td>Χρήστης</td>
+                                        <th>{{ instance.user_account }}</th>
+                                    <tr>
+                                        <td></td>
+                                        <td class="positive" colspan="2">
+                                            <h4 class="title text-center ">Αξία {{ instance.tag_final_value }}</h4>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Στοιχεία Τιμολόγησης</td>
+                                            <th>
+                                                <a href="{% url 'dashboard_:edit_billing_view' instance.id %}" class="btn btn-primary">Επεξεργασία</a>
+                                            </th>
+                                            <td>Στοιχεία Αποστολής</td>
+
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Selected Order Items</h4>
+                        </div>
+                        <div class="content">
+                             <h3 class="title text-center"> Order Items</h3>
+                             <table class="table">
+                                 <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Actions</th>
+                                        <th>Warehouse</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for product in order_items %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ product.title }} {{ product.size|default_if_none:"" }}</td>
+                                            <td>{{ product.qty }}</td>
+                                            <td>{{ product.tag_final_value }}</td>
+                                            <td>
+                                                <a href="{% url 'dashboard_:edit_order_item' product.id %}" class="btn btn-primary">Edit</a>
+                                                <a href="{% url 'dashboard_:delete_order_item' product.id %}" class="btn btn-warning">Delete</a>
+                                            </td>
+                                            <td><a href="{% url 'dashboard_:warehouse_found' product.id %}" class='btn btn-info'>{{ product.tag_found }}</a></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5">No Products Selected</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% if gifts %}
+                                        <tr>
+                                            <th colspan='5 text-center'>Gifts</th>
+                                        </tr>
+                                        {% for gift in gifts %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ gift.product_related }}</td>
+                                                <td>{{ gift.qty }}</td>
+                                                <td>No Price</td>
+                                                <td></td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                 </tbody>
+                             </table>
+                        </div>
+                    </div>
+                        <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Costumer Details</h4>
+                        </div>
+                        <div class="content">
+                            <form method="post">{% csrf_token %}
+                                {% for field in form.visible_fields %}
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>{{ field.label_tag }}</label>
+                                            {{ field }}
+                                            {% if field.help_text %}
+                                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-info btn-fill btn-wd">Update</button>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                    </div>
+
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title text-center">Actions</h4>
+                            </div>
+                            {% if instance.order_type == 'e' or instance.order_type == 'r' %}
+                            <div class="content">
+                                <a href="{% url 'dashboard_:return_or_cancel' instance.id 'b' %}" class="btn btn-dark"><i class="fa fa-warning"></i> Return </a>
+                                <a href="{% url 'dashboard_:return_or_cancel' instance.id 'c' %}" class="btn btn-warning"><i class="fa fa-remove"></i> Cancel </a>
+                                <br><br><br>
+                                <a style="width: 100%;" href="{% url 'dashboard_:delete_eshop_order' instance.id %}" class="btn btn-warning ">Delete</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        function showEditPopup(url) {
+            var win = window.opener(url, "Edit", "height=500,width=800,resizable=yes,scrollbars=yes");
+            return false
+        }
+
+        function showAddPopup(triggerLink) {
+            var name = triggeringLink.id.replace(/^add_/, '');
+            href = triggeringLink.href;
+            var win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+            win.focus();
+            return false;
+        }
+
+        function closePopup(win, newID, newRepr, id) {
+            $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>');
+            win.close();
+        }
+    </script>
+
+
+
+{% endblock %}

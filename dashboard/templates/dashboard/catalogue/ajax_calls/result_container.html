@@ -1,0 +1,51 @@
+<div class="card">
+    <div class="header">
+        <div class="title">Selected</div>
+    </div>
+    <div  class="content">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ele in selected_data %}
+                <tr>
+                    <td>{{ ele.id }}</td>
+                    <td>{{ ele }}</td>
+                    {% if chars %}
+                        <td><a href="{% url 'dashboard:product_char_delete_view' ele.id %}" class="btn btn-warning">Delete</a></td>
+                    {% else %}
+                        <td><button data-href="{% url 'dashboard:ajax_category_site' 'delete' instance.id ele.id  %}" class="btn btn-warning delete_button">Delete</button></td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No Data</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    $('.delete_button').click(function(event) {
+        event.preventDefault();
+        console.log('delete')
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        $.ajax({
+            url: href,
+            dataType: 'json',
+
+            success: function(data) {
+                $('#result_container').html(data.result)
+            }
+        })
+    });
+</script>

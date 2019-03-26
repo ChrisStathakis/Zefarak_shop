@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="el">
+
+<head lang="el">
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <title>Warehouse</title>
+    <link rel="stylesheet" href="{% static 'semantic-ui-css-master/semantic.min.css' %}">
+    <link rel="stylesheet" href="{% static 'my_static/index.css' %}">
+    <script src="{% static 'jquery-1.12.2.min.js' %}"></script>
+    <script src="{% static 'moment.js' %}"></script>
+    <script src="{% static 'chart/Chart.bundle.min.js' %}"></script>
+</head>
+
+<body>
+<div class="ui six item top fixed menu">
+    <a href="{% url 'reports:homepage' %}" class=" item">Home</a>
+    <a href="{% url 'reports:products' %}" class=" item">Αποθήκη</a>
+    <a href="{% url 'reports:warehouse_orders' %}" class="ui red item">Τιμολόγια</a>
+    <a href="{% url 'reports:homepage_sales' %}" class="green item">Πωλήσεις</a>
+    <a href="{% url 'reports:transcation_homepage' %}" class="red item">Έξοδα</a>
+    <a href="{% url 'reports:balance_sheet' %}" class=" item">Αναλύσεις</a>
+</div>
+{% block test %}
+
+{% endblock %}
+
+{% block down_menu %}
+<div class="ui  four item bottom fixed menu">
+    <a href="{% url 'reports:homepage' %}" style="background-color: green" class="item">'Αρχική Σελίδα</a>
+    <a href="{% url 'reports:billing_warning' %}" style="background-color: red" class="item">Λογαριασμοί που λήγουν</a>
+    <a href="{% url 'reports:product_warning' %}" class="item">Προϊόντα σε Έλειμα</a>
+    <a class="item">Messaging(Not Yet)</a>
+</div>
+{% endblock %}
+
+<div style="margin-top: 2%" class ="ui stackable grid">
+    {% block content %}
+        <div class="six wide column"></div>
+        <div class="four wide column">
+            <h2 style="text-align: center" class="ui header">
+                <i class="folder outline blue icon"></i>
+                <div class="blue content">
+                    Αρχική Σελίδα
+                </div>
+            </h2>
+
+        </div>
+        <div class="six wide column"></div>
+
+        <div class="row">
+            <div class="six wide column"></div>
+            <div class="four wide column">
+                <h2 style="margin-left: 15%" class="ui icon header">
+                <i class="green checked cart icon"></i>
+                <div class="content">
+                   Έσοδα
+                    <div class="sub header"></div>
+                </div>
+            </h2>
+            </div>
+            <div class="six wide column"></div>
+        </div>
+
+        <div class="four column row">
+            <div class="center aligned column">
+                <div class="ui green statistic">
+                    <div class="value">
+                        {{ today_sells }}
+                    </div>
+                    <div class="label">
+                        Σημερινά Έσοδα
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui green statistic">
+                    <div class="value">
+                        {{ month_sells }}
+                    </div>
+                    <div class="label">
+                        Έσοδα Μήνα
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui green statistic">
+                    <div class="value">
+                        {{ year_sells }}
+                    </div>
+                    <div class="label">
+                        Έσοδα Χρονιάς
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui statistic">
+                    <div class="value">
+                        {{ avg_sells }}
+                    </div>
+                    <div class="label">
+                        Μέσο Έσοδο
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <br /><br />
+
+        <div class="row">
+            <div class="six wide column"></div>
+            <div class="four wide column">
+                <h2 style="margin-left: 15%" class="ui icon header">
+                <i class="red checked calendar icon"></i>
+                <div class="content">
+                    'Εξοδα
+                    <div class="sub header"></div>
+                </div>
+            </h2>
+            </div>
+            <div class="six wide column"></div>
+        </div>
+
+        <div class="four column row">
+            <div class="center aligned column">
+                <div class="ui red statistic">
+                    <div class="value">
+                        {{ bills }}
+                    </div>
+                    <div class="label">
+                        Υπόλοιπα Λογαριασμών
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui red statistic">
+                    <div class="value">
+                        {{ vendors }}
+                    </div>
+                    <div class="label">
+                        Υπόλοιπα Προμηθευτων
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui red statistic">
+                    <div class="value">
+                        {{ payroll }}
+                    </div>
+                    <div class="label">
+                        Υπόλοιπo Μισθοδοσίας
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui red statistic">
+                    <div class="value">
+                        {{ expenses }}
+                    </div>
+                    <div class="label">
+                        Γενικά 'Εξοδα
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    {% endblock %}
+</div>
+
+
+<script type="text/javascript" src="{% static 'jquery-1.12.2.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'semantic-ui-daterangepicker-master/moment.js' %}"></script>
+<script type="text/javascript" src="{% static 'semantic-ui-daterangepicker-master/daterangepicker.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'semantic-ui-daterangepicker-master/daterangepicker.css' %}" />
+<script type="text/javascript" src="{% static 'semantic-ui-css-master/semantic.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'my_static/index.js' %}"></script>
+
+{% block date_pick %}
+    <script type="text/javascript">
+$(document).ready(function() {
+
+  $('input[name="daterange"]').daterangepicker();
+});
+
+
+$(function() {
+
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        $('input[name="date_pick"]').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+
+    $('input[name="date_pick"]').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            "Προηγούμενο Τρίμηνο": [moment().subtract(3, 'month'), moment()],
+           'Today': [moment(), moment()],
+            "Τρέχων Χρονιά": [moment().startOf('year'), moment().endOf('year')],
+            "Επόμενο Τρίμηνο": [moment().startOf('month'), moment().subtract(-3, 'month').endOf('month')],
+            "Επόμενο Εξάμηνο": [moment().startOf('month'), moment().subtract(-6, 'month').endOf('month')],
+
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+
+});
+</script>
+{% endblock %}
+
+{% block my_static %}{% endblock %}
+
+{% block my_js %}{% endblock %}
+
+{% block extra_js %}{% endblock %}
+</body>
+
+
+</html>

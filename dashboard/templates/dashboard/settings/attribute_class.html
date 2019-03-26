@@ -1,0 +1,55 @@
+{% extends 'dashboard/dashboard.html' %} {% load static %}
+
+
+{% block content %}
+   <div class="content">
+       <div class="container-fluid">
+           <div class="row">
+               <div class="col-md-12">
+                   {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-8">
+                   <div class="card">
+                       <div class="header">
+                           <h4 class="title text-center">Attributes</h4>
+                           <p class="category">
+                               <a href="{% url 'dashboard:attribute_class_create_view' %}" class="btn btn-success">Create Attribute Class</a>
+                           </p>
+                       </div>
+                       <div class="content table-responsive table-full-width">
+                           <table class="table table-striped">
+                               <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Active</th>
+                                        <th>Actions</th>
+                                    </tr>
+                               </thead>
+                               <tbody>
+                                {% for object in object_list %}
+                                    <tr>
+                                        <td>{{ object.id }}</td>
+                                        <td>{{ object }}</td>
+                                        <td>{{ object.tag_active }}</td>
+                                        <td><a href="{{ object.get_edit_url }}" class="btn btn-info">Edit</a></td>
+                                    </tr>
+                                {% endfor %}
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+               </div>
+
+           </div>
+       </div>
+   </div>
+{% endblock %}

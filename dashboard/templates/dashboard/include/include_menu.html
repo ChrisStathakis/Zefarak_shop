@@ -1,0 +1,46 @@
+<div class="sidebar" data-background-color="white" data-active-color="danger">
+    <!--
+		Tip 1: you can change the color of the sidebar's background using: data-background-color="white | black"
+		Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+	-->
+    <div class="sidebar-wrapper">
+        <div class="logo">
+            <a href="" class="simple-text">Demo Admin</a>
+        </div>
+
+        <ul class="nav">
+            <li {% if dashboard %}class="active" {% endif %}>
+                <a href="{% url 'dashboard:home' %}">
+                    <i class="ti-panel"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'site_settings:dashboard' %}">
+                    <i class="ti-panel"></i>
+                    <p>Site Settings</p>
+                </a>
+            </li>
+            {% if warehouse_transations %}
+            <li class="" >
+                <a href="{% url 'warehouse:dashboard' %}">
+                    <i class="ti-panel"></i>
+                    <p>Warehouse</p>
+                </a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="">
+                    <i class="ti-panel"></i>
+                    <p>PoS</p>
+                </a>
+            </li>
+            <li {% if dashboard %}class="active" {% endif %}>
+                <a href="">
+                    <i class="ti-panel"></i>
+                    <p>Warehouse Home</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

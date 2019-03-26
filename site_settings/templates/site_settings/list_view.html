@@ -1,0 +1,65 @@
+{% extends 'site_settings/dashboard.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class='col-lg-8'>
+                <div class="card">
+                    <div class="header">
+                        <div class="title">
+                            <h3>{{ page_title }}</h3>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="header">
+                        <a href="{% url 'site_settings:dashboard' %}" class="btn btn-primary">Back</a>
+                    </div>
+                    <div class="content">
+                        <h4>If you create a {{ page_title }} you cant delete it.</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-md-8">
+                <div class="card">
+                    <div class="header">
+                        <div class="title">List
+                            <a  href="{{ create_url }}" class="btn btn-success">New {{ page_title }}</a>
+                        </div>
+                    </div>
+                    <div id='container_data' class="content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in object_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ ele }}</td>
+                                        <td><a href="{{ ele.get_edit_url }}" class="btn btn-primary">Edit</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4" >
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

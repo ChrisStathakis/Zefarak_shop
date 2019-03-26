@@ -1,0 +1,324 @@
+{% extends 'dashboard/dashboard.html' %} {% load static %}
+
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-md-7">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Actions</h4>
+                    </div>
+                    <div class="content">
+                        <a href="{% url 'dashboard:copy_product' instance.id %}" class="btn btn-success">Copy Product</a>
+                        <a href="" class="btn btn-warning">Διαγραφή</a>
+                        <br><br>
+                        <button data-href="" class="btn btn-info" id="add_author" onclick="return addData(this);">Δημιουργία Brand</button>
+                        <button data-href="" class="btn btn-info" id="add_category" onclick="return addData(this);">Δημιουργία Κατηγορίας</button>
+                        <button data-href="" class="btn btn-info" id="add_category_site" onclick="return addData(this);">Δημιουργία Κατηγορίας Site</button>
+                        <button data-href="" class="btn btn-info" id="add_color" onclick="return addData(this);">Δημιουργία Χρώματος</button>
+                        <button data-href="" class="btn btn-info" id="add_vendor" onclick="return addData(this);">Δημιουργία Προμηθευτή</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Επεξεργασία</h4>
+                    </div>
+                    <div class="content">
+                        <form method="post">{% csrf_token %}
+                            {% for field in form.visible_fields %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>{{ field.label_tag }}</label>
+                                        {{ field }}
+                                        {% if field.help_text %}
+                                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <br>
+                            <div class="text-center">
+                                <button name="update_" type="submit" class="btn btn-info btn-fill btn-wd">Save</button>
+                                <button name="save_" type="submit" class="btn btn-warning btn-fill btn-wd">Save and Close</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="header">
+                        <div class="title">
+                            <h4>Image Manager</h4>
+                        </div>
+                        <div class="content">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Image</th>
+                                        <th>Primary</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in instance.images.all %}
+                                        <tr>
+                                            <td>{{ ele.id }}</td>
+                                            <td><img width="200px" height="100px" src="{{ ele.image.url }}" class="img-thumbnail img-responsive"></td>
+                                            <td>{{ ele.is_primary }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="2">No Images Added</td>
+
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <a href='{% url "dashboard:image_manager_view" instance.id %}' class="btn btn-primary">Manager</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-5">
+                <div class="card">
+                    <div class="header text-center">
+                        <div class="title">
+                            <h3>{{ instance.title }}</h3>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Product Class</th>
+                                    <td>{{ instance.product_class.title }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Qty</th>
+                                    <td>{{ instance.tag_qty }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Price</th>
+                                    <td>{{ instance.tag_final_price }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="description text-center">
+                            {{ instance.category|default_if_none:"No Category Selected" }} <br>
+                            {{ instance.color|default_if_none:"No Color Selected" }} <br>
+                            {{ instance.supply|default_if_none:"No Vendor Selected" }}
+                        </p>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-1">
+                                <h5>{{ instance.price }} {{ currency }}<br /><small>Price</small></h5>
+                            </div>
+                            <div class="col-md-4">
+                                <h5>{{ instance.price_discount }} {{ currency }}<br /><small>Discount Price</small></h5>
+                            </div>
+                            <div class="col-md-3">
+                                <h5>{{ instance.price_buy }} {{ currency }}<br /><small>Price Buy</small></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="header">
+                        <div class="title">
+                            <h4>Category Site Manager</h4>
+                        </div>
+                        <div class="content">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in instance.category_site.all %}
+                                        <tr>
+                                            <td>{{ ele.id }}</td>
+                                            <td>{{ ele }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="2">No category Added</td>
+
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <a href='{% url "dashboard:category_manager_view" instance.id %}' class="btn btn-primary">Manager</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="header">
+                        <div class="title">
+                            <h4>Characteristics Manager</h4>
+                        </div>
+                        <div class="content">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in instance.characteristics.all %}
+                                        <tr>
+                                            <td>{{ ele.id }}</td>
+                                            <td>{{ ele }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="2">No Characteristics Added</td>
+
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <a href='{% url "dashboard:char_manager_view" instance.id %}' class="btn btn-primary">Manager</a>
+                        </div>
+                    </div>
+                </div>
+                {% if instance.product_class.have_attribute %}
+                    <div class="card">
+                    <div class="header">
+                        <div class="title">
+                            <h4>Attribute Manager</h4>
+                        </div>
+                        <div class="content">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in instance.attributes.all %}
+                                        <tr>
+                                            <td>{{ ele.id }}</td>
+                                            <td>{{ ele }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="2">No Characteristics Added</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <a href='{% url "dashboard:attribute_manager_view" instance.id %}' class="btn btn-primary">Manager</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card">
+                    <div class="header">
+                        <div class="title">
+                            <h4>Related Product Manager</h4>
+                        </div>
+                        <div class="content">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ele in instance.related_products.all %}
+                                        <tr>
+                                            <td>{{ ele.id }}</td>
+                                            <td>{{ ele }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="2">No Products Added</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <a href='{% url "dashboard:related_products_manager_view" instance.id %}' class="btn btn-primary">Manager</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                        <div class="header">
+                            <h4 class="title">Different Color</h4>
+                            <a href="" class="btn btn-info">Add Color Product</a>
+                        </div>
+                        <div class="content">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in instance.different_color.all %}
+                                        <tr>
+                                            <th>{{ product.id }}</th>
+                                            <th>{{ product }}</th>     
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="3">No Related Added</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+
+    <script type="text/javascript">
+        function showEditPopup(url) {
+            var win = window.open(url, "Edit",
+                'height=500,width=800,resizable=yes,scrollbars=yes');
+            return false;
+        }
+
+        function addData(triggeringLink) {
+            const name = triggeringLink.id.replace(/^add_/, '');
+            const btn = $(triggeringLink);
+            href = btn.attr('data-href');
+            console.log(href);
+            var win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+            win.focus();
+            return false
+        }
+
+        function closePopup(win, newID, newRepr, id) {
+            $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>');
+            win.close();
+        }
+</script>
+{% endblock %}

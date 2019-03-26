@@ -1,0 +1,43 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+             <th>Action</th>
+        </tr>
+    </thead>
+        <tbody>
+            {% for related in related_products %}
+                <tr>
+                    <td>{{ related.id }}</td>
+                    <td>{{ related }}</td>
+                    <td>
+                        <button
+                            {% if colors %}
+                            data-url = "{% url 'dashboard_:ajax_add_remove_similar_color' instance.id related.id 2 %}"
+                            {% else %} 
+                            data-url='{% url "dashboard_:ajax_delete_related_product" instance.id related.id %}'
+                            {% endif %}
+                            class="btn btn-warning delete_item"
+                            >Delete
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+</table>
+
+<script>
+    $('.delete_item').click(function(event){
+        event.preventDefault();
+        const btn = $(this);
+        $.ajax({
+            url: btn.attr('data-url'),
+            dataType: 'json',
+            success: function(response){
+                $("#container_table").html(response.html_data)
+            }
+        })
+    })
+
+</script>

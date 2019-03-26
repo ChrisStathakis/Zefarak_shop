@@ -1,0 +1,33 @@
+<table id="gallery" class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Photo</th>
+        <th colspan="3">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for photo in photos %}
+        <tr>
+            <td><img src='{{ photo.image.url }}' style='max-height: 50px;max-width: 50px;' class="img img-rounded img-thumbnail"></td>
+            <td><a data-href="{% url 'dashboard:ajax_image' 'is_primary' instance.id photo.id %}"  class="btn btn-success photo-button">{{ photo.tag_primary }}</a></td>
+            <td><a data-href="{% url 'dashboard:ajax_image' 'delete' instance.id photo.id %}" class="btn btn-warning photo-button">Delete</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('.photo-button').click(function (event) {
+        event.preventDefault();
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        $.ajax({
+            url: href,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#container_content').html(data.result)
+            }
+        })
+    })
+</script>

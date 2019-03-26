@@ -1,0 +1,65 @@
+{% extends 'dashboard/dashboard.html' %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header"><h4 class="title text-center">{{ instance.title }}</h4></div>
+                        <div class="content">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>Detail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for ele in instance.my_values.all %}
+                                    <tr>
+                                        <td>{{ ele.id }}</td>
+                                        <td>{{ ele.title }}</td>
+                                        <td><a href="{{ ele.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td>No Added data</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Edit</h4>
+                            <a href="{% url 'dashboard:char_delete_view' instance.id %}" onclick="return confirm('Are you sure?'); "class="btn btn-warning">Delete</a>
+                        </div>
+                        <div class="content">
+                            <form method="post">{% csrf_token %}
+                                {{ form }}
+                                <button name="edit_form" class="btn btn-primary">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header"><h4 class="title text-center">Add New</h4></div>
+                        <div class="content">
+                            <form method="post">{% csrf_token %}
+                                {{ add_form }}
+                                <button name="add_form" class="btn btn-primary">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'warehouse/dashboard.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class='col-lg-6'>
+                <div class="card">
+                    <div class="header">
+                        <h3>Employees</h3>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="header">
+                        <a href="{% url 'warehouse:dashboard' %}" class="btn btn-primary">Back</a>
+                    </div>
+                    <div class="content">
+                        <form method='GET'>
+                            <input data-href="" type='text' class='form-control search_button' name='search_name' placeholder="Search">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-md-8">
+                <div class="card">
+                    <div class="header">
+                        <div class="title">List <a href="{% url 'warehouse:payroll_employee_create' %}" class="btn btn-success">Create Employee</a></div>
+                    </div>
+                    <div id='container_data' class="content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Occupation</th>
+                                    <th>CellPhone</th>
+                                    <th>Phone</th>
+                                    <th>Remaining</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in object_list %}
+                                    <tr>
+                                        <td>{{ ele.id }}</td>
+                                        <td>{{ ele }}</td>
+                                        <td>{{ ele.category }}</td>
+                                        <td>{{ ele.tag_final_value }}</td>
+                                        <td><a href="" class="btn btn-warning">Pay</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4" id='result_container'>
+                {% include 'warehouse/include/result_container.html' %}
+            </div>
+        </div>
+        </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+    $('.ajax_button').click(function(event) {
+        event.preventDefault();
+        console.log('feg')
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        $.ajax({
+            url: href,
+            dataType: 'json',
+            success: function(data) {
+                $('#result_container').html(data.result)
+            }
+        })
+    });
+
+    $('.delete_button').click(function(event) {
+        event.preventDefault();
+        console.log('delete');
+        const btn = $(this);
+        const href = btn.attr('data-href');
+        $.ajax({
+            url: href,
+            dataType: 'json',
+
+            success: function(data) {
+                $('#result_container').html(data.result)
+            }
+        })
+    });
+
+    $('.search_button').keyup(function(event){
+        event.preventDefault()
+        const btn = $(this)
+        let search_name = btn.val()
+        console.log(search_name)
+        $.ajax({
+            url: btn.attr('data-href')+ '?search_name='+ search_name,
+            dataType: 'json',
+            success: function(data) {
+                $('#container_data').html(data.table)
+            }
+
+        })
+    })
+</script>
+{% endblock extra_js %}

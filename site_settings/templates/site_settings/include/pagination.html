@@ -1,0 +1,29 @@
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            {% if '?' in request.build_absolute_uri %}
+                <a href="{{ request.build_absolute_uri }}&page=1"
+                   class="btn btn-primary">
+                    First Page
+                </a>
+                <a href="{{ request.build_absolute_uri }}&page={{ page_obj.previous_page_number }}"
+                   class="btn btn-primary">
+                    Previous
+                </a>
+            {% else %}
+                <a href="?page=1" class="btn-primary">First</a>
+                <a href="?page={{ page_obj.previous_page_number }}"></a>
+            {% endif %}
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {%  if page_obj.has_next %}
+            {% if '?' in request.build_absolute_uri %}
+                <a href='{{ request.build_absolute_uri }}&page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+            {% else %}
+                <a href='?page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+            {% endif %}
+        {% endif %}
+    </span>
+</div>

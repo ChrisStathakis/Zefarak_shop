@@ -1,0 +1,55 @@
+{% extends 'dashboard/dashboard.html' %}
+
+
+{% block content %}
+<div class="content">
+       <div class="container-fluid">
+           <div class="row">
+               <div class="col-md-8">
+                   <div class="card">
+                       <div class="header">
+                           <h4 class="title text-center">{{ title }}</h4>
+                           <p class="category"><a href="{% url 'dashboard:product_class_create_view' %}" class="btn btn-success">Create Product Class</a></p>
+                       </div>
+                       <div class="content table-responsive table-full-width">
+                           <table class="table table-striped">
+                               <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>Have attribute?</th>
+                                        <th>Have Transcations?</th>
+                                        <th>Is Service?</th>
+                                        <th>Details</th>
+                                    </tr>
+                               </thead>
+                               <tbody>
+                                {% for object in object_list %}
+                                    <tr>
+                                        <td>{{ object.id }}</td>
+                                        <td>{{ object.title }}</td>
+                                        <td>{{ object.have_attribute }}</td>
+                                        <td>{{ object.have_transcations }}</td>
+                                        <td>{{ object.is_service }}</td>
+                                        <td>You cant edit or delete it</td>
+                                    </tr>
+                                {% endfor %}
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-4">
+                   <div class="card">
+                       <div class="header">
+                            <h4>Carefull you cant edit or delete it.</h4>
+                       </div>
+                       <div class="content">
+                           <br>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+{% endblock %}

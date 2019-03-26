@@ -1,0 +1,110 @@
+{% extends 'warehouse/dashboard.html' %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class='col-lg-8'>
+                <div class="card">
+                    <div class="header">
+                        <div class="title">
+                            <h3>Store {{ instance }}</h3>
+                            <p>Total Pay Balance... {{ total_pay }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="header">
+                        <a href="{% url 'warehouse:billing_view' %}" class="btn btn-primary">Back</a>
+                    </div>
+                    <div class="content">
+                        <form method='GET'>
+                            <input data-href="" type='text' class='form-control search_button' name='search_name' placeholder="Search">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-md-8">
+                <div class="card">
+                    <div class="header">
+                        <div class="title">Not Paid List
+                            <a  href="{% url 'warehouse:billing_invoice_create_view' instance.id %}" class="btn btn-success">New Bill</a>
+                        </div>
+                    </div>
+                    <div id='container_data' class="content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Value</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in object_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ ele.date_expired|date }}</td>
+                                        <td>{{ ele }}</td>
+                                        <td>{{ ele.category }}</td>
+                                        <td{% if ele.is_paid %} class="success" {% else %} class="danger" {% endif %}>{{ ele.tag_final_value }}</td>
+                                        <td>
+                                            <a href="{{ ele.get_edit_url }}" class="btn btn-primary">Edit</a>
+                                            {% if not ele.is_paid %}
+                                            <a href="{{ ele.get_quick_pay_url }}" class="btn btn-warning">Pay</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4" id='result_container'>
+                <div class="card">
+                    <div class="header">
+                        <div class="title">Billings</div>
+                    </div>
+                    <div class="content">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Remaining Value</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for ele in categories %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ ele }}</td>
+                                    <td class="warning">{{ ele.tag_balance }}</td>
+                                    <td><a href="{{ ele.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3">No Data</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <a href="{% url 'warehouse:billing_category_create_view' instance.id %}" class="btn btn-success">Create Category</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

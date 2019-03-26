@@ -1,0 +1,31 @@
+<div class="card">
+    <div class="header">
+        <div class="title">{{ list_title }}</div>
+    </div>
+    <div class="content">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ele in stores %}
+                <tr>
+                    <td>{{ ele.id }}</td>
+                    <td>{{ ele }}</td>
+                    <td><a href="{{ ele.get_billing_url }}" class="btn btn-primary">Go</a> </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No Data</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+

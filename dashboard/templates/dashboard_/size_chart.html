@@ -1,0 +1,118 @@
+{% extends 'dashboard_/../dashboard/dashboard.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-md-12">
+            <h4 class="header">Edit/Add Sizes to {{ instance }}</h4>
+            {% if messages %}
+            <div class="card">
+                <div class="header">
+                    <h3 class="title">Message</h3>
+                </div>
+                <div class="content">
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="header">
+                    <h3 class="title">Add Size to {{ instance }}</h3>
+                </div>
+                <div class="content">
+                    <table class="table table-responsive table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Color</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for size in sizes %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ size }}</td>
+                                    <td><button data-url="{% url 'dashboard_:create_product_sizechart' instance.id size.id %}" class="btn btn-primary add_size">Add</button></td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4">No size added!</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="header"><a href="{% url 'dashboard_:product_detail' instance.id %}" class="btn btn-warning btn-raised">Back</a>
+                    <br>
+                    <h4 class="title">Selected size</h4>
+                </div>
+                <div class="content" id="container_table">
+                    <form class="form" method="post">{% csrf_token %}
+                        <table class="table table-responsive table-bordered">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Qty</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for size in sizes_attr %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ size.title }}</td>
+                                        <td><input class="form-control" type="number" step="1" name='size_{{ size.id }}' value="{{ size.qty }}" placeholder="{{ size.qty }}"></td>
+                                        <td>
+                                            <a href="{% url 'dashboard_:product_delete_size' size.id %}" onclick="return confirm('Are you sure?');" class="btn btn-warning">Remove</a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4">No size added!</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <td><button type='submit' class="btn btn-primary">Save</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $('.add_size').click(function () {
+        var btn = $(this);
+        console.log(btn.attr('data-context'));
+        $.ajax({
+            url: btn.attr('data-url'),
+            dataType: 'json',
+            success: function (data) {
+                if(data.new) {
+                    $("#container_table").html(data.html_data)
+                }
+                else {
+
+                }
+            }
+        })
+    })
+</script>
+{% endblock %}

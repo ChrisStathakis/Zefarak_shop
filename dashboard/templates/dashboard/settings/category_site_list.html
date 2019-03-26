@@ -1,0 +1,96 @@
+{% extends 'dashboard/dashboard.html' %} {% load static %} {% load mptt_tags %}
+
+{% block content %}
+   <div class="content">
+       <div class="container-fluid">
+           <div class="row">
+               <div class="col-md-8">
+                   <div class="card">
+                       <div class="header">
+                           <h4 class="title text-center">Categories</h4>
+                           <p class="category"><a href="{% url 'dashboard:category_create_view' %}" class="btn btn-success">Create New Category</a></p>
+                       </div>
+                       <div class="content table-responsive table-full-width">
+                           <table class="table table-striped">
+                               <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>Ordering Value</th>
+                                        <th>Status</th>
+                                        <th>Parent</th>
+                                        <th>Path</th>
+                                        <th>Details</th>
+                                    </tr>
+                               </thead>
+                               <tbody>
+                                {% for object in object_list %}
+                                    <tr>
+                                        <td>{{ object.id }}</td>
+                                        <td><a href="">{{ object }}</a></td>
+                                        <td>{{ object.order }}</td>
+                                        <td>{{ object.tag_active }}</td>
+                                        <td>{{ object.tag_show_on_menu }}</td>
+                                        <td>{{ object.parent|default_if_none:"No parent" }}</td>
+                                        <td><a href="{{ object.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                    </tr>
+                                {% endfor %}
+                               </tbody>
+                           </table>
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-4">
+                   <div class="card">
+                       <div class="header">
+                            <h4>Filters</h4>
+                            <p>Search_name {{ search_name.0 }}</p>
+                       </div>
+                       <div class="content">
+                           <form method="get">
+                               {% include 'dashboard/include/pagination.html' %}
+                               <div class="form-group">
+                                   <input type="text" {% if search_name.length > 0 %} value="{{ search_name.0 }}"{% endif %}
+                                          placeholder="Search" class="form-control" name="search_name"/>
+                               </div>
+                               <div class="checkbox">
+                                   <input name="active_name" value="1" id="checkbox1" type="checkbox"
+                                   {% if 1|stringformat:'s' in active_name %} checked {% endif %}>
+                                   <label for="checkbox1">
+                                       Active
+                                   </label>
+                               </div>
+                               <div class="checkbox">
+                                   <input name="active_name" value="2" id="checkbox1" type="checkbox"
+                                   {% if 2|stringformat:'s' in active_name %} checked {% endif %}>
+                                   <label for="checkbox1">
+                                       No Active
+                                   </label>
+                               </div>
+                               <div class="checkbox">
+                                   <input name="menu_name" value="a" id="checkbox1" type="checkbox"
+                                   {% if "a"|stringformat:'s' in menu_name %} checked {% endif %}>
+                                   <label for="checkbox1">
+                                       Show on NavBar
+                                   </label>
+                               </div>
+                               <div class="checkbox">
+                                   <input name="menu_name" value="b" id="checkbox1" type="checkbox"
+                                           {% if "b"|stringformat:'s' in menu_name %} checked {% endif %}>
+                                   <label for="checkbox1">
+                                       Non Show on Navbar
+                                   </label>
+                               </div>
+                               <button type="submit" class="btn btn-primary">Submit</button>
+                               <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
+                           </form>
+                       </div>
+                   </div>
+                   {% if category_page %}
+                        {% include 'dashboard/include/actions/category_actions.html' %}
+                   {% endif %}
+               </div>
+           </div>
+       </div>
+   </div>
+{% endblock %}

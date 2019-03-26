@@ -1,0 +1,387 @@
+{% extends 'dashboard/dashboard.html' %} {% load static %}
+
+{% block extra_css %}
+<style>
+    .modal-backdrop.in {
+        filter: alpha(opacity=50);
+        /* opacity: .5; */
+    }
+
+    .modal-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: auto;
+    background-color: #000;
+}
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-9">
+                    <form method='post'>{% csrf_token %}
+
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title text-center">Προϊόντα</h4>
+                                <p class="category">
+                                    <a href="{% url 'dashboard:product_create' %}"
+                                       class="btn btn-success">Δημιουργία Προϊόντος
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>ID</th>
+                                            <th>Τίτλος</th>
+                                            <th>Τιμή Πώλησης</th>
+                                            <th>Τιμή Αγορας</th>
+                                            <th>Κατηγορία</th>
+                                            <th>Brand</th>
+                                            <th>Προμηθευτής</th>
+                                            <th>Ποσότητα</th>
+                                            <th>Κατάσταση</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for product in object_list %}
+                                            <tr>
+                                                <td>
+                                                    <div class="red checkbox">
+                                                        <input id="de_check_active" name="choice_name" type="checkbox" value="{{ product.id }}">
+                                                    </div>
+                                                </td>
+                                                <td>{{ product.id }}</td>
+                                                <td><a href="">{{ product|truncatechars:'30' }}</a></td>
+                                                <td>{{ product.tag_final_price }}</td>
+                                                <td>{{ product.tag_price_buy }}</td>
+                                                <td>{{ product.tag_category|truncatechars:'30' }}</td>
+                                                <td>{{ product.tag_brand|truncatechars:'30' }}</td>
+                                                <td>{{ product.tag_vendor|truncatechars:'30'}}</td>
+                                                <td>{{ product.tag_qty }}</td>
+                                                <td><a href="{{ product.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfooter>
+                                            <tr>
+                                                <td colspan="2">Total Products</td>
+                                                <td>{{ total_products }}</td>
+                                            </tr>
+                                        </tfooter>
+                                    </table>
+                                </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="header">
+                            <h4 class="title text-center">Μαζικές Κινήσεις</h4>
+                            </div>
+                            <div class="content">
+                                <div class="form-group">
+                                    <label for="brand_action">Αλλαγή Brand</label>
+                                    <select name='change_brand' class="form-control" id="brand_action">
+                                        <option></option>
+                                        {% for brand in brands %}
+                                        <option value="{{ brand.id }}">{{ brand }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category_action">Αλλαγή Κατηγορίας Αποθήκης</label>
+                                    <select name='change_cate' class="form-control" id="category_action">
+                                        <option></option>
+                                        {% for cate in categories %}
+                                        <option value="{{ cate.id }}">{{ cate }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category_action">Αλλαγή Κατηγορία Site</label>
+                                    <select name='change_cate_site' class="form-control" id="category_action">
+                                        <option></option>
+                                        {% for cate in site_categories %}
+                                        <option value="{{ cate.id }}">{{ cate }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category_action">Αλλάγη Προμηθευτή</label>
+                                    <select name='change_vendor' class="form-control" id="category_action">
+                                        <option></option>
+                                        {% for cate in vendors %}
+                                        <option value="{{ cate.id }}">{{ cate }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card">
+                       <div class="header">
+                            <h4>Filters</h4>
+                       </div>
+                       <div class="content">
+                           <form method="get">
+                                <div class="pagination">
+                                    <span class="step-links">
+                                        {% if page_obj.has_previous %}
+                                            <a href='{{ request.build_absolute_uri }}&page=1' class="btn btn-primary">First Page</a>
+                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.previous_page_number }}' class="btn btn-primary">Previous</a>
+                                        {% endif %}
+                                        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                                        {%  if page_obj.has_next %}
+                                            {% if '?' in request.build_absolute_uri %} 
+                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+                                            {% else %}
+                                            <a href='?page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            
+                               <div class="form-group">
+                                   <input type="text" 
+                                   {% if search_name %} 
+                                         value="{{ search_name }}" placeholder="{{ search_name }}"
+                                    {% else %} 
+                                    placeholder="Search" {% endif %} 
+                                    class="form-control" name="search_name"
+                                   />
+                               </div>
+                               <div class="checkbox">
+                                   <input id="check_active" name="active_name" type="checkbox" value="1" {% if active_name == '1' %} checked {% endif %}>
+                                   <label for="check_active">Active</label>
+                               </div>
+                               <div class="red checkbox">
+                                   <input id="de_check_active" name="active_name" type="checkbox" value="2" {% if active_name == '2' %} checked {% endif %}>
+                                   <label for="de_check_active">De-Active</label>
+                               </div>
+                               <div class="checkbox">
+                                   <input id="check_feat" name="feat_name" type="checkbox" value="1" {% if feat_name %} checked {% endif %}>
+                                   <label for="check_feat">Featured</label>
+                               </div>
+                               <div id="accordion" role="tablist" aria-multiselectable="true">
+                                   <div class="card">
+                                       <div class="card-header" role="tab" id="headingTwo">
+                                           <h6 class="mb-0">
+                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                                  href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                   Κατηγορίες
+                                               </a>
+                                           </h6>
+                                       </div>
+                                       <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                           <div class="card-block">
+                                               {% for category in categories %}
+                                                   {% if category.title|stringformat:"s" in cate_name %}
+                                                   <div class="checkbox">
+                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox" checked>
+                                                       <label for="checkbox1">
+                                                           {{ category}}
+                                                       </label>
+                                                   </div>
+                                                   {% else %}
+                                                   <div class="checkbox">
+                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox">
+                                                       <label for="checkbox1">
+                                                           {{ category}}
+                                                       </label>
+                                                   </div>
+                                                   {% endif %}
+                                               {% endfor %}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="card">
+                                       <div class="card-header" role="tab" id="headingOne">
+                                           <h6 class="mb-0">
+                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                                  href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                                   ΠρομηΘευτές
+                                               </a>
+                                           </h6>
+                                       </div>
+                                       <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                                           <div class="card-block">
+                                               {% for vendor in vendors %}
+                                                   {% if vendor.title|stringformat:"s" in vendor_name %}
+                                                   <div class="checkbox">
+                                                       <input name="vendor_name" value="{{ vendor.id }}"
+                                                              id="checkbox1" type="checkbox" checked>
+                                                       <label for="checkbox1">
+                                                           {{ vendor }}
+                                                       </label>
+                                                   </div>
+                                                   {% else %}
+                                                   <div class="checkbox">
+                                                       <input name="vendor_name" value="{{ vendor.id }}"
+                                                              id="checkbox1" type="checkbox">
+                                                       <label for="checkbox1">
+                                                           {{ vendor }}
+                                                       </label>
+                                                   </div>
+                                                   {% endif %}
+                                               {% endfor %}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="card">
+                                       <div class="card-header" role="tab" id="headingThree">
+                                           <h6 class="mb-0">
+                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                                  href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                   Brands
+                                               </a>
+                                           </h6>
+                                       </div>
+                                       <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+                                           <div class="card-block">
+                                               {% for brand in brands %}
+                                                  {% if brand.title|stringformat:"s" in brand_name %}
+                                                   <div class="checkbox">
+                                                       <input name="brand_name" value="{{ brand.id }}"
+                                                              id="checkbox1" type="checkbox" checked>
+                                                       <label for="checkbox1">
+                                                           {{ brand }}
+                                                       </label>
+                                                   </div>
+                                                   {% else %}
+                                                   <div class="checkbox">
+                                                       <input name="brand_name" value="{{ brand.id }}"
+                                                              id="checkbox1" type="checkbox">
+                                                       <label for="checkbox1">
+                                                           {{ brand }}
+                                                       </label>
+                                                   </div>
+                                                   {% endif %}
+                                               {% endfor %}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="card">
+                                       <div class="card-header" role="tab" id="headingFour">
+                                           <h6 class="mb-0">
+                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                                  href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                   Χρώμα
+                                               </a>
+                                           </h6>
+                                       </div>
+                                       <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour">
+                                           <div class="card-block">
+                                               {% for color in colors %}
+                                                   {% if color.id|stringformat:"s" in color_name %}
+                                                   <div class="checkbox">
+                                                       <input name="color_name" value="{{ color.id }}"
+                                                              id="checkbox1" type="checkbox" checked>
+                                                       <label for="checkbox1">
+                                                           {{ color }}
+                                                       </label>
+                                                   </div>
+                                                   {% else %}
+                                                   <div class="checkbox">
+                                                       <input name="color_name" value="{{ color.id }}"
+                                                              id="checkbox1" type="checkbox">
+                                                       <label for="checkbox1">
+                                                           {{ color }}
+                                                       </label>
+                                                   </div>
+                                                   {% endif %}
+                                               {% endfor %}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="card">
+                                       <div class="card-header" role="tab" id="headingFour">
+                                           <h6 class="mb-0">
+                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                                                  href="#collapseFive" aria-expanded="false" aria-controls="collapseFour">
+                                                   Site Κατηγορίες
+                                               </a>
+                                           </h6>
+                                       </div>
+                                       <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingFour">
+                                           <div class="card-block">
+                                               {% for cate in site_categories %}
+                                                   {% if cate.id|stringformat:"s" in site_cate_name %}
+                                                   <div class="checkbox">
+                                                       <input name="site_cate_name" value="{{ cate.id }}"
+                                                              id="checkbox1" type="checkbox" checked>
+                                                       <label for="checkbox1">
+                                                           {{ cate }}
+                                                       </label>
+                                                   </div>
+                                                   {% else %}
+                                                   <div class="checkbox">
+                                                       <input name="site_cate_name" value="{{ cate.id }}"
+                                                              id="checkbox1" type="checkbox">
+                                                       <label for="checkbox1">
+                                                           {{ cate }}
+                                                       </label>
+                                                   </div>
+                                                   {% endif %}
+                                               {% endfor %}
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                               <button type="submit" class="btn btn-primary">Submit</button>
+                               <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
+                           </form>
+                       </div>
+                    </div>
+               </div>
+           </div>
+       </div>
+   </div>
+   
+{% endblock %}
+
+{% block extra_js %}
+
+
+    <script>
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        });
+   </script>
+
+    <script type="text/javascript">
+        {% if messages %}
+            {% for message in messages %}
+                function showNotification(from, align){
+                    color = Math.floor((Math.random() * 4) + 1);
+                    $.notify({
+                        icon: "ti-gift",
+                        message: "{{ message }}"
+                    }, {
+                        type: type[color],
+                        timer: 4000,
+                        placement: {
+                            from: from,
+                            align: align
+                        }
+                    });
+                }
+            {% endfor %}
+        {% endif %}
+
+    </script>
+{% endblock %}
+
+

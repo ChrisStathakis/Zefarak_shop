@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, HttpResponseRedirect, redirect
+from django.shortcuts import get_object_or_404, HttpResponseRedirect, redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView, UpdateView, CreateView
 from django.utils.decorators import method_decorator
@@ -6,9 +6,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.db.models import Sum
 
-from .models import Store, BillCategory, BillInvoice
+from .models import Store, BillCategory, BillInvoice, Payroll
 from site_settings.constants import CURRENCY
-from .forms import BillInvoiceEditForm, BillInvoiceCreateForm, BillCategoryForm
+from .forms import BillInvoiceEditForm, BillInvoiceCreateForm, BillCategoryForm, CreateCopyForm
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -16,9 +16,15 @@ class WarehouseDashboard(TemplateView):
     template_name = 'warehouse/dashboard.html'
 
     def get_context_data(self, **kwargs):
-        print('hello')
-
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        currency = CURRENCY
+        payroll, billing = Payroll.browser.get_queryset().until_today_not_paid(), BillInvoice.broswer.get_queryset().until_today_not_paid()
+        billing = billing.aggregate(Sum('final_value'))['final_value__sum'] if billing else 0
+        payroll = payroll.aggregate(Sum('final_value'))['final_value__sum'] if payroll else 0
+        orders = 30
+        general_expenses = 30
+        context.update(locals())
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -79,6 +85,7 @@ class BillInvoiceEditView(UpdateView):
         context = super().get_context_data(**kwargs)
         form_title = f'Edit {self.object.title}'
         back_url, delete_url = self.get_success_url(), reverse('warehouse:bill_invoice_delete_view', kwargs={'pk': self.object.id})
+        create_copy_url = True
         context.update(locals())
         return context
 
@@ -177,6 +184,7 @@ class EditBillingCategoryView(UpdateView):
         back_url, delete_url = self.get_success_url(),\
                                reverse('warehouse:bill_category_delete_view',kwargs={'pk': self.kwargs['pk']}
                                                     )
+
         context.update(locals())
         return context
 
@@ -189,3 +197,20 @@ def delete_bill_category_view(request, pk):
     else:
         messages.warning(request, 'You cant delete this.')
     return redirect(reverse('warehouse:billing_store_view', kwargs={'pk': instance.store.id}))
+
+
+@staff_member_required
+def billing_create_copy(request, pk):
+    instance = get_object_or_404(BillInvoice, id=pk)
+    form_title = 'Create Copy'
+    back_url = reverse('warehouse:bill_invoice_edit_view', kwargs={'pk': instance.id})
+    form = CreateCopyForm(request.POST or None)
+    if form.is_valid():
+        days = form.changed_data.get('days', 1)
+        months = form.cleaned_data.get('months', None)
+        repeat = form.cleaned_data.get('repeat', 1)
+        print(days, months, repeat)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    context = locals()
+    return render(request, 'warehouse/form.html')
+

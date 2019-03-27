@@ -43,13 +43,7 @@
                 <div class="col-md-12 col-lg-12">
                     {% for payroll in object_list %}
                         <div class="col-lg-3 col-sm-6">
-                            <div{% if payroll.is_paid %}
-                                    style="background-color: darkseagreen"
-                                {% else %}
-                                        style="background-color: #ff8984"
-                                {% endif %}
-                                    class="card"
-                            >
+                            <div{% if payroll.is_paid %}style="background-color: darkseagreen"{% else %} style="background-color: #ff8984"{% endif %}class="card">
                                 <div class="content">
                                     <div class="row">
                                         <div class="col-xs-5">

@@ -62,3 +62,9 @@ class PayrollForm(BaseForm, forms.ModelForm):
         fields = ['date_expired', 'category', 'title', 'payment_method', 'value',
                   'employee', 'is_paid'
                   ]
+
+
+class CreateCopyForm(BaseForm, forms.Form):
+    days = forms.IntegerField(required=True,)
+    months = forms.IntegerField(help_text='If you use this will overide the days')
+    repeat = forms.IntegerField(required=True, widget=forms.NumberInput(attrs={'placeholder': 1}))

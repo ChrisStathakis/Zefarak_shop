@@ -34,3 +34,11 @@
     text-align: center;
 
 }
+
+.not_paid_card {
+    background-color:  #ff8984;
+}
+
+.paid_card {
+    background-color: darkseagreen;
+}

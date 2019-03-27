@@ -24,6 +24,12 @@
                             {% if delete_url %}
                             <a href="{{ delete_url }}" class="btn btn-warning" onclick="return confirm('Are you sure?');">Delete</a>
                             {% endif %}
+                            {% if create_copy_url %}
+                                <br><br>
+                                <a href="" class="btn btn-secondary dropdown-toggle">
+                                    Create Copy
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                     {% if instance.image %}

@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.db.models import Sum
 
-from .payroll import Payroll, Employee, Occupation
+from .payroll import Payroll, Employee, Occupation, PAYROLL_CHOICES
 from .forms import EmployeeForm, OccupationForm, PayrollForm
 from site_settings.models import Store
 
@@ -35,6 +35,27 @@ class EmployeeListCardView(ListView):
     def get_queryset(self):
         queryset = Employee.objects.filter(active=True)
         return queryset
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class EmployeeCardView(ListView):
+    model = Payroll
+    template_name = 'warehouse/payroll/employee_card_detail.html'
+    paginate_by = 20
+
+    def get_queryset(self):
+        self.employee = get_object_or_404(Employee, id=self.kwargs['pk'])
+        queryset = Payroll.objects.filter(employee=self.employee)
+        queryset = Payroll.filters_data(self.request, queryset)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instance = self.employee
+        categories = PAYROLL_CHOICES
+        back_url = reverse('warehouse:employee-card-list')
+        context.update(locals())
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -74,6 +95,36 @@ class PayrollCreateView(CreateView):
         form.save()
         messages.success(self.request, 'New payroll Added')
         return self.form_valid(form)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class PayrollUpdateView(UpdateView):
+    model = Payroll
+    form_class = PayrollForm
+    template_name = 'warehouse/form.html'
+
+    def get_success_url(self):
+        return reverse('warehouse:employee-card-detail', kwargs={'pk': self.object.employee.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_title = f'Edit Payroll {self.object.title}'
+        back_url, delete_url = self.get_success_url(), reverse('warehouse:payroll_delete', kwargs={'pk': self.object.id})
+        context.update(locals())
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Payroll is Edit')
+        return super().form_valid(form)
+
+
+@staff_member_required
+def delete_payroll(request, pk):
+    instance = get_object_or_404(Payroll, id=pk)
+    instance.delete()
+    messages.success(request, 'The Payroll is deleted')
+    return redirect(reverse('warehouse:employee-card-detail', kwargs={'pk': instance.employee.id}))
 
 
 @method_decorator(staff_member_required, name='dispatch')

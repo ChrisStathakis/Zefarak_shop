@@ -112,6 +112,9 @@ class Employee(models.Model):
     def get_payroll_create_url(self):
         return reverse('warehouse:employee_create_payroll', kwargs={'pk': self.id})
 
+    def get_payroll_card_view(self):
+        return reverse('warehouse:employee-card-detail', kwargs={'pk': self.id})
+
     @staticmethod
     def filters_data(request, queryset):
         search_name = request.GET.get('search_name', None)
@@ -143,15 +146,6 @@ class Payroll(DefaultOrderModel):
         super(Payroll, self).save(*args, **kwargs)
         self.employee.save()
 
-    def tag_model(self):
-        return f'Payroll - {self.employee.title}'
-
-    def tag_person(self):
-        return f'{self.employee.title}'
-
-    def update_category(self):
-        self.employee.update_balance()
-
     def tag_value(self):
         return '%s %s' % (self.value, CURRENCY)
 
@@ -166,24 +160,29 @@ class Payroll(DefaultOrderModel):
     def tag_remaining_value(self):
         return '%s %s' % (self.get_remaining_value(), CURRENCY)
 
+    def get_edit_url(self):
+        return reverse('warehouse:payroll_edit', kwargs={'pk': self.id})
+
     @staticmethod
     def filters_data(request, queryset):
         search_name = request.GET.get('search_name', None)
         person_name = request.GET.getlist('person_name', None)
         occup_name = request.GET.getlist('cate_name', None)
         paid_name = request.GET.getlist('paid_name', None)
+        cate_name = request.GET.getlist('cate_name', None)
         date_start, date_end = request.GET.get('date_start', None), request.GET.get('date_end', None)
 
         if date_start and date_end and date_end > date_start:
             queryset = queryset.filter(date_expired__range=[date_start, date_end])
+        queryset = queryset.filter(category__in=cate_name) if cate_name else queryset
         queryset = queryset.filter(is_paid=True) if 'paid' in paid_name else queryset.filter(is_paid=False) \
             if 'not_paid' in paid_name else queryset
-        queryset = queryset.filter(person__id__in=person_name) if person_name else queryset
-        queryset = queryset.filter(person__occupation__id__in=occup_name) if occup_name else queryset
+        queryset = queryset.filter(employee__id__in=person_name) if person_name else queryset
+        queryset = queryset.filter(employee__occupation__id__in=occup_name) if occup_name else queryset
         queryset = queryset.filter(Q(title__icontains=search_name) |
-                                   Q(person__title__icontains=search_name) |
-                                   Q(person__occupation__title__icontains=search_name)
-                                   ).distict() if search_name else queryset
+                                   Q(employee__title__icontains=search_name) |
+                                   Q(employee__occupation__title__icontains=search_name)
+                                   ).distinct() if search_name else queryset
 
         return queryset
 

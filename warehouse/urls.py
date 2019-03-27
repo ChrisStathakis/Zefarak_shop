@@ -6,7 +6,7 @@ from .views import (
     )
 from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreateView, EmployeeEditView, delete_employee,
                             OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
-                            PayrollCreateView
+                            PayrollCreateView, EmployeeCardView, payroll_quick_pay, PayrollUpdateView, delete_payroll
                             )
 
 
@@ -38,6 +38,10 @@ urlpatterns = [
     path('payroll/occupation-edit/<int:pk>/', OccupationUpdateView.as_view(), name='occupation_edit'),
     path('payroll/occupation-delete/<int:pk>/', delete_occupation, name='occupation_delete'),
 
-    path('payroll/create/<int:pk>/', PayrollCreateView.as_view(), name='employee_create_payroll')
+    path('payroll/create/<int:pk>/', PayrollCreateView.as_view(), name='employee_create_payroll'),
+    path('payroll/employee-card-detail/<int:pk>/', EmployeeCardView.as_view(), name='employee-card-detail'),
+    path('payroll/quick-pay/<int:pk>/', payroll_quick_pay, name='payroll_quick_pay'),
+    path('payroll/edit/<int:pk>/', PayrollUpdateView.as_view(), name='payroll_edit'),
+    path('payroll/delete/<int:pk>/', delete_payroll, name='payroll_delete'),
 
     ]

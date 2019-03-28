@@ -17,7 +17,7 @@ SECRET_KEY = '37s9g*@ep1%@bln+92ay2s%5os=m2=t_!_j#fpj3ap2p$ts07i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['zefarak-shop.herokuapp.com', 'localhost']
 
 
 # Application definition

@@ -3,7 +3,3 @@ from django.views.generic import ListView, TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 
-
-@method_decorator(staff_member_required, name='dispatch')
-class WarehouseInvoiceListView(ListView):
-    pass

@@ -6,19 +6,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="314c3eda-6676-4f55-9502-87c680bb1166" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/warehouse/invoice_views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cart/managers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cart/validators.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/point_of_sale/address_models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dashboard/static/my_static/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/static/my_static/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dashboard/templates/dashboard/include/include_css.html" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/templates/dashboard/include/include_css.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cart/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/cart/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/managers.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/managers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/billing/billing_store_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/billing/billing_store_view.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/form.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/include/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/include/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/payroll/employee_card_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/payroll/employee_card_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/warehouse/invoice_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/invoice_views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,44 +29,56 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/warehouse/views.py">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cart/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="73">
-              <caret line="190" lean-forward="true" selection-start-line="190" selection-end-line="190" />
+            <state relative-caret-position="1751">
+              <caret line="106" column="91" lean-forward="true" selection-start-line="106" selection-start-column="91" selection-end-line="106" selection-end-column="91" />
               <folding>
-                <element signature="e#0#86#0" expanded="true" />
+                <element signature="e#0#28#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/warehouse/forms.py">
+      <file leaf-file-name="product_attritubes.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/catalogue/product_attritubes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="447">
-              <caret line="68" column="10" selection-start-line="68" selection-start-column="10" selection-end-line="68" selection-end-column="10" />
+            <state relative-caret-position="323">
+              <caret line="88" column="15" selection-start-line="88" selection-start-column="6" selection-end-line="88" selection-end-column="15" />
               <folding>
-                <element signature="e#0#24#0" expanded="true" />
+                <element signature="e#0#28#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="form.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/form.html">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/catalogue/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="107">
-              <caret line="26" column="49" selection-start-line="26" selection-start-column="49" selection-end-line="26" selection-end-column="49" />
+            <state relative-caret-position="425">
+              <caret line="25" column="18" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="billing_store_view.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/billing/billing_store_view.html">
+      <file leaf-file-name="validators.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cart/validators.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="64" column="154" selection-start-line="64" selection-start-column="154" selection-end-line="64" selection-end-column="154" />
+            <state>
+              <caret column="50" selection-start-column="50" selection-end-column="50" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="managers.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cart/managers.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
             </state>
           </provider>
         </entry>
@@ -107,15 +113,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/dashboard/templates/dashboard/catalogue/product_detail.html" />
-        <option value="$PROJECT_DIR$/dashboard/dashboard_actions.py" />
-        <option value="$PROJECT_DIR$/dashboard/templates/dashboard/catalogue/ajax_calls/result_container.html" />
-        <option value="$PROJECT_DIR$/catalogue/models.py" />
         <option value="$PROJECT_DIR$/dashboard/urls.py" />
         <option value="$PROJECT_DIR$/dashboard/templates/dashboard/catalogue/ajax_calls/result_container_attr.html" />
         <option value="$PROJECT_DIR$/dashboard/templates/dashboard/catalogue/ProductAttriClassManager.html" />
         <option value="$PROJECT_DIR$/dashboard/ajax_views.py" />
-        <option value="$PROJECT_DIR$/cart/models.py" />
         <option value="$PROJECT_DIR$/voucher/models.py" />
         <option value="$PROJECT_DIR$/voucher/offers.py" />
         <option value="$PROJECT_DIR$/warehouse/abstract_models.py" />
@@ -153,11 +154,16 @@
         <option value="$PROJECT_DIR$/dashboard/static/my_static/index.css" />
         <option value="$PROJECT_DIR$/dashboard/templates/dashboard/include/include_css.html" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/dashboard.html" />
-        <option value="$PROJECT_DIR$/warehouse/invoice_views.py" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/billing/billing_store_view.html" />
         <option value="$PROJECT_DIR$/warehouse/templates/warehouse/form.html" />
         <option value="$PROJECT_DIR$/warehouse/forms.py" />
         <option value="$PROJECT_DIR$/warehouse/views.py" />
+        <option value="$PROJECT_DIR$/warehouse/invoice_views.py" />
+        <option value="$PROJECT_DIR$/point_of_sale/address_models.py" />
+        <option value="$PROJECT_DIR$/point_of_sale/models.py" />
+        <option value="$PROJECT_DIR$/cart/managers.py" />
+        <option value="$PROJECT_DIR$/cart/validators.py" />
+        <option value="$PROJECT_DIR$/cart/models.py" />
       </list>
     </option>
   </component>
@@ -184,7 +190,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -195,12 +200,13 @@
             <path>
               <item name="zefarak_shop" type="b2602c69:ProjectViewProjectNode" />
               <item name="zefarak_shop" type="462c0819:PsiDirectoryNode" />
-              <item name="warehouse" type="462c0819:PsiDirectoryNode" />
+              <item name="catalogue" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -336,26 +342,26 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15677084" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="10" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="manage.py@zefarak_shop" order="13" visible="true" weight="0.33581296" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32943678" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="manage.py@zefarak_shop" order="13" visible="true" weight="0.33581296" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="14" weight="0.32943678" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -391,49 +397,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/dashboard/templates/dashboard/dashboard.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="6" lean-forward="true" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/billing.html" />
-    <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/include/result_container.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dashboard/templates/dashboard/catalogue/products_list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1207">
-          <caret line="71" column="84" selection-start-line="71" selection-start-column="84" selection-end-line="71" selection-end-column="84" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dashboard/templates/dashboard/catalogue/product_manager_view.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="22" lean-forward="true" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dashboard/templates/dashboard/catalogue/product_detail.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="25" lean-forward="true" selection-start-line="6" selection-start-column="25" selection-end-line="6" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dashboard/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="34" lean-forward="true" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/form_set.html" />
     <entry file="file://$PROJECT_DIR$/catalogue/views.py">
       <provider selected="true" editor-type-id="text-editor" />
@@ -574,13 +537,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/warehouse/migrations/0004_auto_20190326_1436.py" />
     <entry file="file://$PROJECT_DIR$/warehouse/migrations/0001_initial.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -639,9 +595,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="36" column="23" selection-start-line="36" selection-start-column="23" selection-end-line="36" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#78#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -656,9 +609,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="23" lean-forward="true" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -700,20 +650,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/warehouse/invoice_views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/warehouse/templates/warehouse/billing/billing_store_view.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="453">
           <caret line="64" column="154" selection-start-line="64" selection-start-column="154" selection-end-line="64" selection-end-column="154" />
+          <folding>
+            <element signature="n#style#0;n#a#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -736,10 +679,88 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/warehouse/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="73">
-          <caret line="190" lean-forward="true" selection-start-line="190" selection-end-line="190" />
+        <state relative-caret-position="209">
+          <caret line="168" column="41" lean-forward="true" selection-start-line="168" selection-start-column="41" selection-end-line="168" selection-end-column="41" />
           <folding>
             <element signature="e#0#86#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/warehouse/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/warehouse/invoice_views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/point_of_sale/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-437">
+          <caret line="127" lean-forward="true" selection-start-line="127" selection-end-line="127" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/point_of_sale/address_models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="37" column="75" selection-start-line="37" selection-start-column="75" selection-end-line="37" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cart/managers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cart/validators.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="50" selection-start-column="50" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/catalogue/product_attritubes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="88" column="15" selection-start-line="88" selection-start-column="6" selection-end-line="88" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/catalogue/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="18" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cart/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1751">
+          <caret line="106" column="91" lean-forward="true" selection-start-line="106" selection-start-column="91" selection-end-line="106" selection-end-column="91" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -17,7 +17,7 @@ SECRET_KEY = '37s9g*@ep1%@bln+92ay2s%5os=m2=t_!_j#fpj3ap2p$ts07i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['zefarak-shop.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['zefarak-shop.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'dashboard',
     'cart',
     'warehouse',
+    'point_of_sale',
     'frontend',
     'mptt',
 ]
@@ -65,6 +66,11 @@ TEMPLATES = [
                 'site_settings.context_processors.dashboard',
                 'frontend.context_processors.frontend',
             ],
+            'libraries':{
+                'zefarak_tags': 'site_settings.templatetags.zefarak_tags',
+
+                }
+
         },
     },
 ]

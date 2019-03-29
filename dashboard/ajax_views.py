@@ -1,12 +1,15 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from catalogue.categories import Category
 from catalogue.models import Product, ProductPhotos
 from catalogue.product_attritubes import AttributeTitle, AttributeProductClass, Attribute
 
+from catalogue.forms import CategorySiteForm, BrandForm
 from decimal import Decimal
+
 
 @staff_member_required
 def ajax_category_site(request, slug,  pk, dk):
@@ -60,14 +63,11 @@ def ajax_add_or_delete_attribute(request, slug, pk, dk):
                                                            class_related=instance,
                                                            title=attr_title
                                                            )
-        print(my_attr)
     if slug == 'delete':
-        print('i am here!')
         my_attr, created = Attribute.objects.get_or_create(product_related=instance.product_related,
                                                            class_related=instance,
                                                            title=attr_title
                                                            )
-        print(my_attr, 'delete')
         my_attr.delete()
     data = dict()
     attr_class.refresh_from_db()
@@ -102,10 +102,29 @@ def ajax_change_qty_on_attribute(request, pk):
     except:
         qty = qty
     if isinstance(qty, (int, float, )):
-        print('one more step')
         attr_data.qty = qty
         attr_data.save()
     selected_data = attr_data.product_related.attributes.all()
     attr_class = attr_data.class_related
     data = dict()
     return JsonResponse(data)
+
+
+def popup_category(request):
+    form = CategorySiteForm(request.POST or None)
+    form_title = 'Create category'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_category");</script>' % (instance.pk, instance))
+    return render(request, "dashboard/settings/form.html", {"form": form, 'form_title': form_title})
+
+
+def popup_brand(request):
+    form = BrandForm(request.POST or None)
+    form_title = 'Create Brand'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_brand");</script>' % (instance.pk, instance))
+    return render(request, "dashboard/settings/form.html", locals())

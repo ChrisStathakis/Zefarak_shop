@@ -1,7 +1,9 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 
 from .managers import CategoryManager
@@ -91,3 +93,12 @@ class Category(MPTTModel):
         queryset = queryset.filter(active=True) if active_name else queryset
         queryset = queryset.filter(show_on_menu=True) if 'a' in menu_name else queryset.filter(show_on_menu=False) if 'b' in menu_name else queryset
         return queryset
+
+
+@receiver(post_save, sender=Category)
+def create_slug_for_category(sender, instance, **kwargs):
+    if not instance.slug:
+        new_slug = slugify(instance.name, allow_unicode=True)
+        qs_exists = Category.objects.filter(slug=new_slug)
+        instance.slug = f'{new_slug}-{instance.id}' if qs_exists else new_slug
+        instance.save()

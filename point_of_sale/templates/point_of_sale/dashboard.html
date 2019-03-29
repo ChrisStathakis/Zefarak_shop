@@ -1,0 +1,283 @@
+<!doctype html> {% load static %}
+<html lang="en">
+<head>
+    <title>{{ page_name }}</title>
+    {% include 'dashboard/include/include_css.html' %}
+    {% block extra_css %} {% endblock %}
+</head>
+<body>
+
+<div class="wrapper">
+    {% include 'dashboard/include/include_menu.html' %}
+
+    <div class="main-panel">
+        {% include 'point_of_sale/include/navbar.html' %}
+
+    {% block content %}
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="card">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center">
+                                            <i class="ti-bell"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Σημερινές Πωλήσεις</p>
+                                            {{ new_orders }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        <a href=''><i class="ti-link"></i>Πωλήσεις</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="card">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-success text-center">
+                                            <i class="ti-wallet"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Έσοδα</p>
+                                            {{ revenues }} {{ currency }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        <i class="ti-calendar"></i> Last day
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="card">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center">
+                                            <i class="ti-pulse"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Υπόλοιπο Λογαριασμών</p>
+                                                {{ bills }} {{ currency }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        <i class="ti-timer"></i> <a href=''>Λογαριασμοί</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="card">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-info text-center">
+                                            <i class="ti-twitter-alt"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Messages</p>
+                                            +45
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        <i class="ti-reload"></i> Updated now
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Πωλήσεις</h4>
+                                <p class="category">Κίνήσεις Πωλήσεων</p>
+                            </div>
+                            <div class="content">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <td>#</td>
+                                            <th>Ημερομηνία</th>
+                                            <th>Τίτλος</th>
+                                            <th>Κατάσταση</th>
+                                            <th>Πελάτης</th>
+                                            <th>Είδος Παραστατικού</th>
+                                            <th>Αξία</th>
+                                            <th>#</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in last_orders %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ order.date_expired|date }}</td>
+                                                <td>{{ order.tag_fullname }}</td>
+                                                <td>{{ order.get_status_display }}</td>
+                                                <td>{{ order.costumer_account }}</td>
+                                                <td>{{ order.get_order_type_display }}</td>
+                                                <td>{{ order.tag_final_value }}</td>
+                                                <td><a href='{% url "dashboard:eshop_order_edit" order.id %}' class="btn btn-success">Details</a></td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="8">Καμία Πώληση</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Προϊόντα</h4></p>
+                                <a href="{% url 'dashboard:product_create' %}" class="btn btn-primary">Create Product</a>
+                            </div>
+                            <div class="content">
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Date</th>
+                                            <th>Product</th>
+                                            <th>Order</th>
+                                            <th>Qty</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in last_items %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ product.order.timestamp|date }}</td>
+                                                <td>{{ product }}</td>
+                                                <td><a href='{% url "dashboard:eshop_order_edit" product.order.id  %}'>{{ product.order }}</a></td>
+                                                <td>{{ product.qty }}</td>
+                                                <td>{{ product.tag_final_value }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan=5>No added data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">Τιμολόγια</h4>
+                                <p class="category">Αγορές Τιμολογίων</p>
+                            </div>
+                            <div class="content">
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Ημερομηνία</th>
+                                            <th>Title</th>
+                                            <th>Προμηθευτής</th>
+                                            <th>Αξία</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in warehouse_orders %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ order.date_expired|date }}</td>
+                                                <td>{{ order.title }}</td>
+                                                <td>{{ order.vendor }}</td>
+                                                <td>{{ order.tag_final_value }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan=5>No added data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+
+        <footer class="footer">
+            <div class="container-fluid">
+                <nav class="pull-left">
+                    <ul>
+
+                        <li>
+                            <a href="http://www.creative-tim.com">
+                                Creative Tim
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://blog.creative-tim.com">
+                               Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://www.creative-tim.com/license">
+                                Licenses
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="copyright pull-right">
+                    &copy; <script>document.write(new Date().getFullYear())</script>, made with <i class="fa fa-heart heart"></i> by <a href="http://www.creative-tim.com">Creative Tim</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+
+</div>
+
+
+</body>
+{% include 'dashboard/include/include_js.html' %}
+{% block extra_js %} {% endblock %}
+</html>

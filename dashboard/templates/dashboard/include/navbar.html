@@ -13,24 +13,35 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="{% url 'dashboard:products' %}">
+                        <a href="{% url 'dashboard:home' %}">
                             <i class="ti-panel"></i>
-                            <p>Products</p>
+                            <p>Homepage</p>
                         </a>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="ti-bell"></i>
-                            <p>Settings</p>
+                            <p>Products</p>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
+                            <li><a href="{% url 'dashboard:products' %}">Products List</a></li>
                             <li><a href="{% url 'dashboard:product_class_view' %}">Product Class</a></li>
                             <li><a href="{% url 'dashboard:category_list' %}">Categories</a></li>
                             <li><a href="{% url 'dashboard:brand_list_view' %}">Brands</a></li>
-                            <li><a href="{% url 'dashboard:characteristics_list_view' %}">Characteristics</a></li>
-                            <li><a href="{% url 'dashboard:attribute_class_list_view' %}">Attributes</a></li>
                         </ul>
+                    </li>
+                    <li>
+                        <a href="{% url 'dashboard:characteristics_list_view' %}">
+                            <i class="ti-panel"></i>
+                            <p>Characteristics</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dashboard:attribute_class_list_view' %}">
+                            <i class="ti-panel"></i>
+                            <p>Attributes</p>
+                        </a>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -39,26 +50,8 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="">Κατηγορίες Αποθήκης</a></li>
-                            <li><a href="">Vendor</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="">
-                            <i class="ti-settings"></i>
-                            <p>Πωλήσεις</p>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="ti-bell"></i>
-                            <p>Επιλογές Παραστατικά</p>
-                            <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="">Καλάθια</a> </li>
-                            <li><a href="">Τρόποι Μεταφόρας</a></li>
-                            <li><a href="">Τρόποι Πληρωμής</a></li>
+                            <li><a href="">Warehouse Categories</a></li>
+                            <li><a href="">Vendors</a></li>
                         </ul>
                     </li>
                 </ul>

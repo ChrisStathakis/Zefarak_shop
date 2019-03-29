@@ -5,8 +5,8 @@ import uuid
 
 
 class DefaultBasicModel(models.Model):
-    active = models.BooleanField(default=True, verbose_name='Κατάσταση')
-    title = models.CharField(max_length=255, verbose_name='Ονομασία')
+    active = models.BooleanField(default=False, verbose_name='Status')
+    title = models.CharField(max_length=255, verbose_name='Title')
     timestamp = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
     user_account = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)

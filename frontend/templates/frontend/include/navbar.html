@@ -13,10 +13,10 @@
                 {% for category in navbar_categories %}
                     <li class="nav-item"><a href="{% url 'new_products' %}" class="nav-link">{{ category.name }}</a></li>
                 {% endfor %}
-                <li class="nav-item"><a href="" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="{% url 'about_page' %}" class="nav-link">About</a></li>
 
-                <li class="nav-item"><a href="" class="nav-link">Offers</a></li>
-                <li class="nav-item cta cta-colored"><a href="" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+                <li class="nav-item"><a href="{% url 'new_products' %}" class="nav-link">Offers</a></li>
+                <li class="nav-item cta cta-colored"><a href="{% url 'cart_page' %}" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
 	        </ul>
           </div>
     </div>

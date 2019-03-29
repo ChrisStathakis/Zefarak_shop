@@ -14,3 +14,19 @@ class HomepageView(TemplateView):
 
 class NewProductsView(TemplateView):
     template_name = 'frontend/shop.html'
+
+
+class ProductView(TemplateView):
+    template_name = 'frontend/product-single.html'
+
+
+class AboutUsView(TemplateView):
+    template_name = 'frontend/about.html'
+
+
+class CartView(TemplateView):
+    template_name = 'frontend/cart.html'
+
+
+class CheckoutView(TemplateView):
+    template_name = 'frontend/checkout.html'

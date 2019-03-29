@@ -21,6 +21,12 @@
                     <p>Site Settings</p>
                 </a>
             </li>
+            <li>
+                <a href="{% url 'point_of_sale:home' %}">
+                    <i class="ti-panel"></i>
+                    <p>Orders</p>
+                </a>
+            </li>
             {% if warehouse_transations %}
             <li class="" >
                 <a href="{% url 'warehouse:dashboard' %}">
@@ -29,12 +35,7 @@
                 </a>
             </li>
             {% endif %}
-            <li>
-                <a href="">
-                    <i class="ti-panel"></i>
-                    <p>PoS</p>
-                </a>
-            </li>
+
             <li {% if dashboard %}class="active" {% endif %}>
                 <a href="">
                     <i class="ti-panel"></i>

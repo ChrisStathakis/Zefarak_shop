@@ -2,9 +2,11 @@ from django.db import models
 from django.db.models import Sum, Q, F
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.utils.safestring import mark_safe
 from django.conf import settings
+from django.utils.text import slugify
 import os, datetime
 from decimal import Decimal
 from tinymce.models import HTMLField
@@ -32,27 +34,23 @@ class ProductClass(models.Model):
     def __str__(self):
         return self.title
 
-    @property
-    def get_absolute_url(self):
-        pass
-
 
 class Product(DefaultBasicModel):
     is_offer = models.BooleanField(default=False, verbose_name='Is Offer')
     product_class = models.ForeignKey(ProductClass, on_delete=models.CASCADE)
     #  warehouse data
-    order_code = models.CharField(null=True, blank=True, max_length=100, verbose_name="Κωδικός Τιμολογίου")
-    price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0, verbose_name="Τιμή Αγοράς")
-    order_discount = models.IntegerField(default=0, verbose_name="'Εκπτωση Τιμολογίου σε %")
+    order_code = models.CharField(null=True, blank=True, max_length=100, verbose_name="Order oode")
+    price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0, verbose_name="Price Buy")
+    order_discount = models.IntegerField(default=0, verbose_name="'Discount on Order")
     category = models.ForeignKey(WarehouseCategory, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='Warehouse Category')
     vendor = models.ForeignKey(Vendor, blank=True, null=True, on_delete=models.SET_NULL)
 
-    qty_measure = models.DecimalField(max_digits=5, decimal_places=3, default=1, verbose_name='Βάρος/Τεμάχια ανά Συσκευασία')
+    qty_measure = models.DecimalField(max_digits=5, decimal_places=3, default=1, verbose_name='Pieces per Pack')
     qty = models.DecimalField(default=0, verbose_name="Qty", max_digits=10, decimal_places=2)
     barcode = models.CharField(max_length=100, null=True, blank=True)
     notes = models.TextField(null=True, blank=True, verbose_name='Περιγραφή')
-    measure_unit = models.CharField(max_length=1, default='1', choices=UNIT, blank=True, null=True, verbose_name='Μονάδα Μέτρησης')
-    safe_stock = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Ελάχιστα Τεμάχια')
+    measure_unit = models.CharField(max_length=1, default='1', choices=UNIT, blank=True, null=True, verbose_name='Measute unit')
+    safe_stock = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name='Stock Limit')
 
     objects = models.Manager()
     my_query = ProductManager()
@@ -65,12 +63,12 @@ class Product(DefaultBasicModel):
     slug = models.SlugField(blank=True, null=True, allow_unicode=True)
 
     # price sell and discount sells
-    price = models.DecimalField(decimal_places=2, max_digits=6, default=0, verbose_name="Τιμή Πώλησης")
-    price_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Εκπτωτική Τιμή')
-    final_price = models.DecimalField(default=0, decimal_places=2, max_digits=10, blank=True, verbose_name='Τελική Αξία')
+    price = models.DecimalField(decimal_places=2, max_digits=6, default=0, verbose_name="First Price")
+    price_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Price Discount')
+    final_price = models.DecimalField(default=0, decimal_places=2, max_digits=10, blank=True, verbose_name='Price')
 
     #size and color
-    related_products = models.ManyToManyField('self', blank=True, verbose_name='Σχετικά Προϊόντα')
+    related_products = models.ManyToManyField('self', blank=True, verbose_name='Related Products')
 
     class Meta:
         verbose_name_plural = "1. Products"
@@ -154,32 +152,30 @@ class Product(DefaultBasicModel):
     def filters_data(request, queryset):
         search_name = request.GET.get('search_name', None)
         cate_name = request.GET.getlist('cate_name', None)
-        site_cate_name = request.GET.getlist('site_cate_name', None)
         brand_name = request.GET.getlist('brand_name', None)
-        vendor_name = request.GET.getlist('vendor_name', None)
-        color_name = request.GET.getlist('color_name', None)
-        feat_name = request.GET.get('feat_name', None)
         active_name = request.GET.get('active_name', None)
-        size_name = request.GET.get('size_name', None)
-        size_data_name = request.GET.get('size_data_name', None)
         discount_name = request.GET.get('discount_name')
         qty_name = request.GET.get('qty_exists_name')
 
-        queryset = queryset.filter(active=True, site_active=True) if active_name == '1' else queryset.filter(
-            active=False, site_active=False) if active_name == '2' else queryset
-        queryset = queryset.filter(size=True) if size_data_name else queryset
+        queryset = queryset.filter(active=True) if active_name == '1' else queryset.filter(
+            active=False) if active_name == '2' else queryset
         queryset = queryset.filter(price_discount__gt=0) if discount_name else queryset
         queryset = queryset.filter(qty__gt=0) if qty_name else queryset
 
-        queryset = queryset.filter(is_featured=True) if feat_name == '1' else queryset
-        queryset = queryset.filter(category__id__in=cate_name) if cate_name else queryset
+        queryset = queryset.filter(category_site__id__in=cate_name) if cate_name else queryset
         queryset = queryset.filter(brand__id__in=brand_name) if brand_name else queryset
-        queryset = queryset.filter(vendor__id__in=vendor_name) if vendor_name else queryset
-        queryset = queryset.filter(category_site__id__in=site_cate_name) if site_cate_name else queryset
-        queryset = queryset.filter(color__id__in=color_name) if color_name else queryset
         queryset = queryset.filter(title__icontains=search_name) if search_name else queryset
 
         return queryset
+
+
+@receiver(post_save, sender=Product)
+def create_slug(sender, instance, **kwargs):
+    if not instance.slug:
+        new_slug = slugify(instance.title, allow_unicode=True)
+        qs_exists = Product.objects.filter(slug=new_slug).exists()
+        instance.slug = f'{new_slug}-{instance.id}' if qs_exists else new_slug
+        instance.save()
 
 
 class ProductPhotos(models.Model):

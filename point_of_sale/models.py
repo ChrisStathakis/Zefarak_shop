@@ -13,17 +13,16 @@ from django.shortcuts import get_object_or_404
 import datetime
 from decimal import Decimal
 
-from .address_models import BillingAddress, ShippingAddress
-from .managers import RetailOrderManager, RetailOrderItemManager
-from accounts.models import CostumerAccount
-from products.models import  Product, SizeAttribute, Gifts
+
 from site_settings.constants import CURRENCY, TAXES_CHOICES
-from site_settings.models import DefaultOrderModel, DefaultOrderItemModel
+from catalogue.models import Product
+from catalogue.product_attritubes import Attribute
+from .abstract_models import DefaultOrderModel, DefaultOrderItemModel
 from site_settings.models import PaymentMethod, Shipping, Country
 from site_settings.constants import CURRENCY, ORDER_STATUS, ORDER_TYPES, ADDRESS_TYPES
-from cart.models import Cart, CartItem, Coupons, CartGiftItem
-
-
+from cart.models import Cart, CartItem
+from .managers import OrderManager, OrderItemManager
+from .address_models import ShippingAddress, BillingAddress
 
 RETAIL_TRANSCATIONS, PRODUCT_ATTRITUBE_TRANSCATION  = settings.RETAIL_TRANSCATIONS, settings.PRODUCT_ATTRITUBE_TRANSCATION
 User = get_user_model()
@@ -32,10 +31,10 @@ User = get_user_model()
 class Order(DefaultOrderModel):
     number = models.CharField(max_length=128, db_index=True, unique=True)
     status = models.CharField(max_length=1, choices=ORDER_STATUS, default='1')
-    order_type = models.CharField(max_length=1, choices=ORDER_TYPES, default='r', verbose_name='Είδος Παραστατικού')
+    order_type = models.CharField(max_length=1, choices=ORDER_TYPES, default='r', verbose_name='Order Type')
     total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0,
-                                     verbose_name='Συνολικό Κόστος Παραγγελίας')
-    user = models.ForeignKey(CostumerAccount,
+                                     verbose_name='Total Cost')
+    user = models.ForeignKey(User,
                              blank=True,
                              null=True,
                              verbose_name='Costumer',
@@ -50,10 +49,10 @@ class Order(DefaultOrderModel):
     payment_cost = models.DecimalField(default=0, decimal_places=2, max_digits=5, verbose_name='Κόστος Αντικαταβολής')
     day_sent = models.DateTimeField(blank=True, null=True, verbose_name='Ημερομηνία Αποστολής')
     eshop_session_id = models.CharField(max_length=50, blank=True, null=True)
-    my_query = RetailOrderManager()
+    my_query = OrderManager()
     objects = models.Manager()
     cart_related = models.OneToOneField(Cart, blank=True, null=True, on_delete=models.SET_NULL)
-    coupons = models.ManyToManyField(Coupons, blank=True)
+    # coupons = models.ManyToManyField(Coupons, blank=True)
     order_related = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     guest_email = models.EmailField(blank=True)
     shipping_address = models.ForeignKey(ShippingAddress, blank=True, null=True, on_delete=models.SET_NULL)
@@ -85,19 +84,6 @@ class Order(DefaultOrderModel):
         items = self.order_items.all()
         self.value = items.aggregate(Sum('total_value'))['total_value__sum'] if items else 0
         self.total_cost = items.aggregate(Sum('total_cost_value'))['total_cost_value__sum'] if items else 0
-
-    def check_coupons(self):
-        try:
-            total_value = 0
-            active_coupons = Coupons.my_query.active_date(date=datetime.datetime.now())
-            for coupon in self.coupons.all():
-                if coupon in active_coupons:
-                    if self.value > coupon.cart_total_value:
-                        total_value += coupon.discount_value if coupon.discount_value else \
-                            (coupon.discount_percent / 100) * self.value if coupon.discount_percent else 0
-            self.discount = total_value
-        except:
-            self.discount = 0
 
     def tag_value(self):
         return '%s %s' % (self.value, CURRENCY)
@@ -178,4 +164,151 @@ class Order(DefaultOrderModel):
         queryset = queryset.filter(seller_account__id__in=sell_point_name) if sell_point_name else queryset
         return queryset
 
+
+class OrderItem(DefaultOrderItemModel):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    cost = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    title = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name='retail_items')
+    #  warehouse_management
+    is_find = models.BooleanField(default=False)
+    is_return = models.BooleanField(default=False)
+    attribute = models.BooleanField(default=False)
+    total_value = models.DecimalField(max_digits=20, decimal_places=0, default=0, help_text='qty*final_value')
+    total_cost_value = models.DecimalField(max_digits=20, decimal_places=0, default=0, help_text='qty*cost')
+    broswer = OrderItemManager()
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name_plural = '2. Προϊόντα Πωληθέντα'
+        ordering = ['-order__timestamp', ]
+        unique_together = ['title', 'order']
+
+    def __str__(self):
+        return self.title.title if self.title else 'Something is wrong'
+
+    def save(self, *args, **kwargs):
+        self.value = self.title.price if self.title else 0
+        self.discount_value = self.title.price_discount if self.title else 0
+        self.cost = self.title.price_buy if self.title else 0
+        self.final_value = self.discount_value if self.discount_value > 0 else self.value
+        self.total_value = self.final_value * self.qty
+        self.total_cost_value = self.cost * self.qty
+        super(RetailOrderItem, self).save(*args, **kwargs)
+        self.title.save()
+        self.order.save()
+
+    def update_warehouse(self, transcation_type, qty):
+        update_warehouse(self, transcation_type, qty)
+
+    def update_order(self):
+        self.order.save()
+
+    def get_clean_value(self):
+        return self.final_value * (100 - self.order.taxes / 100)
+
+    @property
+    def get_total_value(self):
+        return round(self.final_value * self.qty, 2)
+
+    @property
+    def get_total_cost_value(self):
+        return round(self.cost * self.qty, 2)
+
+    def tag_clean_value(self):
+        return '%s %s' % (self.get_clean_value(), CURRENCY)
+
+    def tag_total_value(self):
+        return '%s %s' % (self.get_total_value, CURRENCY)
+
+    tag_total_value.short_description = 'Συνολική Αξία'
+
+    def tag_final_value(self):
+        return f'{self.final_value} {CURRENCY}'
+
+    tag_final_value.short_description = 'Αξία Μονάδας'
+
+    def tag_value(self):
+        return '%s %s' % (self.value, CURRENCY)
+
+    def tag_found(self):
+        return 'Found' if self.is_find else 'Not Found'
+
+    def tag_total_taxes(self):
+        return '%s %s' % (round(self.value * self.qty * (Decimal(self.order.taxes) / 100), 2), CURRENCY)
+
+    def type_of_order(self):
+        return self.order.order_type
+
+    def template_tag_total_price(self):
+        return "{0:.2f}".format(round(self.value * self.qty, 2)) + ' %s' % (CURRENCY)
+
+    def price_for_vendor_page(self):
+        #  returns silimar def for price in vendor_id page
+        return self.value
+
+    def absolute_url_vendor_page(self):
+        return reverse('retail_order_section', kwargs={'dk': self.order.id})
+
+    @staticmethod
+    def check_if_exists(order, product):
+        exists = RetailOrderItem.objects.filter(title=product, order=order)
+        return exists.first() if exists else None
+
+    @staticmethod
+    def add_item(self, order_id, product_id, qty):
+        order = get_object_or_404(RetailOrder, id=order_id)
+        product = get_object_or_404(Product, id=product_id)
+        instance, created = RetailOrderItem.objects.get_or_create(order=order,
+                                                                  product=product
+                                                                  )
+        if created:
+            instance.qty = qty
+        else:
+            instance.qty += 1
+        instance.save()
+
+    @staticmethod
+    def barcode(request, instance):
+        barcode = request.GET.get('barcode')
+        print(barcode)
+        try:
+            barcode_string = barcode.split(' ')
+            if len(barcode_string) == 1:
+                product_id = barcode_string[0]
+                RetailOrderItem.create_or_edit_item(instance, Product.objects.get(id=product_id), 1, 'ADD')
+        except:
+            messages.warning(request, 'No Product Found')
+
+    @staticmethod
+    def create_or_edit_item(order, product, qty, transation_type):
+        instance, created = RetailOrderItem.objects.get_or_create(order=order, title=product)
+        if transation_type == 'ADD':
+            if not created:
+                instance.qty += qty
+            else:
+                instance.qty = qty
+                instance.value = product.price
+                instance.discount_value = product.price_discount
+                instance.cost = product.price_buy
+        if transation_type == 'REMOVE':
+            instance.qty -= qty
+            instance.qty = 1 if instance.qty <= 0 else instance.qty
+        instance.save()
+        if transation_type == 'DELETE':
+            instance.delete()
+        order.save()
+
+
+def create_destroy_title():
+    last_order = OrderItem.objects.all().last()
+    if last_order:
+        number = int(last_order.id) + 1
+        return 'ΚΑΤ' + str(number)
+    else:
+        return 'ΚΑΤ1'
+
+
+@receiver(post_delete, sender=OrderItem)
+def update_warehouse(sender, instance, **kwargs):
+    instance.title.save()
 

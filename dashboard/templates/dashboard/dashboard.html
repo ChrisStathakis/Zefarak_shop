@@ -28,15 +28,15 @@
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Σημερινές Πωλήσεις</p>
-                                            {{ new_orders }}
+                                            <p>Products</p>
+
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <a href=''><i class="ti-link"></i>Πωλήσεις</a>
+                                        <a href='{% url "dashboard:products" %}'><i class="ti-link"></i>Go To Products</a>
                                     </div>
                                 </div>
                             </div>
@@ -53,15 +53,15 @@
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Έσοδα</p>
-                                            {{ revenues }} {{ currency }}
+                                            <p>Category</p>
+
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-calendar"></i> Last day
+                                        <a href='{% url "dashboard:category_list" %}'><i class="ti-link"></i>Go To Category</a>
                                     </div>
                                 </div>
                             </div>
@@ -78,15 +78,14 @@
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Υπόλοιπο Λογαριασμών</p>
-                                                {{ bills }} {{ currency }}
+                                            <p>Attributes</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-timer"></i> <a href=''>Λογαριασμοί</a>
+                                        <a href='{% url "dashboard:attribute_class_list_view" %}'><i class="ti-link"></i>Go To Attributes</a>
                                     </div>
                                 </div>
                             </div>
@@ -103,15 +102,14 @@
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Messages</p>
-                                            +45
+                                            <p>Characteristics</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-reload"></i> Updated now
+                                        <a href='{% url "dashboard:characteristics_list_view" %}'><i class="ti-link"></i>Go To Characteristics</a>
                                     </div>
                                 </div>
                             </div>
@@ -119,42 +117,67 @@
                     </div>
                 </div>
                 <div class="row">
-
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Πωλήσεις</h4>
-                                <p class="category">Κίνήσεις Πωλήσεων</p>
+                                <h4 class="title">Last Products</h4>
+                                <p class="category">10 Last Products Created</p>
                             </div>
                             <div class="content">
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <td>#</td>
-                                            <th>Ημερομηνία</th>
-                                            <th>Τίτλος</th>
-                                            <th>Κατάσταση</th>
-                                            <th>Πελάτης</th>
-                                            <th>Είδος Παραστατικού</th>
-                                            <th>Αξία</th>
-                                            <th>#</th>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for order in last_orders %}
+                                        {% for product in products %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{ order.date_expired|date }}</td>
-                                                <td>{{ order.tag_fullname }}</td>
-                                                <td>{{ order.get_status_display }}</td>
-                                                <td>{{ order.costumer_account }}</td>
-                                                <td>{{ order.get_order_type_display }}</td>
-                                                <td>{{ order.tag_final_value }}</td>
-                                                <td><a href='{% url "dashboard:eshop_order_edit" order.id %}' class="btn btn-success">Details</a></td>
+                                                <td>{{ product }}</td>
+                                                <td>{{ product.tag_final_value }}</td>
+                                                <td><a href='{{ product.get_edit_url }}' class="btn btn-success">Details</a></td>
                                             </tr>
                                         {% empty %}
                                             <tr>
-                                                <td colspan="8">Καμία Πώληση</td>
+                                                <td colspan="8">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Last Active Products</h4>
+                                <p class="category">10 Last Active Products Created</p>
+                            </div>
+                            <div class="content">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <td>#</td>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in active_products %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ product }}</td>
+                                                <td>{{ product.tag_final_value }}</td>
+                                                <td><a href='{{ product.get_edit_url }}' class="btn btn-success">Details</a></td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="8">No Data</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -167,34 +190,30 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Προϊόντα</h4></p>
-                                <a href="{% url 'dashboard:product_create' %}" class="btn btn-primary">Create Product</a>
+                                <h4 class="title">Category</h4>
+                                <p class="category">10 Last Categories</p>
                             </div>
                             <div class="content">
                                 <table class="table table-responsive">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Date</th>
-                                            <th>Product</th>
-                                            <th>Order</th>
-                                            <th>Qty</th>
-                                            <th>Price</th>
+                                            <th>title</th>
+                                            <th>Parent</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for product in last_items %}
+                                        {% for cate in categories %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{ product.order.timestamp|date }}</td>
-                                                <td>{{ product }}</td>
-                                                <td><a href='{% url "dashboard:eshop_order_edit" product.order.id  %}'>{{ product.order }}</a></td>
-                                                <td>{{ product.qty }}</td>
-                                                <td>{{ product.tag_final_value }}</td>
+                                                <td>{{ cate }}</td>
+                                                <td>{{ cate.parent|default_if_none:'No Parent' }}</td>
+                                                <td><a class="btn btn-primary" href='{{ cate.get_edit_url }}'>Edit</a></td>
                                             </tr>
                                         {% empty %}
                                             <tr>
-                                                <td colspan=5>No added data</td>
+                                                <td colspan="4">No added data</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -205,32 +224,29 @@
                     <div class="col-md-6">
                         <div class="card ">
                             <div class="header">
-                                <h4 class="title">Τιμολόγια</h4>
-                                <p class="category">Αγορές Τιμολογίων</p>
+                                <h4 class="title">Brands</h4>
+                                <p class="category">10 Last Brands</p>
                             </div>
                             <div class="content">
                                 <table class="table table-responsive">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Ημερομηνία</th>
                                             <th>Title</th>
-                                            <th>Προμηθευτής</th>
-                                            <th>Αξία</th>
+                                            <th>Actions</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for order in warehouse_orders %}
+                                        {% for brand in brands %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{ order.date_expired|date }}</td>
-                                                <td>{{ order.title }}</td>
-                                                <td>{{ order.vendor }}</td>
-                                                <td>{{ order.tag_final_value }}</td>
+                                                <td>{{ brand }}</td>
+                                                <td><a class="btn btn-primary" href='{{ brand.get_edit_url }}'>Edit</a></td>
                                             </tr>
                                         {% empty %}
                                             <tr>
-                                                <td colspan=5>No added data</td>
+                                                <td colspan='3'>No added data</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

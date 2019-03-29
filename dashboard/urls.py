@@ -16,7 +16,10 @@ from .settings_view import (ProductClassView, ProductClassCreateView,
                             AttributeClassCreateView, attribute_title_delete_view, AttributeTitleEditView,
                             )
 from .dashboard_actions import copy_product_view
-from .ajax_views import ajax_category_site, ajax_product_images, ajax_add_or_delete_attribute, ajax_change_qty_on_attribute
+from .ajax_views import (ajax_category_site, ajax_product_images, ajax_add_or_delete_attribute,
+                         ajax_change_qty_on_attribute,
+                         popup_category, popup_brand
+                         )
 app_name = 'dashboard'
 
 
@@ -27,6 +30,10 @@ urlpatterns = [
     path('products/detail/<int:pk>/', product_detail, name='product_detail'),
     path('product/category-site-manager/<int:pk>/', CategorySiteManagerView.as_view(), name='category_manager_view'),
     path('add-multiply-images/<int:pk>/', ProductMultipleImagesView.as_view(), name='image_manager_view'),
+
+    #popups
+    path('product/popups/create-category/', popup_category, name='popup_category'),
+    path('product/popups/create-brand/', popup_brand, name='popup_brand'),
 
     # actions
     path('products/copy/<int:pk>/',copy_product_view, name='copy_product'),

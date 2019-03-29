@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, FormView, View
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView, View
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.db.models import Q, Sum
@@ -40,7 +40,10 @@ class DashBoard(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(DashBoard, self).get_context_data(**kwargs)
-
+        products = Product.objects.all()[:10]
+        active_products = Product.objects.all().filter(active=True)[:10]
+        categories = Category.objects.all()[:10]
+        brands = Brand.objects.all()[:10]
         context.update(locals())
         return context
 
@@ -64,17 +67,8 @@ class ProductsListView(ListView):
                                                        Brand.objects.all(), \
                                                         Category.objects.all()
         # get filters data
-        search_name = self.request.GET.get('search_name', None)
-        cate_name = self.request.GET.getlist('cate_name', None)
-        site_cate_name = self.request.GET.getlist('site_cate_name', None)
-        brand_name = self.request.GET.getlist('brand_name', None)
-        vendor_name = self.request.GET.getlist('vendor_name', None)
-        color_name = self.request.GET.getlist('color_name', None)
-        feat_name = self.request.GET.get('feat_name', None)
-        active_name = self.request.GET.get('active_name', None)
         total_products = self.total_products
         products, currency = True, CURRENCY
-        page_title = 'Product list'
         context.update(locals())
         return context
 
@@ -361,187 +355,8 @@ class RelatedProductsView(ListView):
         return context
 
 
-
-
-
-'''
-@staff_member_required
-def edit_product_image(request, pk, action):
-    instance = get_object_or_404(ProductPhotos, id=pk)
-    if action == 'primary':
-        if instance.is_primary:
-            instance.is_primary = False
-        else:
-            instance.is_primary = True
-    if action == 'secondary':
-        if instance.is_back:
-            instance.is_back = False
-        else:
-            instance.is_back = True
-    instance.save()
-    if action == 'delete':
-        instance.delete()
-    return HttpResponseRedirect(reverse('dashboard:product_add_images', kwargs={'dk': instance.product.id}))
-
-
-@staff_member_required
-def delete_product_image(request, pk):
-    instance = get_object_or_404(ProductPhotos, id=pk)
-    instance.delete()
-    messages.success(request, 'The image has deleted')
-    return HttpResponseRedirect(reverse('dashboard:product_detail', kwargs={'pk': instance.product.id}))
-
-
-@staff_member_required
-def product_add_sizechart(request, pk):
-    instance = get_object_or_404(Product, id=pk)
-    sizes_attr = instance.product_sizes.all()
-    sizes = Size.objects.filter(active=True)
-    if request.POST:
-        for ele in request.POST:
-            if ele.startswith('size_'):
-                id = ele.split('_')[1]
-                size = SizeAttribute.objects.get(id=id)
-                size.qty = request.POST.get(f'{ele}', 0)
-                size.save()
-    return render(request, 'dashboard/size_chart.html', context=locals())
-
-
-@staff_member_required
-def delete_product_size(request, pk):
-    instance = get_object_or_404(SizeAttribute, id=pk)
-    retail_order_items = RetailOrderItem.objects.filter(size=instance)
-    warehouse_orders = OrderItem.objects.filter(size=instance)
-    if retail_order_items.exists() or warehouse_orders.exists():
-        messages.warning(request, 'You cant delete this')
-    else:
-        instance.delete()
-        messages.success(request, 'You deleted this size')
-    return HttpResponseRedirect(reverse('dashboard:product_add_sizes', kwargs={'pk': instance.product_related.id}))
-
-
-
-
-
-@method_decorator(staff_member_required, name='dispatch')
-class RelatedProductsView(ListView):
-    model = Product
-    template_name = 'dashboard/product_related_similar.html'
-
-    def get_queryset(self):
-        queryset = Product.objects.all()
-        search_name = self.request.GET.get('search_name', None)
-        if search_name:
-            queryset = queryset.filter(title__icontains=search_name)
-        queryset = queryset[:20]
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(RelatedProductsView, self).get_context_data(**kwargs)
-        instance = get_object_or_404(Product, id=self.kwargs['pk'])
-        related_products = instance.related_products.all()
-        search_name = self.request.GET.get('search_name', None)
-        title = f'Add Related Products to {instance.title}'
-        table_title = 'Related Products'
-        context.update(locals())
-        return context
-
-
-@staff_member_required
-def ajax_add_related_item(request, pk, dk):
-    data = {}
-    instance = get_object_or_404(Product, id=pk)
-    related_instance = get_object_or_404(Product, id=dk)
-    instance.related_products.add(related_instance)
-    related_products = instance.related_products.all()
-    data['html_data'] = render_to_string(request=request, template_name='dashboard/ajax_calls/related.html',
-                                         context=locals())
-    return JsonResponse(data)
-
-
-@staff_member_required
-def ajax_delete_related_product(request, pk, dk):
-    data = {}
-    instance = get_object_or_404(Product, id=pk)
-    related_instance = get_object_or_404(Product, id=dk)
-    instance.related_products.remove(related_instance)
-    related_products = instance.related_products.all()
-    data['html_data'] = render_to_string(request=request, template_name='dashboard/ajax_calls/related.html',
-                                         context=locals())
-    return JsonResponse(data)
-
-
-@staff_member_required
-def create_new_sizechart(request, dk, pk):
-    data = dict()
-    instance = get_object_or_404(Product, id=dk)
-    size = get_object_or_404(Size, id=pk)
-    size_exists = SizeAttribute.objects.filter(title=size, product_related=instance)
-    if size_exists:
-        data['new_'] = False
-        sizes_attr = SizeAttribute.objects.filter(product_related=instance)
-    else:
-        data['new'] = True
-        new_size = SizeAttribute.objects.create(title=size,
-                                                product_related=instance
-                                                )
-        sizes_attr = SizeAttribute.objects.filter(product_related=instance)
-    data['html_data'] = render_to_string(request=request, template_name='dashboard/ajax_calls/sizeattr.html',
-                                         context=locals())
-    return JsonResponse(data)
-
-
-@method_decorator(staff_member_required, name='dispatch')
-class SimilarColorProductsView(ListView):
-    model = Product
-    template_name = 'dashboard/product_related_similar.html'
-
-    # i use the same template for related products too so with the boolean colors i change the data-url on template
-
-    def get_queryset(self):
-        queryset = Product.objects.all()
-        search_name = self.request.GET.get('search_name', None)
-        if search_name:
-            queryset = queryset.filter(title__icontains=search_name)
-        queryset = queryset[:20]
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(SimilarColorProductsView, self).get_context_data(**kwargs)
-        instance = get_object_or_404(Product, id=self.kwargs['pk'])
-        related_products = instance.different_color.all()
-        title = f'Add Similar color Products to {instance.title}'
-        table_title = 'Similar Color'
-        colors = True
-        search_name = self.request.GET.get('search_name', None)
-        context.update(locals())
-        return context
-
-
-@staff_member_required
-def ajax_differenent_color_product_add_or_remove(request, pk, dk, choose):
-    # if choose = 1 add if choose = 2 remove!
-    data = {}
-    colors = True
-    instance = get_object_or_404(Product, id=pk)
-    different_color = get_object_or_404(Product, id=dk)
-    if choose == 1:
-        instance.different_color.add(different_color)
-    else:
-        instance.different_color.remove(different_color)
-    related_products = instance.different_color.all()
-    data['html_data'] = render_to_string(request=request, template_name='dashboard/ajax_calls/related.html',
-                                         context=locals())
-    return JsonResponse(data)
-
-
-
-
-
 @staff_member_required
 def delete_product(request, dk):
     instance = get_object_or_404(Product, id=dk)
     instance.delete()
     return HttpResponseRedirect(reverse('dashboard:products'))
-
-'''

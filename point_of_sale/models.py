@@ -29,7 +29,7 @@ User = get_user_model()
 
 
 class Order(DefaultOrderModel):
-    number = models.CharField(max_length=128, db_index=True, unique=True)
+    number = models.CharField(max_length=128, db_index=True, blank=True)
     status = models.CharField(max_length=1, choices=ORDER_STATUS, default='1')
     order_type = models.CharField(max_length=1, choices=ORDER_TYPES, default='r', verbose_name='Order Type')
     total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0,
@@ -77,9 +77,7 @@ class Order(DefaultOrderModel):
         if self.paid_value >= self.final_value: self.is_paid = True
 
         super().save(*args, **kwargs)
-        if self.costumer_account:
-            self.costumer_account.save()
-
+        
     def update_order(self):
         items = self.order_items.all()
         self.value = items.aggregate(Sum('total_value'))['total_value__sum'] if items else 0
@@ -163,6 +161,15 @@ class Order(DefaultOrderModel):
                                    ).distinct() if search_name else queryset
         queryset = queryset.filter(seller_account__id__in=sell_point_name) if sell_point_name else queryset
         return queryset
+
+@receiver(post_save, sender=Order)
+def create_unique_number(sender, instance, **kwargs):
+    if not instance.number:
+        MAX_NUMBERS = 8
+        len_num = len(str(instance.id))
+        filling_len = MAX_NUMBERS-len_num
+        instance.number = filling_len*'0'+ str(instance.id)
+        instance.save()
 
 
 class OrderItem(DefaultOrderItemModel):

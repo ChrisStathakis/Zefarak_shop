@@ -40,5 +40,10 @@
 }
 
 .paid_card {
-    background-color: darkseagreen;
+    background-color: #bcb1ab;
+}
+
+
+.card-hover:hover {
+    background-color: #7d8584;
 }

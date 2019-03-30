@@ -1,5 +1,6 @@
 from django import forms
-from .models import Order
+from .models import Order, OrderItem
+
 
 class BaseForm(forms.Form):
 
@@ -9,7 +10,6 @@ class BaseForm(forms.Form):
             field.widget.attrs['class'] = 'form-control'
 
 
-
 class OrderCreateForm(BaseForm, forms.ModelForm):
     date_expired = forms.DateTimeField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
 
@@ -17,3 +17,6 @@ class OrderCreateForm(BaseForm, forms.ModelForm):
         model = Order
         fields = ['date_expired', 'order_type', 'user', 'payment_method']
 
+
+class OrderItemCreateForm(forms.ModelForm):
+    pass

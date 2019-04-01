@@ -4,8 +4,9 @@ from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 
 from catalogue.models import Product
-from .models import Order, OrderItem
-from .forms import OrderCreateForm
+from catalogue.product_attritubes import Attribute
+from .models import Order, OrderItem, OrderItemAttribute
+from .forms import OrderCreateForm, OrderItemCreateForm, OrderItemAttrForm
 from site_settings.models import PaymentMethod
 
 
@@ -98,6 +99,30 @@ def order_add_product(request, pk, dk):
 def order_add_product_with_attr(request, pk, dk):
     instance = get_object_or_404(Product, id=dk)
     order = get_object_or_404(Order, id=pk)
+    get_attr = instance.attr_class.filter(class_related__have_transcations=True)
+    all_attrs = Attribute.objects.filter(class_related=get_attr.first()) if get_attr.exists() else Attribute.objects.none()
+    back_url = reverse('point_of_sale:order_detail', kwargs={'pk': pk})
+    return render(request, 'point_of_sale/add_to_order_with_attr.html', context=locals())
 
-    return render(request, 'point_of_sale/form.html', context=locals())
+
+@staff_member_required
+def add_to_order_with_attr(request, pk, dk, lk):
+    instance = get_object_or_404(Product, id=dk)
+    order = get_object_or_404(Order, id=pk)
+    attribute = get_object_or_404(Attribute, id=lk)
+    order_item, i_created = OrderItem.objects.get_or_create(title=instance, order=order)
+    order_item_attr, created = OrderItemAttribute.objects.get_or_create(order_item=order_item,
+                                                                        title=attribute
+                                                                        )
+    order_item_attr.qty = 1 if created else order_item_attr.qty+1
+    order_item_attr.save()
+    return redirect(reverse('point_of_sale:order_detail', kwargs={'pk': pk}))
+
+
+@staff_member_required
+def order_item_edit_with_attr(request, pk):
+    instance = get_object_or_404(OrderItem, id=pk)
+    product = instance.title
+    selected_attr = instance.attributes.all()
+    return render(request, 'point_of_sale/order-item-edit.html', context=locals())
 

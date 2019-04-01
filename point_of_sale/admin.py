@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import OrderItemAttribute, OrderItem
+
+
+@admin.register(OrderItemAttribute)
+class OrderItemAttrAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    pass

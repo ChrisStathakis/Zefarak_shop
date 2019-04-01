@@ -4,7 +4,7 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                    <div class="card">
                        <div class="header">
                            <h4 class="title text-center">Order {{ object.number }}</h4>
@@ -22,7 +22,7 @@
                    </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="header">
                             <div class="title">
@@ -30,65 +30,7 @@
                             </div>
                         </div>
                         <div class="content" id="order_items_container">
-                            <table class='table'>
-                                <thead>
-                                    <tr>
-                                        <th>Sku</th>
-                                        <th>Product</th>
-                                        <th>Qty</th>
-                                        <th>Price</th>
-                                        <th>Total</th>
-                                        <th colspan="2">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for order_item in instance.order_items.all %}
-                                        <tr>
-                                            <td>{{ order_item.title.sku }}</td>
-                                            <td>{{ order_item.title|truncatechars:25 }}</td>
-                                            <td>{{ order_item.qty }}</td>
-                                            <td>{{ order_item.tag_final_value }}</td>
-                                            <td>{{ order_item.tag_total_value  }}</td>
-                                            <td colspan="2">
-                                                <button
-                                                        data-href=""
-                                                        class="btn btn-sm btn-warning edit_item"
-                                                >
-                                                    <i class="fa fa-arrow-down"></i>
-                                                </button>
-                                                <button
-                                                        data-href=""
-                                                        class="btn btn-sm btn-success edit_item"
-                                                ><i class="fa fa-arrow-up"></i>
-                                                </button>
-                                                <button
-                                                        data-href=""
-                                                        class="btn btn-sm btn-danger edit_item"><i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    {% empty %}
-                                        <tr>
-                                            <td colspan='6'>No items added</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td>Shipping Cost</td>
-                                        <td>{{ instance.costumer_account }}</td>
-                                        <td>Payment Cost</td>
-                                        <td></td>
-                                        <td>Costuer</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4"></td>
-                                        <td>Final Price</td>
-                                        <td>{{ instance.tag_final_value }}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            {% include 'point_of_sale/ajax/order_container.html' %}
                         </div>
                     </div>
 
@@ -175,10 +117,8 @@
             </div>
 
         </div>
-               </div>
-           </div>
-       </div>
-   </div>
+    </div>
+
 
 {% endblock %}
 
@@ -195,6 +135,20 @@
                 url: url + '?search_name='+search_name,
                 success: function (data) {
                     $('#products_container').html(data.products_container)
+                }
+            })
+        });
+
+        $('.edit_button').click(function (evt) {
+            evt.preventDefault();
+            const btn = $(this);
+            const url = btn.attr('data-href');
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: url,
+                success: function (data) {
+                    $('#order_items_container').html(data.order_container)
                 }
             })
         })

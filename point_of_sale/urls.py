@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import (DashboardView, OrderListView, CreateOrderView, OrderUpdateView,
-                    order_add_product, order_add_product_with_attr, check_product
+                    order_add_product, order_add_product_with_attr, check_product, add_to_order_with_attr, order_item_edit_with_attr
                     )
-
+from .ajax_views import ajax_order_item
 app_name = 'point_of_sale'
 
 urlpatterns = [
@@ -13,6 +13,10 @@ urlpatterns = [
     path('order/check-add/<int:pk>/<int:dk>/', check_product, name='check_add'),
     path('order/add-product/<int:pk>/<int:dk>/', order_add_product, name='add_product'),
     path('order/add-product-attr/<int:pk>/<int:dk>/', order_add_product_with_attr, name='add_product_attr'),
+    path('order/add-product-attr/<int:pk>/<int:dk>/<int:lk>/', add_to_order_with_attr, name='add_to_order_attr'),
+    path('order/edit-order-item-with-att/<int:pk>/', order_item_edit_with_attr, name='edit_order_item_attr'),
+
+    path('order/ajax/edit-order-item/<slug:action>/<int:pk>/', ajax_order_item, name='ajax_order_item_edit'),
 
 
 ]

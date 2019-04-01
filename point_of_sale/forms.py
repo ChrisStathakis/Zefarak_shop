@@ -1,5 +1,6 @@
 from django import forms
-from .models import Order, OrderItem
+from .models import Order, OrderItem, OrderItemAttribute
+from catalogue.models import Product
 
 
 class BaseForm(forms.Form):
@@ -18,5 +19,18 @@ class OrderCreateForm(BaseForm, forms.ModelForm):
         fields = ['date_expired', 'order_type', 'user', 'payment_method']
 
 
-class OrderItemCreateForm(forms.ModelForm):
-    pass
+class OrderItemCreateForm(BaseForm, forms.ModelForm):
+    title = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+    order = forms.ModelChoiceField(queryset=Order.objects.all(), widget=forms.HiddenInput())
+    attribute = forms.BooleanField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = OrderItem
+        fields = ['title', 'order', 'qty', 'attribute']
+
+
+class OrderItemAttrForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = OrderItemAttribute
+        fields = '__all__'

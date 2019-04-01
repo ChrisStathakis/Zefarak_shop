@@ -16,7 +16,7 @@ from decimal import Decimal
 
 from site_settings.constants import CURRENCY, TAXES_CHOICES
 from catalogue.models import Product
-from catalogue.product_attritubes import Attribute
+from catalogue.product_attritubes import Attribute, AttributeClass
 from .abstract_models import DefaultOrderModel, DefaultOrderItemModel
 from site_settings.models import PaymentMethod, Shipping, Country
 from site_settings.constants import CURRENCY, ORDER_STATUS, ORDER_TYPES, ADDRESS_TYPES
@@ -165,6 +165,7 @@ class Order(DefaultOrderModel):
         queryset = queryset.filter(seller_account__id__in=sell_point_name) if sell_point_name else queryset
         return queryset
 
+
 @receiver(post_save, sender=Order)
 def create_unique_number(sender, instance, **kwargs):
     if not instance.number:
@@ -203,7 +204,10 @@ class OrderItem(DefaultOrderItemModel):
         self.final_value = self.discount_value if self.discount_value > 0 else self.value
         self.total_value = self.final_value * self.qty
         self.total_cost_value = self.cost * self.qty
-        super(RetailOrderItem, self).save(*args, **kwargs)
+        if self.attribute:
+            attributes = self.attributes.all()
+            self.qty = attributes.aggregate(Sum('qty'))['qty__sum'] if attributes.exists() else 0
+        super().save(*args, **kwargs)
         self.title.save()
         self.order.save()
 
@@ -260,38 +264,8 @@ class OrderItem(DefaultOrderItemModel):
         return reverse('retail_order_section', kwargs={'dk': self.order.id})
 
     @staticmethod
-    def check_if_exists(order, product):
-        exists = RetailOrderItem.objects.filter(title=product, order=order)
-        return exists.first() if exists else None
-
-    @staticmethod
-    def add_item(self, order_id, product_id, qty):
-        order = get_object_or_404(RetailOrder, id=order_id)
-        product = get_object_or_404(Product, id=product_id)
-        instance, created = RetailOrderItem.objects.get_or_create(order=order,
-                                                                  product=product
-                                                                  )
-        if created:
-            instance.qty = qty
-        else:
-            instance.qty += 1
-        instance.save()
-
-    @staticmethod
-    def barcode(request, instance):
-        barcode = request.GET.get('barcode')
-        print(barcode)
-        try:
-            barcode_string = barcode.split(' ')
-            if len(barcode_string) == 1:
-                product_id = barcode_string[0]
-                RetailOrderItem.create_or_edit_item(instance, Product.objects.get(id=product_id), 1, 'ADD')
-        except:
-            messages.warning(request, 'No Product Found')
-
-    @staticmethod
     def create_or_edit_item(order, product, qty, transation_type):
-        instance, created = RetailOrderItem.objects.get_or_create(order=order, title=product)
+        instance, created = OrderItem.objects.get_or_create(order=order, title=product)
         if transation_type == 'ADD':
             if not created:
                 instance.qty += qty
@@ -321,4 +295,18 @@ def create_destroy_title():
 @receiver(post_delete, sender=OrderItem)
 def update_warehouse(sender, instance, **kwargs):
     instance.title.save()
+
+
+class OrderItemAttribute(models.Model):
+    attr_class = models.ForeignKey(AttributeClass, null=True, on_delete=models.SET_NULL)
+    title = models.ForeignKey(Attribute, on_delete=models.SET_NULL, null=True)
+    order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE, related_name='attributes')
+    qty = models.DecimalField(default=1, decimal_places=2, max_digits=10)
+
+    def __str__(self):
+        return f'{self.title} - {self.order_item}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.order_item.save()
 

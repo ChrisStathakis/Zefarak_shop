@@ -32,6 +32,9 @@ class ProductManager(models.Manager):
     def active(self):
         return super(ProductManager, self).filter(active=True)
 
+    def featured_products(self):
+        return self.active().filter(featured_product=True)
+
     def active_warehouse(self):
         return self.active()
 

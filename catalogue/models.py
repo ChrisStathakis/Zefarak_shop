@@ -38,6 +38,7 @@ class ProductClass(models.Model):
 class Product(DefaultBasicModel):
     is_offer = models.BooleanField(default=False, verbose_name='Is Offer')
     product_class = models.ForeignKey(ProductClass, on_delete=models.CASCADE)
+    featured_product = models.BooleanField(default=False)
     #  warehouse data
     order_code = models.CharField(null=True, blank=True, max_length=100, verbose_name="Order oode")
     price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0, verbose_name="Price Buy")

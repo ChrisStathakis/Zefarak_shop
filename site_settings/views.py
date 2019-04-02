@@ -1,11 +1,12 @@
-from django.shortcuts import render, reverse
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView
+from django.shortcuts import reverse, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 
 from .mixins import StoreBaseMixin, PaymentBaseMixin, ShippingBaseMixin
-from .models import Store, PaymentMethod, Shipping
-from .forms import StoreForm, PaymentMethodForm, ShippingForm
+from .models import Store, PaymentMethod, Shipping, Banner
+from .forms import StoreForm, PaymentMethodForm, ShippingForm, BannerForm
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -134,3 +135,62 @@ class ShippingEditView(ShippingBaseMixin, UpdateView):
         back_url, delete_url = self.get_success_url(), None
         context.update(locals())
         return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class BannerListView(ListView):
+    model = Banner
+    template_name = 'site_settings/list_view.html'
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_title = 'Banners'
+        create_url, back_url = reverse('site_settings:banner_create'), reverse('site_settings:banner_list')
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class BannerCreateView(CreateView):
+    model = Banner
+    form_class = BannerForm
+    template_name = 'site_settings/form.html'
+    success_url = reverse_lazy('site_settings:banner_list')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_title = 'Create Banner'
+        back_url, delete_url = self.success_url, None
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class BannerUpdateView(UpdateView):
+    model = Banner
+    form_class = BannerForm
+    template_name = 'site_settings/form.html'
+    success_url = reverse_lazy('site_settings:banner_list')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_title = f'Edit Banner {self.object}'
+        back_url, delete_url = self.success_url, reverse('site_settings:banner_delete', kwargs={'pk': self.object.id})
+        context.update(locals())
+        return context
+
+
+@staff_member_required
+def banner_delete_view(request, pk):
+    instance = get_object_or_404(Banner, id=pk)
+    instance.delete()
+    return redirect(reverse('site_settings:banner_list'))

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Store, PaymentMethod, Shipping
+from .models import Store, PaymentMethod, Shipping, Banner
 
 
 class BaseForm(forms.Form):
@@ -29,3 +29,11 @@ class ShippingForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Shipping
         fields = ['title', 'active', 'additional_cost', 'limit_value', 'ordering_by']
+
+
+class BannerForm(BaseForm, forms.ModelForm):
+
+     class Meta:
+         model = Banner
+         fields = '__all__'
+

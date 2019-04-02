@@ -5,6 +5,15 @@ from .constants import CURRENCY
 from .managers import PaymentMethodManager, ShippingManager
 
 
+def validate_size(value):
+    if value.file.size > 1024*1024*0.5:
+        raise ValidationError('The file is bigger than 0.5mb')
+
+
+def upload_banner(instance, filename):
+    return f'banners/{instance.id}/{filename}'
+
+
 def validate_positive_decimal(value):
     if value < 0:
         return ValidationError('This number is negative!')
@@ -138,5 +147,25 @@ class Store(models.Model):
     def get_edit_url(self):
         return reverse('site_settings:store_edit', kwargs={'pk': self.id})
 
+
+class BannerManager(models.Manager):
+
+    def banner(self):
+        return self.filter(active=True).first() if self.filter(active=True) else self.none()
+
+
+class Banner(models.Model):
+    active = models.BooleanField(default=False)
+    title = models.CharField(unique=True, max_length=100)
+    text = models.CharField(max_length=200)
+    image = models.ImageField(upload_to=upload_banner, validators=[validate_size, ])
+
+    browser = BannerManager()
+
+    def __str__(self):
+        return self.title
+
+    def get_edit_url(self):
+        return reverse('site_settings:banner_edit', kwargs={'pk': self.id})
 
 

@@ -13,7 +13,7 @@ class ProductForm(BaseForm, forms.ModelForm):
                   'qty', 'qty_measure',
                   'measure_unit',
                   'site_text',
-                  'active'
+                  'active', 'featured_product'
                 ]
 
 
@@ -25,5 +25,5 @@ class ProductNoQty(BaseForm, forms.ModelForm):
                   'price', 'price_discount',
                   'qty_measure', 'measure_unit',
                   'site_text',
-                  'active'
+                  'active', 'featured_product'
                 ]

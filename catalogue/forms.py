@@ -99,7 +99,7 @@ class ProductForm(BaseForm, forms.ModelForm):
                   'price', 'price_discount',
                   'qty', 'qty_measure',
                   'site_text',
-                  'active'
+                  'active', 'featured_product'
                    ]
 
 

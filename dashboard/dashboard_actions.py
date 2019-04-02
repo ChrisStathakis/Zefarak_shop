@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.admin.views.decorators import staff_member_required
 
 from catalogue.models import Product
+from catalogue.product_attritubes import Attribute
 
 
 @staff_member_required
@@ -16,5 +17,11 @@ def copy_product_view(request, pk):
         object.category_site.add(ele)
     for ele in old_object.characteristics.all():
         object.characteristics.add(ele)
+    for ele in old_object.attributes.all():
+        Attribute.objects.create(
+            product_related=object,
+            title=ele.title,
+            class_related=ele.class_related
+        )
     object.save()
     return redirect(object.get_edit_url())

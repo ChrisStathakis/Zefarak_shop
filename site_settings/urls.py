@@ -2,7 +2,8 @@ from django.urls import path
 from .views import (DashboardView,
                     StoreListView, StoreCreateView, StoreEditView,
                     PaymentMethodListView, PaymentMethodCreateView, PaymentMethodUpdateView,
-                    ShippingListView, ShippingCreateView, ShippingEditView
+                    ShippingListView, ShippingCreateView, ShippingEditView,
+                    BannerListView, BannerCreateView, BannerUpdateView, banner_delete_view
                     )
 
 app_name = 'site_settings'
@@ -20,4 +21,9 @@ urlpatterns = [
     path('shipping-list/', ShippingListView.as_view(), name='shipping'),
     path('shipping/edit/<int:pk>/', ShippingEditView.as_view(), name='shipping_edit'),
     path('shipping/create/', ShippingCreateView.as_view(), name='shipping_create'),
+
+    path('banner-list/', BannerListView.as_view(), name='banner_list'),
+    path('banner/edit/<int:pk>/', BannerUpdateView.as_view(), name='banner_edit'),
+    path('banner/create/', BannerCreateView.as_view(), name='banner_create'),
+    path('banner/delete/<int:pk>/', banner_delete_view, name='banner_delete'),
 ]

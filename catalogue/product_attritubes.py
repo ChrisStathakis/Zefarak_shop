@@ -62,19 +62,20 @@ class AttributeClass(models.Model):
 
 
 class AttributeTitle(models.Model):
-    title = models.CharField(unique=True, max_length=150)
+    title = models.CharField(max_length=150)
     attri_by = models.ForeignKey(AttributeClass, null=True, on_delete=models.CASCADE, related_name='my_values')
     ordering_by = models.IntegerField(default=0, help_text='Bigger is first')
 
     class Meta:
-        ordering = ['ordering_by', 'title']
+        unique_together = ['title', 'attri_by']
+        ordering = ['-ordering_by', 'title']
         app_label = 'catalogue'
 
     def __str__(self):
         return self.title
 
     def get_edit_url(self):
-        pass
+        return reverse('dashboard:attribute_title_edit_view', kwargs={'pk': self.id})
 
 
 class AttributeProductClass(models.Model):

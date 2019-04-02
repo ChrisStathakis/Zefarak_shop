@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-# Create your views here.
+
+from site_settings.models import Banner
+from catalogue.models import Product
 
 
 class HomepageView(TemplateView):
@@ -8,7 +10,9 @@ class HomepageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print('here!')
+        banner = Banner.browser.banner()
+        featured_products = Product.my_query.featured_products()
+        context.update(locals())
         return context
 
 

@@ -12,11 +12,13 @@ from site_settings.models import Shipping, PaymentMethod
 from site_settings.constants import CURRENCY
 from catalogue.models import Product
 from catalogue.product_attritubes import Attribute
+
+
 User = get_user_model()
 
 
 class Cart(models.Model):
-    id_session = models.CharField(max_length=50, blank=True, null=True)
+    cart_id = models.CharField(max_length=50, blank=True, null=True)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(User, null=True, blank=True, related_name='carts', on_delete=models.CASCADE)
     OPEN, MERGED, SAVED, FROZEN, SUBMITTED = (
@@ -32,7 +34,8 @@ class Cart(models.Model):
         _("Status"), max_length=128, default=OPEN, choices=STATUS_CHOICES)
 
     vouchers = ''
-    date_created = models.DateTimeField(_("Date created"), auto_now_add=True)
+    timestamp = models.DateTimeField(_("Date created"), auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     date_merged = models.DateTimeField(_("Date merged"), null=True, blank=True)
     date_submitted = models.DateTimeField(_("Date submitted"), null=True,
                                           blank=True)
@@ -45,9 +48,9 @@ class Cart(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, blank=True, null=True, on_delete=models.SET_NULL)
     # coupon = models.ManyToManyField(Coupons)
     # coupon_discount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    final_value = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    value = models.DecimalField(default=0, max_digits=10, decimal_places=2, validators=[validate_positive_decimal, ])
-    discount_value = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    final_value = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
+    value = models.DecimalField(default=0.00, max_digits=10, decimal_places=2, validators=[validate_positive_decimal, ])
+    discount_value = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
 
     def __str__(self):
         return f'Cart {self.id}'

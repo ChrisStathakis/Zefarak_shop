@@ -31,6 +31,11 @@ class AboutUsView(TemplateView):
 class CartView(TemplateView):
     template_name = 'frontend/cart.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(locals())
+        return
+
 
 class CheckoutView(TemplateView):
     template_name = 'frontend/checkout.html'

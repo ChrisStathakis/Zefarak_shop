@@ -8,7 +8,8 @@ urlpatterns = [
     path('', include('frontend.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('site-settings/', include('site_settings.urls')),
-    path('point-of-sale/', include('point_of_sale.urls'))
+    path('point-of-sale/', include('point_of_sale.urls')),
+    path('point-of-sale/cart/', include('cart.urls'))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

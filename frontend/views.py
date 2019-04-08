@@ -12,6 +12,7 @@ class HomepageView(TemplateView):
         context = super().get_context_data(**kwargs)
         banner = Banner.browser.banner()
         featured_products = Product.my_query.featured_products()
+        new_arrivals = Product.my_query.
         context.update(locals())
         return context
 

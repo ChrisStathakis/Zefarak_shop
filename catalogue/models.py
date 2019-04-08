@@ -118,6 +118,10 @@ class Product(DefaultBasicModel):
     def __str__(self):
         return self.title
 
+    @property
+    def have_attr(self):
+        return self.product_class.have_attribute if self.product_class else False
+
     def get_edit_url(self):
         return reverse('dashboard:product_detail', kwargs={'pk': self.id})
 

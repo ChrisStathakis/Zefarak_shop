@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
-
+from django.urls import reverse
 
 from .managers import CartManager
 from .validators import validate_positive_decimal
@@ -52,6 +52,9 @@ class Cart(models.Model):
     value = models.DecimalField(default=0.00, max_digits=10, decimal_places=2, validators=[validate_positive_decimal, ])
     discount_value = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
 
+    class Meta:
+        ordering = ['-id', ]
+
     def __str__(self):
         return f'Cart {self.id}'
 
@@ -60,6 +63,12 @@ class Cart(models.Model):
         self.value = cart_items.aggregate(Sum('total_value'))['total_value__sum'] if cart_items else 0
         self.final_value = self.value - self.discount_value
         super().save(*args, **kwargs)
+
+    def tag_final_value(self):
+        return f'{self.final_value} {CURRENCY}'
+
+    def get_edit_url(self):
+        return reverse('cart:cart_detail', kwargs={'pk': self.id})
 
 
 class CartItem(models.Model):

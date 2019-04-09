@@ -5,98 +5,50 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-9">
-                    <form method='post'>{% csrf_token %}
-
-                        <div class="card">
-                            <div class="header">
-                                <h4 class="title text-center">Cart List</h4>
-                                <p class="category">
-                                    <a href="{% url 'point_of_sale:order_create' %}"
-                                       class="btn btn-success">Create Order
-                                    </a>
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Cart List</h4>
+                            <p class="category">
+                                <a href="{% url 'point_of_sale:order_create' %}"
+                                   class="btn btn-success">Create Order
+                                </a>
                                 </p>
-                            </div>
-                            <div class="content table-responsive table-full-width">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Date</th>
-                                            <th>Title</th>
-                                            <th>Value</th>
-                                            <th>User</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for order in object_list %}
-                                            <tr>
-                                                <td>{{ order.id }}</td>
-                                                <td>{{ order.timestamp }}</td>
-                                                <td>{{ order|truncatechars:'30'}}</td>
-                                                <td>{{ order.tag }}</td>
-                                                <td>{{ order.user|default_if_none:'Anonymus' }}</td>
-                                                <td>{{ order.get_status_display }}</td>
-                                                <td><a href="{{ order.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                        <tfooter>
-                                            <tr>
-                                                <td colspan="2">Total Products</td>
-                                                <td>{{ total_products }}</td>
-                                            </tr>
-                                        </tfooter>
-                                    </table>
-                                </div>
                         </div>
-
-                        <div class="card">
-                            <div class="header">
-                            <h4 class="title text-center">Μαζικές Κινήσεις</h4>
-                            </div>
-                            <div class="content">
-                                <div class="form-group">
-                                    <label for="brand_action">Αλλαγή Brand</label>
-                                    <select name='change_brand' class="form-control" id="brand_action">
-                                        <option></option>
-                                        {% for brand in brands %}
-                                        <option value="{{ brand.id }}">{{ brand }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλαγή Κατηγορίας Αποθήκης</label>
-                                    <select name='change_cate' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in categories %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλαγή Κατηγορία Site</label>
-                                    <select name='change_cate_site' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in site_categories %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλάγη Προμηθευτή</label>
-                                    <select name='change_vendor' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in vendors %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Title</th>
+                                    <th>Value</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for order in object_list %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.timestamp }}</td>
+                                        <td>{{ order|truncatechars:'30'}}</td>
+                                        <td>{{ order.tag }}</td>
+                                        <td>{{ order.user|default_if_none:'Anonymus' }}</td>
+                                        <td>{{ order.get_status_display }}</td>
+                                        <td><a href="{{ order.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <td colspan="2">Total Carts</td>
+                                        <td>{{ total }}</td>
+                                    </tr>
+                                </tfooter>
+                            </table>
                         </div>
-                    </form>
+                    </div>
                 </div>
 
                 <div class="col-md-3">
@@ -132,81 +84,12 @@
                                           class="form-control" name="search_name"
                                    />
                                </div>
-                               <div class="checkbox">
-                                   <input id="check_active" name="active_name" type="checkbox" value="1" {% if request.GET.active_name == '1' %} checked {% endif %}>
-                                   <label for="check_active">Active</label>
-                               </div>
-                               <div class="red checkbox">
-                                   <input id="de_check_active" name="active_name" type="checkbox" value="2" {% if request.GET.active_name == '2' %} checked {% endif %}>
-                                   <label for="de_check_active">De-Active</label>
-                               </div>
-
-                               <div id="accordion" role="tablist" aria-multiselectable="true">
-                                   <div class="card">
-                                       <div class="card-header" role="tab" id="headingTwo">
-                                           <h6 class="mb-0">
-                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                                  href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                   Choose Category
-                                               </a>
-                                           </h6>
-                                       </div>
-                                       <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                           <div class="card-block">
-                                               {% for category in categories %}
-                                                   {% if category.id|stringformat:"s" in request.GET %}
-                                                   <div class="checkbox">
-                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox" checked>
-                                                       <label for="checkbox1">
-                                                           {{ category}}
-                                                       </label>
-                                                   </div>
-                                                   {% else %}
-                                                   <div class="checkbox">
-                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox">
-                                                       <label for="checkbox1">
-                                                           {{ category}}
-                                                       </label>
-                                                   </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           </div>
-                                       </div>
-                                   </div>
-                                   <div class="card">
-                                       <div class="card-header" role="tab" id="headingThree">
-                                           <h6 class="mb-0">
-                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                                  href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                   Choose Brand
-                                               </a>
-                                           </h6>
-                                       </div>
-                                       <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-                                           <div class="card-block">
-                                               {% for brand in brands %}
-                                                  {% if brand.id|stringformat:"s" in request.GET %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox" checked>
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
-                                                       </label>
-                                                   </div>
-                                                   {% else %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox">
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
-                                                       </label>
-                                                   </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
+                                {% for choice in status %}
+                                    <div class="checkbox">
+                                        <input name="status_name" type="checkbox" value="{{ choice }}" >
+                                        <label for="check_active">{{ choice }}</label>
+                                    </div>
+                                {% endfor %}
                                <button type="submit" class="btn btn-primary">Submit</button>
                                <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
                            </form>
@@ -219,36 +102,5 @@
 
 {% endblock %}
 
-{% block extra_js %}
-
-
-    <script>
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus')
-        });
-   </script>
-
-    <script type="text/javascript">
-        {% if messages %}
-            {% for message in messages %}
-                function showNotification(from, align){
-                    color = Math.floor((Math.random() * 4) + 1);
-                    $.notify({
-                        icon: "ti-gift",
-                        message: "{{ message }}"
-                    }, {
-                        type: type[color],
-                        timer: 4000,
-                        placement: {
-                            from: from,
-                            align: align
-                        }
-                    });
-                }
-            {% endfor %}
-        {% endif %}
-
-    </script>
-{% endblock %}
 
 

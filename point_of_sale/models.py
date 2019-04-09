@@ -75,7 +75,7 @@ class Order(DefaultOrderModel):
         self.final_value = self.shipping_cost + self.payment_cost + self.value - self.discount
         self.paid_value = self.paid_value if self.paid_value else 0
         if self.paid_value >= self.final_value: self.is_paid = True
-
+        self.title = f'{self.get_order_type_display()}- 000{self.id}' if not self.title else self.title
         super().save(*args, **kwargs)
 
     def get_edit_url(self):
@@ -140,6 +140,30 @@ class Order(DefaultOrderModel):
 
     def is_printed(self):
         return 'Printed' if self.printed else 'Not Printed'
+
+    @staticmethod
+    def create_eshop_order(request, form, cart):
+        email = form.cleaned_data.get('email', 'admin@gmail.gr')
+        shipping = form.cleaned_data.get('Shipping', Shipping.objects.first())
+        payment_method = form.cleaned_data.get('payment_method', PaymentMethod.objects.first())
+        user = request.user if request.user.is_authenticated else None
+        new_order = Order.objects.create(
+            cart_related=cart,
+            order_type='e',
+            shipping=shipping,
+            payment_method=payment_method,
+            guest_email=email
+        )
+        if user:
+            new_order.user = user
+        new_order.save()
+        for item in cart.cart_items.all():
+            new_item = OrderItem.objects.create(
+                order=new_order,
+                title=item.product,
+                qty=item.qty,
+            )
+        return new_order
 
     @staticmethod
     def eshop_orders_filtering(request, queryset):
@@ -310,3 +334,43 @@ class OrderItemAttribute(models.Model):
         super().save(*args, **kwargs)
         self.order_item.save()
 
+
+class OrderProfile(models.Model):
+    email = models.EmailField(blank=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=5)
+    country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.PROTECT)
+    cellphone = models.CharField(max_length=10)
+    phone = models.CharField(max_length=10, blank=True)
+    notes = models.TextField()
+    order_type = models.CharField(max_length=50, choices=ADDRESS_TYPES,)
+    order_related = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_profiles')
+
+    class Meta:
+        unique_together = ['order_related', 'order_type']
+
+    def tag_full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def tag_full_address(self):
+        return f'{self.address} {self.city} TK..{self.zip_code}'
+
+    def tag_phones(self):
+        return f'{self.cellphone} ,{self.phone}'
+
+    @staticmethod
+    def create_profile_from_cart(form, order, type='shipping'):
+        billing_profile, created = Order.objects.get_or_create(order_related=order, order_type=type)
+        billing_profile.email = form.cleaned_data.get('email', 'Error')
+        billing_profile.first_name = form.cleaned_data.get('first_name', 'Error')
+        billing_profile.last_name = form.cleaned_data.get('last_name', 'Error')
+        billing_profile.cellphone = form.cleaned_data.get('cellphone', 'Error')
+        billing_profile.zip_code = form.cleaned_data.get('postcode', 'Error')
+        billing_profile.address = form.cleaned_data.get('address', 'Error')
+        billing_profile.city = form.cleaned_data.get('city', 'Error')
+        billing_profile.phone = form.cleaned_data.get('phone', None)
+        billing_profile.notes = form.cleaned_data.get('notes', None)
+        billing_profile.save()

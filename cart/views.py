@@ -14,9 +14,15 @@ class CartListView(ListView):
     template_name = 'cart/listview.html'
 
     def get_queryset(self):
-        queryset = Cart.objects.all()
-
+        queryset = Cart.filter_data(self.request)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        status = ["Open", "Merged", "Saved", "Frozen", "Submitted"]
+        total = self.object_list.count()
+        context.update(locals())
+        return context
 
 
 class CartDetailView(DetailView):

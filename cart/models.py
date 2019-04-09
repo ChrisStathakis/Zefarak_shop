@@ -76,6 +76,15 @@ class Cart(models.Model):
     def get_edit_url(self):
         return reverse('cart:cart_detail', kwargs={'pk': self.id})
 
+    @staticmethod
+    def filter_data(request, queryset=None):
+        queryset = queryset if queryset else Cart.objects.all()
+        search_name = request.GET.get('search_name', None)
+        status_name = request.GET.getlist('status_name', None)
+        queryset = queryset.filter(status__in=status_name) if status_name else queryset
+        queryset = queryset.filter(user__username__contains=search_name) if search_name else queryset
+        return queryset
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')

@@ -1,4 +1,5 @@
 from django import forms
+from site_settings.models import PaymentMethod, Shipping
 
 
 class CheckoutForm(forms.Form):
@@ -9,6 +10,8 @@ class CheckoutForm(forms.Form):
     address = forms.CharField(required=True, label='Address*')
     city = forms.CharField(required=True, label='City*')
     postcode = forms.CharField(required=True, label='Postcode / ZIP *')
+    shipping_method = forms.ModelChoiceField(required=True, queryset=Shipping.objects.filter(active=True))
+    payment_method = forms.ModelChoiceField(required=True, queryset=PaymentMethod.my_query.active_for_site())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

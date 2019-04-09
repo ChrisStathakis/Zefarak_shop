@@ -16,12 +16,12 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-8 ftco-animate">
-                    <form action="#" class="billing-form bg-light p-3 p-md-5">
+                    <form method="post" class="billing-form bg-light p-3 p-md-5">{% csrf_token %}
                         <h3 class="mb-4 billing-heading">Billing Details</h3>
                         {{ form }}
+                        <button type="submit" class="btn btn-primary py-3 px-4">Place the Order</button>
                     </form>
                     <div class="row mt-5 pt-3 d-flex">
-
                         <div class="col-md-6">
                             <div class="cart-detail bg-light p-3 p-md-4">
                                 <h3 class="billing-heading mb-4">Shipping</h3>
@@ -49,7 +49,7 @@
                                 </div>
                                 {% endfor %}
 
-                                <p><a href="#"class="btn btn-primary py-3 px-4">Place an order</a></p>
+                                <p><a href="#" class="btn btn-primary py-3 px-4">Place an order</a></p>
                             </div>
                         </div>
                         <div class="col-md-6 d-flex">

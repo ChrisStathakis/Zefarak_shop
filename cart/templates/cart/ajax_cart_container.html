@@ -1,0 +1,93 @@
+{% load static %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 ftco-animate">
+            <div class="cart-list">
+                <table class="table">
+                    <thead class="thead-primary">
+                    <tr class="text-center">
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for cart_item in cart.cart_items.all %}
+                        <tr class="text-center">
+                            <td class="product-remove">
+                                <a href="{{ cart_item.get_remove_url }}"><span class="ion-ios-close"></span></a>
+                            </td>
+                            <td class="image-prod">
+                                <div class="img"
+                                        {% if cart_item.product.image %}
+                                     style="background-image:url({{ cart_item.product.image.url }});">
+                                        {% else %}
+                                            style="background-image:url({% static 'frontend/images/product-3.jpg' %});">
+                                        {% endif %}
+                                </div>
+                            </td>
+                            <td class="product-name">
+                                <h3>{{ cart_item }}????</h3>
+                                <p></p>
+                            </td>
+                            <td class="price">{{ cart_item.tag_final_value }}</td>
+                            <td class="quantity">
+                                <div class="input-group mb-3">
+                                    <input  data-href='{{ cart_item.get_ajax_change_qty_url }}' type="text" name="quantity" class="quantity form-control input-number cart_qty" value="{{ cart_item.qty }}" min="1" max="100">
+                                </div>
+                            </td>
+                            <td class="total">{{ cart_item.tag_total_value }}</td>
+                        </tr><!-- END TR-->
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-end">
+    			<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
+    				<div class="cart-total mb-3">
+    					<h3>Cart Totals</h3>
+    					<p class="d-flex">
+    						<span>Subtotal</span>
+    						<span>$20.60</span>
+    					</p>
+    					<p class="d-flex">
+    						<span>Delivery</span>
+    						<span>$0.00</span>
+    					</p>
+    					<p class="d-flex">
+    						<span>Discount</span>
+    						<span>$3.00</span>
+    					</p>
+    					<hr>
+    					<p class="d-flex total-price">
+    						<span>Total</span>
+    						<span>$17.60</span>
+    					</p>
+    				</div>
+    				<p class="text-center"><a href="{% url 'checkout_page' %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+    			</div>
+    		</div>
+</div>
+
+<script>
+        $('.cart_qty').change(function (event) {
+            event.preventDefault();
+            const btn = $(this);
+            const new_value = btn.val();
+            const url = btn.attr('data-href');
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                data:{'qty':new_value},
+                success: function (data) {
+                    console.log('i am here');
+                    $('.cart_container').html(data.result)
+                }
+            })
+        })
+</script>

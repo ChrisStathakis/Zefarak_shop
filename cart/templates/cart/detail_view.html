@@ -1,0 +1,96 @@
+{% extends 'dashboard/dashboard.html' %} {% load static %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-md-7">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Details {{ object }}</h4>
+                    </div>
+                    <div class="content">
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Total Price</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cart_item in object.cart_items.all %}
+                                <tr>
+                                    <td>{{ cart_item.id }}</td>
+                                    <td>{{ cart_item }}</td>
+                                    <td>{{ cart_item.tag_final_value }}</td>
+                                    <td>{{ cart_item.qty }}</td>
+                                    <td>{{ cart_item.tag_total_value }}</td>
+                                    <td>--</td>
+                                </tr>
+                                {% empty %}
+                                    <tr>
+                                    <td colspan="6">No data added</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-5">
+                <div class="card">
+                    <div class="header">
+                        <a href="{{ back_url }}" class="btn btn-warning">Back</a>
+                    </div>
+                    <div class="content">
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Status</td>
+                                    <th>{{ object.status }}</th>
+                                </tr>
+                                <tr>
+                                    <td>Date</td>
+                                    <th>{{ object.timestamp }}</th>
+                                </tr>
+                                <tr>
+                                    <td>Title</td>
+                                    <th>{{ object }}</th>
+                                </tr>
+                                <tr>
+                                    <td>User</td>
+                                    <th>{{ object.user|default_if_none:'Anonymus' }}</th>
+                                </tr>
+                                <tr>
+                                    <td>Value</td>
+                                    <th>{{ object.tag_value }}</th>
+                                </tr>
+                                <tr>
+                                    <td>Discount</td>
+                                    <th>{{ object.tag_discount_value }}</th>
+                                </tr>
+                                <tr>
+                                    <td>Final Value</td>
+                                    <th>{{ object.tag_final_value }}</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

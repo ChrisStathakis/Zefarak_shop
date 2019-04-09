@@ -4,11 +4,11 @@
         <a href="{% url 'product_view' %}" class="img-prod"><img class="img-fluid" src="{% static 'frontend/images/product-1.jpg' %}" alt="Colorlib Template">
            {% if product.is_offer %} <span class="status">Discount</span> {% endif %}
         </a>
-        <div class="text pt-3 px-3">
+        <div class="text py-3 px-3">
             <h3><a href="{{ product.get_absolute_url }}">{{ product }}</a></h3>
             <div class="d-flex">
                 <div class="pricing">
-                    <p class="price"><span class="mr-2 price-dc">$120.00</span><span class="price-sale">{{ product.tag_final_price }}</span></p>
+                    <p class="price"><span>{{ product.tag_final_price }}</span></p>
                 </div>
                 <div class="rating">
                     <p class="text-right">
@@ -20,6 +20,11 @@
                     </p>
                 </div>
             </div>
+            <hr>
+            <p class="bottom-area d-flex">
+                <a href="{{ product.get_cart_url }}" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
+                <a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
+            </p>
         </div>
     </div>
 </div>

@@ -2,20 +2,20 @@
 
 
 {% block content %}
-<div class="hero-wrap hero-bread" style="background-image: url('{% static 'frontend/images/bg_6.jpg' %}');">
-      <div class="container">
-        <div class="row no-gutters slider-text align-items-center justify-content-center">
-          <div class="col-md-9 ftco-animate text-center">
-            <h1 class="mb-0 bread">My Cart</h1>
-            <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home</a></span> <span>Cart</span></p>
-          </div>
+    <div class="hero-wrap hero-bread" style="background-image: url('{% static 'frontend/images/bg_6.jpg' %}');">
+        <div class="container">
+            <div class="row no-gutters slider-text align-items-center justify-content-center">
+                <div class="col-md-9 ftco-animate text-center">
+                    <h1 class="mb-0 bread">My Cart</h1>
+                    <p class="breadcrumbs"><span class="mr-2"><a href="{% url 'homepage' %}">Home</a></span> <span>Cart</span></p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-		
-		<section class="ftco-section ftco-cart">
-			<div class="container">
-				<div class="row">
+
+    <section id="cart_container" class="ftco-section ftco-cart">
+        <div class="container ">
+            <div class="row">
     			<div class="col-md-12 ftco-animate">
     				<div class="cart-list">
 	    				<table class="table">
@@ -29,50 +29,36 @@
 						        <th>Total</th>
 						      </tr>
 						    </thead>
-						    <tbody>
-						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
-						        
-						        <td class="image-prod"><div class="img" style="background-image:url({% static 'frontend/images/product-3.jpg' %});"></div></td>
-						        
-						        <td class="product-name">
-						        	<h3>Young Woman Wearing Dress</h3>
-						        	<p>Far far away, behind the word mountains, far from the countries</p>
-						        </td>
-						        
-						        <td class="price">$4.90</td>
-						        
-						        <td class="quantity">
-						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-					          	</div>
-					          </td>
-						        
-						        <td class="total">$4.90</td>
-						      </tr><!-- END TR-->
-
-						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
-						        
-						        <td class="image-prod"><div class="img" style="background-image:url({% static 'frontend/images/product-4.jpg' %});"></div></td>
-						        
-						        <td class="product-name">
-						        	<h3>Young Woman Wearing Dress</h3>
-						        	<p>Far far away, behind the word mountains, far from the countries</p>
-						        </td>
-						        
-						        <td class="price">$15.70</td>
-						        
-						        <td class="quantity">
-						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-					          	</div>
-					          </td>
-						        
-						        <td class="total">$15.70</td>
-						      </tr><!-- END TR-->
-						    </tbody>
-						  </table>
+                            <tbody>
+                            {% for cart_item in cart.cart_items.all %}
+                                <tr class="text-center">
+                                    <td class="product-remove">
+                                        <a href="{{ cart_item.get_remove_url }}"><span class="ion-ios-close"></span></a>
+                                    </td>
+                                    <td class="image-prod">
+                                        <div class="img"
+                                                {% if cart_item.product.image %}
+                                                    style="background-image:url({{ cart_item.product.image.url }});">
+                                                {% else %}
+                                                    style="background-image:url({% static 'frontend/images/product-3.jpg' %});">
+                                                {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="product-name">
+                                        <h3>{{ cart_item }}</h3>
+                                        <p></p>
+                                    </td>
+                                    <td class="price">{{ cart_item.tag_final_value }}</td>
+                                    <td class="quantity">
+                                        <div class="input-group mb-3">
+                                            <input  data-href='{{ cart_item.get_ajax_change_qty_url }}' type="text" name="quantity" class="quantity form-control input-number cart_qty" value="{{ cart_item.qty }}" min="1" max="100">
+                                        </div>
+                                    </td>
+                                    <td class="total">{{ cart_item.tag_total_value }}</td>
+                                </tr><!-- END TR-->
+                            {% endfor %}
+                            </tbody>
+                        </table>
 					  </div>
     			</div>
     		</div>
@@ -82,150 +68,29 @@
     					<h3>Cart Totals</h3>
     					<p class="d-flex">
     						<span>Subtotal</span>
-    						<span>$20.60</span>
+    						<span>{{ cart.tag_value }}</span>
     					</p>
     					<p class="d-flex">
     						<span>Delivery</span>
-    						<span>$0.00</span>
+    						<span>{{ cart.tag_shipping_cost }}</span>
     					</p>
     					<p class="d-flex">
     						<span>Discount</span>
-    						<span>$3.00</span>
+    						<span>{{ cart.tag_discount_value }}</span>
     					</p>
     					<hr>
     					<p class="d-flex total-price">
     						<span>Total</span>
-    						<span>$17.60</span>
+    						<span>{{ cart.tag_final_value }}</span>
     					</p>
     				</div>
     				<p class="text-center"><a href="{% url 'checkout_page' %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
     			</div>
     		</div>
-			</div>
+        </div>
 		</section>
 
-    <section class="ftco-section bg-light">
-    	<div class="container">
-				<div class="row justify-content-center mb-3 pb-3">
-          <div class="col-md-12 heading-section text-center ftco-animate">
-          	<h1 class="big">Products</h1>
-            <h2 class="mb-4">Related Products</h2>
-          </div>
-        </div>    		
-    	</div>
-    	<div class="container-fluid">
-    		<div class="row">
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="{% static 'frontend/images/product-1.jpg' %}" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="{% static 'frontend/images/product-2.jpg' %}" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="{% static 'frontend/images/product-3.jpg' %}" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="col-sm col-md-6 col-lg ftco-animate">
-    				<div class="product">
-    					<a href="#" class="img-prod"><img class="img-fluid" src="{% static 'frontend/images/product-4.jpg' %}" alt="Colorlib Template"></a>
-    					<div class="text py-3 px-3">
-    						<h3><a href="#">Young Woman Wearing Dress</a></h3>
-    						<div class="d-flex">
-    							<div class="pricing">
-		    						<p class="price"><span>$120.00</span></p>
-		    					</div>
-		    					<div class="rating">
-	    							<p class="text-right">
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    								<span class="ion-ios-star-outline"></span>
-	    							</p>
-	    						</div>
-	    					</div>
-	    					<hr>
-    						<p class="bottom-area d-flex">
-    							<a href="#" class="add-to-cart"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-    							<a href="#" class="ml-auto"><span><i class="ion-ios-heart-empty"></i></span></a>
-    						</p>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
-    </section>
+
 
 		<section class="ftco-section-parallax">
       <div class="parallax-img d-flex align-items-center">
@@ -249,4 +114,26 @@
         </div>
       </div>
     </section>
+{% endblock %}
+
+
+{% block extra_js %}
+    <script>
+        $('.cart_qty').change(function (event) {
+            event.preventDefault();
+            const btn = $(this);
+            const new_value = btn.val();
+            const url = btn.attr('data-href');
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                data:{'qty':new_value},
+                success: function(response){
+                    console.log('i am here', data.result);
+                     $('#cart_container').html(response.result)
+                }
+            })
+        })
+    </script>
+
 {% endblock %}

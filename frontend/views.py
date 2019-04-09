@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 
-from site_settings.models import Banner
+from site_settings.models import Banner, PaymentMethod, Shipping
 from catalogue.models import Product
+from .forms import CheckoutForm
 
 
 class HomepageView(TemplateView):
@@ -12,7 +13,7 @@ class HomepageView(TemplateView):
         context = super().get_context_data(**kwargs)
         banner = Banner.browser.banner()
         featured_products = Product.my_query.featured_products()
-        new_arrivals = Product.my_query.
+        new_arrivals = Product.my_query.active()[:6]
         context.update(locals())
         return context
 
@@ -38,5 +39,14 @@ class CartView(TemplateView):
         return
 
 
-class CheckoutView(TemplateView):
+class CheckoutView(FormView):
     template_name = 'frontend/checkout.html'
+    form_class = CheckoutForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        payment_methods = PaymentMethod.my_query.active_for_site()
+        shipping_methods = Shipping.objects.filter(active=True)
+
+        context.update(locals())
+        return context

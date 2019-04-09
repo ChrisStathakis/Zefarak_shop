@@ -67,6 +67,12 @@ class Cart(models.Model):
     def tag_final_value(self):
         return f'{self.final_value} {CURRENCY}'
 
+    def tag_value(self):
+        return f'{self.value} {CURRENCY}'
+
+    def tag_discount_value(self):
+        return f'{self.discount_value} {CURRENCY}'
+
     def get_edit_url(self):
         return reverse('cart:cart_detail', kwargs={'pk': self.id})
 
@@ -96,6 +102,12 @@ class CartItem(models.Model):
         self.total_value = self.get_total_value()
         super().save(*args, **kwargs)
         self.cart.save()
+
+    def get_remove_url(self):
+        return reverse('cart:check', kwargs={'pk': self.id, 'action': 'remove'})
+
+    def get_ajax_change_qty_url(self):
+        return reverse('cart:ajax_change_qty', kwargs={'pk': self.id})
 
     def get_total_value(self):
         return self.qty * self.final_value
@@ -136,10 +148,10 @@ class CartItem(models.Model):
 
 @receiver(post_delete, sender=CartItem)
 def update_order_on_delete(sender, instance, *args, **kwargs):
-    get_order = instance.order_related
+    cart = instance.cart
     for ele in instance.cart_attributes.all():
         ele.delete()
-    get_order.save()
+    cart.save()
 
 
 class CartAttribute(models.Model):

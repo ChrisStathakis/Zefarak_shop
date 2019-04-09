@@ -1,5 +1,5 @@
 from string import ascii_letters
-from .models import Cart
+from .models import Cart, CartItem
 import random
 
 
@@ -28,4 +28,21 @@ def check_or_create_cart(request):
 
 
 
+def add_to_cart_with_attr():
+    print('here')
 
+
+def add_to_cart(request, product):
+    cart = check_or_create_cart(request)
+    cart_item, created = CartItem.objects.get_or_create(product=product, cart=cart)
+    if created:
+        cart_item.qty = 1
+        cart_item.value = product.price
+        cart_item.price_discount = product.price_discount
+    else:
+        cart_item.qty += 1
+    cart_item.save()
+
+
+def remove_from_cart_with_attr():
+    print('delete')

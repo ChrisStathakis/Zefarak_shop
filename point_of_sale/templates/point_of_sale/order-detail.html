@@ -33,7 +33,6 @@
                             {% include 'point_of_sale/ajax/order_container.html' %}
                         </div>
                     </div>
-
                     <div class="card">
                         <div class="header text-center">
                             <button class="btn btn-primary"
@@ -42,7 +41,7 @@
                                     data-target="#actions_info"
                                     aria-expanded="false"
                                     aria-controls="actions_info"
-                            >Actions
+                            >General Info
                             </button>
                         </div>
                         <div class="content">
@@ -51,19 +50,46 @@
                                     <h4>Επεξεργασία</h4>
                                     <form method="post">{% csrf_token %}
                                         {{ form }}
+                                        <br>
                                         <button type='submit' name='order_sub' class="btn btn-primary">Save</button>
                                     </form>
                                 </div>
                                 <div class="col-md-6 text-center">
-                                    <br> <br>
-                                    <a onclick="return confirm('Are you sure?')" href="" class="btn btn-danger btn-lg btn-raised">Delete</a>
-                                    <a href="" class="btn btn-success btn-lg btn-raised">Paid</a>
-                                    <a href="" class="btn btn-primary">
-                                        Δημιουργία Παραστατικού Επιστροφής
-                                    </a>
+                                    <table class="table table-responsive">
+                                        <thead></thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Date</td>
+                                                <th>{{ instance.date_expired }}</th>
+                                            </tr>
+                                            <tr>
+                                                <td>User</td>
+                                                <th>{{ instance.user|default_if_none:'Anonymus' }}</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Order Type</td>
+                                                <th>{{ instance.get_order_type_display }}</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Status</td>
+                                                <th>{{ instance.get_status_display }}</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Payment Method</td>
+                                                <th>{{ instance.payment_method }}</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Shipping Method</td>
+                                                <th>{{ instance.shipping }}</th>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <th></th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -75,41 +101,19 @@
                                    data-target="#general_info"
                                    aria-expanded="false"
                                    aria-controls="general_info "
-                           >Γενικές Πληροφορίες</button>
+                           >Actions</button>
                         </div>
                         <div class="content">
                             <div class="row collapse" id="general_info">
-                                <div class="col-md-6">
-                                    <ul class="list-group">
-                                        <li class="list-group-item"><h5>Γενικές Πληροφορίες</h5></li>
-                                        <li class="list-group-item">
-                                            <h6>Είδος Παραστατικού <span class="badge badge-secondary">
-                                                {{ instance.get_order_type_display }}</span>
-                                            </h6>
-                                        </li>
+                                <div class="col-md-12">
+                                    <a onclick="return confirm('Are you sure?')" href="" class="btn btn-danger btn-lg btn-raised">Delete</a>
+                                    <a href="" class="btn btn-success btn-lg btn-raised">Paid</a>
+                                    <br>
+                                    <a href="" class="btn btn-primary">
+                                        Δημιουργία Παραστατικού Επιστροφής
+                                    </a>
+                                </div>
 
-                                        <li class="list-group-item"><h6>Τρόπος πληρωμής<span class="badge badge-secondary">
-                                                {{ instance.payment_method }}</span>
-                                            </h6></li>
-                                        <li class="list-group-item"><h6>Timestamp <span class="badge badge-secondary">
-                                                {{ instance.timestamp }}</span>
-                                            </h6></li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="list-group">
-                                        <li class="list-group-item"><h5>Eshop Detalis</h5></li>
-                                        <li class="list-group-item">
-                                            <h6>Τρόπος Μεταφοράς <span class="badge badge-secondary">
-                                                {{ instance.shipping }}</span>
-                                            </h6>
-                                        </li>
-                                        <li class="list-group-item"><h6>Πελάτης<span class="badge badge-secondary">
-                                                {{ instance.tag_fullname }}</span>
-                                            </h6></li>
-                                        <li class="list-group-item">Ημερομηνια {{ instance.date_expired|date }}</li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -118,8 +122,6 @@
 
         </div>
     </div>
-
-
 {% endblock %}
 
 {% block extra_js %}

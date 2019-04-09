@@ -16,7 +16,7 @@ class OrderCreateForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ['date_expired', 'order_type', 'user', 'payment_method']
+        fields = ['date_expired', 'status', 'payment_method', 'shipping']
 
 
 class OrderItemCreateForm(BaseForm, forms.ModelForm):

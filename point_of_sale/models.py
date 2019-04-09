@@ -105,6 +105,12 @@ class Order(DefaultOrderModel):
     def tag_discount(self):
         return '%s %s' % (self.discount, CURRENCY)
 
+    def tag_shipping_cost(self):
+        return f'{self.shipping_cost} {CURRENCY}'
+
+    def tag_payment_cost(self):
+        return f'{self.payment_cost} {CURRENCY}'
+
     @property
     def get_total_taxes(self):
         choice = 24

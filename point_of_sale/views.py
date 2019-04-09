@@ -28,6 +28,18 @@ class OrderListView(ListView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
+class EshopListView(ListView):
+    template_name = 'point_of_sale/order-list.html'
+    model = Order
+    paginate_by = 30
+
+    def get_queryset(self):
+        queryset = Order.my_query.get_queryset().eshop_orders()
+        queryset = Order.eshop_orders_filtering(self.request, queryset)
+        return queryset
+
+
+@method_decorator(staff_member_required, name='dispatch')
 class CreateOrderView(CreateView):
     model = Order
     form_class = OrderCreateForm

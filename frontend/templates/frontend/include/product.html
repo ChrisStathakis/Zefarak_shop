@@ -1,7 +1,7 @@
 {% load static %}
 <div class="item">
     <div class="product">
-        <a href="{% url 'product_view' %}" class="img-prod"><img class="img-fluid" src="{% static 'frontend/images/product-1.jpg' %}" alt="Colorlib Template">
+        <a href="{{ product.get_absolute_url }}" class="img-prod"><img class="img-fluid" src="{% static 'frontend/images/product-1.jpg' %}" alt="Colorlib Template">
            {% if product.is_offer %} <span class="status">Discount</span> {% endif %}
         </a>
         <div class="text py-3 px-3">

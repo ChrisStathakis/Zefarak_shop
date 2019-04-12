@@ -81,6 +81,9 @@ class Order(DefaultOrderModel):
     def get_edit_url(self):
         return reverse('point_of_sale:order_detail', kwargs={'pk': self.id })
 
+    def get_detail_url(self):
+        return reverse('order_detail', kwargs={'pk': self.id})
+
     def update_order(self):
         items = self.order_items.all()
         self.value = items.aggregate(Sum('total_value'))['total_value__sum'] if items else 0

@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'warehouse',
     'point_of_sale',
     'frontend',
+    'accounts',
+
     'mptt',
 ]
 

@@ -128,6 +128,9 @@ class Product(DefaultBasicModel):
     def get_cart_url(self):
         return reverse('cart:check', kwargs={'pk': self.id, 'action': 'add'})
 
+    def get_absolute_url(self):
+        return reverse('product_view', kwargs={'slug': self.slug})
+
     def tag_qty(self):
         return f'{self.qty}  {self.get_measure_unit_display()}'
 

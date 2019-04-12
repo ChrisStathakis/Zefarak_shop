@@ -165,7 +165,8 @@ def update_order_on_delete(sender, instance, *args, **kwargs):
 
 class CartAttribute(models.Model):
     cart_item = models.ForeignKey(CartItem, on_delete=models.CASCADE, related_name='cart_attributes')
-    attribute = models.ForeignKey(Attribute, null=True, on_delete=models.SET_NULL)
+    attributes = models.ManyToManyField(Attribute)
+
 
 
 

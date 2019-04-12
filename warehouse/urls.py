@@ -2,8 +2,10 @@ from django.urls import path
 from .views import (
     WarehouseDashboard, BillingHomepageView, BillingStoreListView,
     CreateBillingInvoiceView, BillInvoiceEditView, quick_billing_pay,
-    delete_bill_invoice_view, CreateBillingCategoryView, EditBillingCategoryView, delete_bill_category_view
+    delete_bill_invoice_view, CreateBillingCategoryView, EditBillingCategoryView, delete_bill_category_view,
+
     )
+from .invoice_views import (WarehouseOrderList, create_warehouse_order_view, )
 from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreateView, EmployeeEditView, delete_employee,
                             OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
                             PayrollCreateView, EmployeeCardView, payroll_quick_pay, PayrollUpdateView, delete_payroll
@@ -14,6 +16,11 @@ app_name = 'warehouse'
 
 urlpatterns = [
     path('', WarehouseDashboard.as_view(), name='dashboard'),
+
+    # invoices
+    path('invoices/', WarehouseOrderList.as_view(), name='invoices'),
+    path('create-invoice/', create_warehouse_order_view, name='create_invoice'),
+
     path('billing-view', BillingHomepageView.as_view(), name='billing_view'),
     path('billing-store-view/<int:pk>/', BillingStoreListView.as_view(), name='billing_store_view'),
     path('billing-create-view/<int:pk>/', CreateBillingInvoiceView.as_view(), name='billing_invoice_create_view'),

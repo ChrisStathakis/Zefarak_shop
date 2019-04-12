@@ -137,7 +137,7 @@ def product_detail(request, pk):
     instance = get_object_or_404(Product, id=pk)
     products, currency, page_title = True, CURRENCY, '%s' % instance.title
     images = instance.get_all_images()
-    sizes = instance.attributes.all()
+    sizes = ''
     form = ProductNoQty(instance=instance) if instance.product_class.have_attribute else ProductForm(instance=instance)
     if 'save_' in request.POST:
         form = ProductNoQty(request.POST, instance=instance) if instance.product_class.have_attribute else ProductForm(request.POST, instance=instance)
@@ -294,7 +294,6 @@ class ProductAttributeManagerView(ListView):
         context = super().get_context_data(**kwargs)
         instance = get_object_or_404(Product, id=self.kwargs['pk'])
         page_title, attrs = 'Create Attribute', True
-        print(self.object_list)
         context.update(locals())
         return context
 
@@ -319,8 +318,10 @@ class ProductAttriClassManagerView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        instance = get_object_or_404(AttributeProductClass, id=self.kwargs['pk'])
         instance = self.product_attr_class.product_related
-        selected_data = Attribute.objects.filter(product_related=instance, class_related=self.product_attr_class)
+        product_attr_class = get_object_or_404(AttributeProductClass, id=self.kwargs['pk'])
+        selected_data = product_attr_class.my_attributes.all()
         attr_class = self.product_attr_class
         context.update(locals())
         return context

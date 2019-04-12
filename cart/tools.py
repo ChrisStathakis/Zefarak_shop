@@ -1,3 +1,4 @@
+from django.shortcuts import redirect, reverse
 from string import ascii_letters
 from .models import Cart, CartItem
 import random
@@ -27,9 +28,9 @@ def check_or_create_cart(request):
     return cart
 
 
-
-def add_to_cart_with_attr():
+def add_to_cart_with_attr(product):
     print('here')
+    return redirect(reverse('product_view', kwargs={'slug': product.slug}))
 
 
 def add_to_cart(request, product):

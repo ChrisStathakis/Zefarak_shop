@@ -66,7 +66,11 @@
                                                 <td>{{ product.category|truncatechars:'30' }}</td>
                                                 <td>{{ product.brand|truncatechars:'30' }}</td>
                                                 <td>{{ product.tag_qty }}</td>
-                                                <td>{{ product.active }}</td>
+                                                {% if product.active %}
+                                                    <td><span class="badge badge-success">Active</span></td>
+                                                {% else %}
+                                                    <td><span class="badge badge-danger">Warning</span></td>
+                                                {% endif %}
                                                 <td><a href="{{ product.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
                                             </tr>
                                             {% endfor %}

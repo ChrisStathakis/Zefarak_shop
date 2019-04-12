@@ -34,3 +34,10 @@ class OrderItemAttrForm(BaseForm, forms.ModelForm):
     class Meta:
         model = OrderItemAttribute
         fields = '__all__'
+
+
+class OrderChangeTitle(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = Order
+        fields = ['title', ]

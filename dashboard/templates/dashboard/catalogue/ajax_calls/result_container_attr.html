@@ -17,6 +17,7 @@
                 <tr>
                     <td>{{ ele.id }}</td>
                     <td>{{ ele }}</td>
+                    <td>{{ ele.class_related }}</td>
                     <td><input class="form-control edit_button" data-href="{% url 'dashboard:ajax_manage_qty_attribute' ele.id %}" type="number" value="{{ ele.qty }}"></td>
                     <td><button data-href="{% url 'dashboard:ajax_manage_attribute' 'delete' attr_class.id ele.title.id  %}" class="btn btn-warning delete_button">Delete</button></td>
                 </tr>

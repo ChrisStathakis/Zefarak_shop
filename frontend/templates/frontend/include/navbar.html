@@ -13,11 +13,54 @@
                 {% for category in navbar_categories %}
                     <li class="nav-item"><a href="{% url 'new_products' %}" class="nav-link">{{ category.name }}</a></li>
                 {% endfor %}
-                <li class="nav-item"><a href="{% url 'about_page' %}" class="nav-link">About</a></li>
-
-                <li class="nav-item"><a href="{% url 'new_products' %}" class="nav-link">Offers</a></li>
+                <li class="nav-item">
+                    <form class="form">
+                        <input name="search_name" type="text" class="form-control" id="search_input" placeholder="Search Here">
+                        <button hidden type="submit" class="btn"></button>
+                        <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+                    </form>
+                </li>
                 <li class="nav-item cta cta-colored"><a href="{% url 'cart_page' %}" class="nav-link"><span class="icon-shopping_cart"></span>[{{ cart.tag_final_value }}]</a></li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'profile_page' %}">{{ user.username }}</a></li>
+                {% else %}
+                    <li class="nav-item"><a style="text-decoration: none" class="nav-link" data-toggle="modal" data-target="#login_modal">Login</a></li>
+                {% endif %}
 	        </ul>
           </div>
     </div>
 </nav>
+
+
+<div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form class="form login_form" method="post" >
+                {% csrf_token %}
+                {{ login_form }}
+                <div id="login_container" class="col-md-12">
+
+                </div>
+                <div class="col-md-12 form-group">
+                    <div class="creat_account">
+                        <input type="checkbox" id="f-option2" name="selector">
+                        <label for="f-option2">Keep me logged in</label>
+                    </div>
+                </div>
+                <div class="col-md-12 form-group">
+                    <button id="my_login_form" name="login" type="submit" value="submit" class="primary-btn">Log In</button>
+                    <a href="">Forgot Password?</a>
+                    <a href="">Register</a>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>

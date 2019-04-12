@@ -18,6 +18,18 @@
                             <p>Homepage</p>
                         </a>
                     </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="ti-bell"></i>
+                            <p>Invoices</p>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'warehouse:invoices' %}">Invoices</a></li>
+                            <li><a href="">Vendor</a></li>
+                            <li><a href="">Paychecks</a></li>
+                        </ul>
+                    </li>
                     <li>
                         <a href="{% url 'warehouse:billing_view' %}">
                             <i class="ti-panel"></i>

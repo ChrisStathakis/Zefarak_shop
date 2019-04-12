@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.db.models import Sum
 
-from .models import Store, BillCategory, BillInvoice, Payroll
+from .models import Store, BillCategory, BillInvoice, Payroll, Invoice
 from site_settings.constants import CURRENCY
 from .forms import BillInvoiceEditForm, BillInvoiceCreateForm, BillCategoryForm, CreateCopyForm
 
@@ -25,6 +25,8 @@ class WarehouseDashboard(TemplateView):
         general_expenses = 30
         context.update(locals())
         return context
+
+
 
 
 @method_decorator(staff_member_required, name='dispatch')

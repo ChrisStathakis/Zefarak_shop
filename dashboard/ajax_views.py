@@ -59,13 +59,11 @@ def ajax_add_or_delete_attribute(request, slug, pk, dk):
     attr_class = instance
     attr_title = get_object_or_404(AttributeTitle, id=dk)
     if slug == 'add':
-        my_attr, created = Attribute.objects.get_or_create(product_related=instance.product_related,
-                                                           class_related=instance,
+        my_attr, created = Attribute.objects.get_or_create(class_related=instance,
                                                            title=attr_title
                                                            )
     if slug == 'delete':
-        my_attr, created = Attribute.objects.get_or_create(product_related=instance.product_related,
-                                                           class_related=instance,
+        my_attr, created = Attribute.objects.get_or_create(class_related=instance,
                                                            title=attr_title
                                                            )
         my_attr.delete()

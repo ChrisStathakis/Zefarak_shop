@@ -39,7 +39,7 @@ class CartDetailView(DetailView):
 def check_cart_movement(request, pk, action):
     if action == 'add':
         product = get_object_or_404(Product, id=pk)
-        add_to_cart_with_attr() if product.have_attr else add_to_cart(request, product)
+        add_to_cart_with_attr(product) if product.have_attr else add_to_cart(request, product)
         messages.success(request, f'{product} added to the cart.')
     if action == 'remove':
         cart_item = get_object_or_404(CartItem, id=pk)

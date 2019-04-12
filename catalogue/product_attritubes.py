@@ -54,6 +54,9 @@ class AttributeClass(models.Model):
     title = models.CharField(unique=True, max_length=150)
     have_transcations = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name_plural = 'Attribute Class Title'
+
     def __str__(self):
         return self.title
 
@@ -70,6 +73,7 @@ class AttributeTitle(models.Model):
         unique_together = ['title', 'attri_by']
         ordering = ['-ordering_by', 'title']
         app_label = 'catalogue'
+        verbose_name_plural = 'Attribute Title'
 
     def __str__(self):
         return self.title
@@ -84,14 +88,15 @@ class AttributeProductClass(models.Model):
                                         related_name='attr_class')
 
     class Meta:
-        unique_together = ['class_related', 'product_related']
+        verbose_name_plural = 'Product Attribute Class'
+
+    def __str__(self):
+        return f'{self.class_related.title} {self.product_related}'
 
 
 class Attribute(models.Model):
     title = models.ForeignKey(AttributeTitle, on_delete=models.CASCADE, related_name='sizes')
     class_related = models.ForeignKey(AttributeProductClass, on_delete=models.CASCADE, related_name='my_attributes')
-    product_related = models.ForeignKey(Product, null=True, on_delete=models.CASCADE, verbose_name='Προϊόν',
-                                        related_name='attributes')
     qty = models.DecimalField(default=0, decimal_places=2, max_digits=6, verbose_name='Ποσότητα')
     order_discount = models.IntegerField(null=True, blank=True, default=0, verbose_name="'Εκπτωση Τιμολογίου σε %")
     price_buy = models.DecimalField(decimal_places=2, max_digits=6, default=0, verbose_name="Τιμή Αγοράς")
@@ -100,16 +105,16 @@ class Attribute(models.Model):
 
     class Meta:
         app_label = 'catalogue'
-        verbose_name_plural = '2. Μεγεθολόγιο'
-        unique_together = ['title', 'product_related']
+        verbose_name_plural = 'Attribute'
+
         ordering = ['title']
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.product_related.save()
+        #  self.product_related.save()
 
     def __str__(self):
-        return '%s - %s' % (self.product_related, self.title)
+        return f'{self.title}'
 
     def check_product_in_order(self):
         return str(self.product_related + '. Χρώμα : ' + self.title.title + ', Μέγεθος : ' + self.title.title)

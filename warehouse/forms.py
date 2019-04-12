@@ -2,6 +2,7 @@ from django import forms
 from datetime import datetime
 from .billing import BillInvoice, BillCategory
 from .payroll import Employee, Occupation, Payroll
+from .models import Invoice
 from site_settings.models import Store
 
 
@@ -68,3 +69,11 @@ class CreateCopyForm(BaseForm, forms.Form):
     days = forms.IntegerField(required=True,)
     months = forms.IntegerField(help_text='If you use this will overide the days')
     repeat = forms.IntegerField(required=True, widget=forms.NumberInput(attrs={'placeholder': 1}))
+
+
+class CreateInvoiceForm(BaseForm, forms.ModelForm):
+    date_expired = forms.DateTimeField(required=True, widget=forms.DateInput(attrs={'type':'date'}))
+
+    class Meta:
+        model = Invoice
+        fields = ['date_expired', 'title', 'order_type', 'vendor']

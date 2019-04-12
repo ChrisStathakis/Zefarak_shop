@@ -4,7 +4,8 @@ from .models import ProductClass, Product, ProductPhotos
 from .product_details import Vendor, Brand
 from .categories import Category, WarehouseCategory
 from .product_attritubes import (Characteristics, CharacteristicsValue,
-                                 ProductCharacteristics, AttributeTitle, Attribute
+                                 ProductCharacteristics, AttributeTitle, Attribute,
+                                 AttributeClass, AttributeProductClass
                                  )
 from .inlines import ProductCharacteristicsInline, ProductPhotosInline
 
@@ -29,7 +30,17 @@ class ProductCharacteristicsAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(AttributeClass)
+class AttributeClassAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(AttributeTitle)
+class AttributeTitlesAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(AttributeProductClass)
 class AttributeTitlesAdmin(admin.ModelAdmin):
     pass
 

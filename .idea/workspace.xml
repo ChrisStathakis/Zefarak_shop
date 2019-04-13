@@ -5,18 +5,7 @@
     <bookmark url="file://$PROJECT_DIR$/warehouse/templates/warehouse/payroll/employee_card_detail.html" line="60" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="314c3eda-6676-4f55-9502-87c680bb1166" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/zefarak_shop.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/zefarak_shop.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalogue/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalogue/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalogue/product_details.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalogue/product_details.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/invoice_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/invoice_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/include/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/include/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/templates/warehouse/invoices/vendor_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/templates/warehouse/invoices/vendor_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/warehouse/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/warehouse/urls.py" afterDir="false" />
-    </list>
+    <list default="true" id="314c3eda-6676-4f55-9502-87c680bb1166" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -293,8 +282,8 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32943678" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.31796503" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10761347" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.31796503" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10761347" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />

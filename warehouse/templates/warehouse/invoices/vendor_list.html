@@ -9,9 +9,9 @@
                     <form method='post'>{% csrf_token %}
                         <div class="card">
                             <div class="header">
-                                <h4 class="title text-center">Order List</h4>
+                                <h4 class="title text-center">Vendor List</h4>
                                 <p class="category">
-                                    <a href="{% url 'warehouse:create_invoice' %}" class="btn btn-success">Create Invoice</a>
+                                    <a href="{% url 'warehouse:vendor_create' %}" class="btn btn-success">Create Vendor</a>
                                 </p>
                             </div>
                             <div class="content table-responsive table-full-width">
@@ -19,28 +19,28 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Date</th>
                                             <th>Title</th>
-                                            <th>Order Type</th>
-                                            <th>Vendor</th>
+                                            <th>CellPhone - Phone</th>
+                                            <th>Address</th>
+                                            <th>Tax Details</th>
+                                            <th>Email - Site</th>
+                                            <th>Balance</th>
                                             <th>Status</th>
-                                            <th>Clean Value</th>
-                                            <th>Value</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            {% for order in object_list %}
+                                            {% for vendor in object_list %}
                                             <tr>
-                                                <td>{{ order.id }}</td>
-                                                <td>{{ order.date_expired }}</td>
-                                                <td>{{ order|truncatechars:'30'}}</td>
-                                                <td>{{ order.get_order_type_display }}</td>
-                                                <td>{{ order.user }}</td>
-                                                <td>{{ order.get_status_display }}</td>
-                                                <td>{{ order.is_paid }}</td>
-                                                <td>{{ order.tag_final_value }}</td>
-                                                <td><a href="{{ order.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                                <td>{{ vendor.id }}</td>
+                                                <td>{{ vendor.title }}</td>
+                                                <td>{{ vendor.get_phones }}</td>
+                                                <td>{{ vendor.full_address }}</td>
+                                                <td>{{ vendor.tax_details }}</td>
+                                                <td>{{ vendor.email }} - {{ vendor.site }}</td>
+                                                <td>{{ vendor.tag_balance }}</td>
+                                                <td>{{ vendor.active }}</td>
+                                                <td><a href="{{ vendor.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>

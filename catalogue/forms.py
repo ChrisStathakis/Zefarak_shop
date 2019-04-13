@@ -2,7 +2,7 @@ from django import forms
 from .models import *
 from .product_attritubes import CharacteristicsValue, Characteristics, AttributeClass, AttributeTitle, ProductCharacteristics, Attribute
 from .models import Product, ProductPhotos
-
+from .product_details import Vendor
 
 class BaseForm(forms.Form):
 
@@ -122,3 +122,10 @@ class AttributeForm(forms.ModelForm):
         model = Attribute
         fields = '__all__'
 
+
+class VendorForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = Vendor
+        fields = '__all__'
+        exclude = ['balance', 'remaining_deposit']

@@ -44,6 +44,23 @@ class Vendor(models.Model):
         self.balance -= orders.aggregate(Sum('paid_value'))['paid_value__sum'] if orders else 0
         super(Vendor, self).save(*args, **kwargs)
 
+    def get_edit_url(self):
+        return reverse('warehouse:vendor_detail', kwargs={'pk': self.id})
+
+    def get_phones(self):
+        cellphone = self.phone if self.phone else 'No Data'
+        phone = self.phone1 if self.phone1 else 'No Data'
+        return f'{cellphone} - {phone}'
+
+    def full_address(self):
+        address, city = self.address if self.address else 'No data', self.city if self else 'No data'
+        zipcode = self.zipcode if self.zipcode else 'No data'
+        return f'{address} - {city} - {zipcode}'
+
+    def tax_details(self):
+        vat, vat_city = self.vat if self.vat else 'No data', self.vat_city if self.vat_city else 'No data'
+        return f'{vat} - {vat_city}'
+
     @staticmethod
     def filter_data(request, queryset):
         search_name = request.GET.get('search_name', None)

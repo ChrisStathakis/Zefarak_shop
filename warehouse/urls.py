@@ -5,7 +5,8 @@ from .views import (
     delete_bill_invoice_view, CreateBillingCategoryView, EditBillingCategoryView, delete_bill_category_view,
 
     )
-from .invoice_views import (WarehouseOrderList, create_warehouse_order_view, )
+from .invoice_views import (WarehouseOrderList, create_warehouse_order_view, 
+                            VendorListView, VendorCreateView, VendorUpdateView, delete_vendor)
 from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreateView, EmployeeEditView, delete_employee,
                             OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
                             PayrollCreateView, EmployeeCardView, payroll_quick_pay, PayrollUpdateView, delete_payroll
@@ -20,6 +21,11 @@ urlpatterns = [
     # invoices
     path('invoices/', WarehouseOrderList.as_view(), name='invoices'),
     path('create-invoice/', create_warehouse_order_view, name='create_invoice'),
+
+    path('vendors/', VendorListView.as_view(), name='vendors'),
+    path('vendor/<int:pk>/', VendorUpdateView.as_view(), name='vendor_detail'),
+    path('vendors/create/', VendorCreateView.as_view(), name='vendor_create'),
+    path('vendor/delete/<int:pk>/', delete_vendor, name='vendor_delete'),
 
     path('billing-view', BillingHomepageView.as_view(), name='billing_view'),
     path('billing-store-view/<int:pk>/', BillingStoreListView.as_view(), name='billing_store_view'),

@@ -6,8 +6,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-9">
-                    <form method='post'>{% csrf_token %}
-                        <div class="card">
+                    <div class="card">
                             <div class="header">
                                 <h4 class="title text-center">Order List</h4>
                                 <p class="category">
@@ -23,7 +22,6 @@
                                             <th>Title</th>
                                             <th>Order Type</th>
                                             <th>Vendor</th>
-                                            <th>Status</th>
                                             <th>Clean Value</th>
                                             <th>Value</th>
                                             <th>Action</th>
@@ -31,22 +29,21 @@
                                         </thead>
                                         <tbody>
                                             {% for order in object_list %}
-                                            <tr>
-                                                <td>{{ order.id }}</td>
-                                                <td>{{ order.date_expired }}</td>
-                                                <td>{{ order|truncatechars:'30'}}</td>
-                                                <td>{{ order.get_order_type_display }}</td>
-                                                <td>{{ order.user }}</td>
-                                                <td>{{ order.get_status_display }}</td>
-                                                <td>{{ order.is_paid }}</td>
-                                                <td>{{ order.tag_final_value }}</td>
-                                                <td><a href="{{ order.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
-                                            </tr>
+                                                <tr>
+                                                    <td>{{ order.id }}</td>
+                                                    <td>{{ order.date_expired }}</td>
+                                                    <td>{{ order|truncatechars:'30'}}</td>
+                                                    <td>{{ order.get_order_type_display }}</td>
+                                                    <td>{{ order.vendor }}</td>
+                                                    <td>{{ order.tag_clean_value }}</td>
+                                                    <td>{{ order.tag_final_value }}</td>
+                                                    <td><a href="{{ order.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                                </tr>
                                             {% endfor %}
                                         </tbody>
                                         <tfooter>
                                             <tr>
-                                                <td colspan="2">Total Products</td>
+                                                <td colspan="2">Total Invoices</td>
                                                 <td>{{ total_products }}</td>
                                             </tr>
                                         </tfooter>
@@ -54,51 +51,6 @@
                                 </div>
                         </div>
 
-                        <div class="card">
-                            <div class="header">
-                            <h4 class="title text-center">Μαζικές Κινήσεις</h4>
-                            </div>
-                            <div class="content">
-                                <div class="form-group">
-                                    <label for="brand_action">Αλλαγή Brand</label>
-                                    <select name='change_brand' class="form-control" id="brand_action">
-                                        <option></option>
-                                        {% for brand in brands %}
-                                        <option value="{{ brand.id }}">{{ brand }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλαγή Κατηγορίας Αποθήκης</label>
-                                    <select name='change_cate' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in categories %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλαγή Κατηγορία Site</label>
-                                    <select name='change_cate_site' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in site_categories %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλάγη Προμηθευτή</label>
-                                    <select name='change_vendor' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in vendors %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
 
                 <div class="col-md-3">
@@ -219,38 +171,6 @@
        </div>
    </div>
 
-{% endblock %}
-
-{% block extra_js %}
-
-
-    <script>
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus')
-        });
-   </script>
-
-    <script type="text/javascript">
-        {% if messages %}
-            {% for message in messages %}
-                function showNotification(from, align){
-                    color = Math.floor((Math.random() * 4) + 1);
-                    $.notify({
-                        icon: "ti-gift",
-                        message: "{{ message }}"
-                    }, {
-                        type: type[color],
-                        timer: 4000,
-                        placement: {
-                            from: from,
-                            align: align
-                        }
-                    });
-                }
-            {% endfor %}
-        {% endif %}
-
-    </script>
 {% endblock %}
 
 

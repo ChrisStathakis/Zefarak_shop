@@ -6,99 +6,46 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-9">
-                    <form method='post'>{% csrf_token %}
-                        <div class="card">
-                            <div class="header">
-                                <h4 class="title text-center">Vendor List</h4>
-                                <p class="category">
-                                    <a href="{% url 'warehouse:vendor_create' %}" class="btn btn-success">Create Vendor</a>
-                                </p>
-                            </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Title</th>
-                                            <th>CellPhone - Phone</th>
-                                            <th>Address</th>
-                                            <th>Tax Details</th>
-                                            <th>Email - Site</th>
-                                            <th>Balance</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for vendor in object_list %}
-                                            <tr>
-                                                <td>{{ vendor.id }}</td>
-                                                <td>{{ vendor.title }}</td>
-                                                <td>{{ vendor.get_phones }}</td>
-                                                <td>{{ vendor.full_address }}</td>
-                                                <td>{{ vendor.tax_details }}</td>
-                                                <td>{{ vendor.email }} - {{ vendor.site }}</td>
-                                                <td>{{ vendor.tag_balance }}</td>
-                                                <td>{{ vendor.active }}</td>
-                                                <td><a href="{{ vendor.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                        <tfooter>
-                                            <tr>
-                                                <td colspan="2">Total Products</td>
-                                                <td>{{ total_products }}</td>
-                                            </tr>
-                                        </tfooter>
-                                    </table>
-                                </div>
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Vendor List</h4>
+                            <p class="category">
+                                <a href="{% url 'warehouse:vendor_create' %}" class="btn btn-success">Create Vendor</a>
+                            </p>
                         </div>
-
-                        <div class="card">
-                            <div class="header">
-                            <h4 class="title text-center">Μαζικές Κινήσεις</h4>
-                            </div>
-                            <div class="content">
-                                <div class="form-group">
-                                    <label for="brand_action">Αλλαγή Brand</label>
-                                    <select name='change_brand' class="form-control" id="brand_action">
-                                        <option></option>
-                                        {% for brand in brands %}
-                                        <option value="{{ brand.id }}">{{ brand }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλαγή Κατηγορίας Αποθήκης</label>
-                                    <select name='change_cate' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in categories %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλαγή Κατηγορία Site</label>
-                                    <select name='change_cate_site' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in site_categories %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category_action">Αλλάγη Προμηθευτή</label>
-                                    <select name='change_vendor' class="form-control" id="category_action">
-                                        <option></option>
-                                        {% for cate in vendors %}
-                                        <option value="{{ cate.id }}">{{ cate }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>CellPhone - Phone</th>
+                                    <th>Address</th>
+                                    <th>Tax Details</th>
+                                    <th>Email - Site</th>
+                                    <th>Balance</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for vendor in object_list %}
+                                    <tr>
+                                        <td>{{ vendor.id }}</td>
+                                        <td>{{ vendor.title }}</td>
+                                        <td>{{ vendor.get_phones }}</td>
+                                        <td>{{ vendor.full_address }}</td>
+                                        <td>{{ vendor.tax_details }}</td>
+                                        <td>{{ vendor.email }} - {{ vendor.site }}</td>
+                                        <td>{{ vendor.tag_balance }}</td>
+                                        <td>{{ vendor.active }}</td>
+                                        <td><a href="{{ vendor.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                    </form>
+                    </div>
                 </div>
 
                 <div class="col-md-3">
@@ -221,36 +168,5 @@
 
 {% endblock %}
 
-{% block extra_js %}
-
-
-    <script>
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus')
-        });
-   </script>
-
-    <script type="text/javascript">
-        {% if messages %}
-            {% for message in messages %}
-                function showNotification(from, align){
-                    color = Math.floor((Math.random() * 4) + 1);
-                    $.notify({
-                        icon: "ti-gift",
-                        message: "{{ message }}"
-                    }, {
-                        type: type[color],
-                        timer: 4000,
-                        placement: {
-                            from: from,
-                            align: align
-                        }
-                    });
-                }
-            {% endfor %}
-        {% endif %}
-
-    </script>
-{% endblock %}
 
 

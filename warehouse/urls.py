@@ -5,7 +5,9 @@ from .views import (
     delete_bill_invoice_view, CreateBillingCategoryView, EditBillingCategoryView, delete_bill_category_view,
 
     )
-from .invoice_views import (WarehouseOrderList, create_warehouse_order_view, 
+from .invoice_views import (WarehouseOrderList, create_warehouse_order_view, UpdateWarehouseOrderView,
+                            CreateOrderItem, create_or_add_order_item, UpdateInvoiceOrderItem,
+                            delete_warehouse_order_item_view,
                             VendorListView, VendorCreateView, VendorUpdateView, delete_vendor)
 from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreateView, EmployeeEditView, delete_employee,
                             OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
@@ -21,6 +23,12 @@ urlpatterns = [
     # invoices
     path('invoices/', WarehouseOrderList.as_view(), name='invoices'),
     path('create-invoice/', create_warehouse_order_view, name='create_invoice'),
+    path('invoices/update/<int:pk>/', UpdateWarehouseOrderView.as_view(), name='update_order'),
+    path('invoice/order-item/check/<int:pk>/<int:dk>/', create_or_add_order_item, name='order_item_check'),
+    path('invoice/order-item/create/<int:pk>/<int:dk>/', CreateOrderItem.as_view(), name='create-order-item'),
+    path('invoices/order-item/update/<int:pk>/', UpdateInvoiceOrderItem.as_view(), name='order-item-update'),
+    path('invoices/order-item/delete/<int:pk>/', delete_warehouse_order_item_view, name='order-item-delete'),
+
 
     path('vendors/', VendorListView.as_view(), name='vendors'),
     path('vendor/<int:pk>/', VendorUpdateView.as_view(), name='vendor_detail'),

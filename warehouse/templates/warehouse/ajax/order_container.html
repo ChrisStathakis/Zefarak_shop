@@ -1,0 +1,91 @@
+
+<div class="row">
+    <div class="col-md-6 text-center">
+        <table class="table table-responsive">
+            <thead></thead>
+            <tbody>
+            <tr>
+                <td>Date</td>
+                <th>{{ instance.date_expired }}</th>
+            </tr>
+            <tr>
+                <td>Order Type</td>
+                <th>{{ instance.get_order_type_display }}</th>
+            </tr>
+            <tr>
+                <td>Vendor</td>
+                <th>{{ instance.vendor }}</th>
+            </tr>
+            <tr>
+                <td>Clean Value</td>
+                <th>{{ instance.tag_clean_value }}</th>
+            </tr>
+            <tr>
+                <td>Taxes modifier</td>
+                <th>{{ instance.get_taxes_modifier_display }} %</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6 text-center">
+        <table class="table table-responsive">
+            <thead></thead>
+            <tbody>
+            <tr>
+                <td>Title</td>
+                <th>{{ instance.title }}</th>
+            </tr>
+            <tr>
+                <td>Value</td>
+                <th>{{ instance.tag_final_value }}</th>
+            </tr>
+            <tr>
+                <td>Additional Value</td>
+                <th>{{ instance.tag_additional_value }}</th>
+            </tr>
+            <tr>
+                <td>Taxes</td>
+                <th>{{ instance.tag_taxes }}</th>
+            </tr>
+            <tr>
+                <td>Paid Value</td>
+                <th>{{ instance.tag_paid_value }}</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br>
+
+<table class='table'>
+    <thead>
+    <tr>
+        <th>Sku</th>
+        <th>Product</th>
+        <th>Qty</th>
+        <th colspan="2">Price - Discount - Final</th>
+        <th>Total</th>
+        <th colspan="2">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order_item in instance.order_items.all %}
+        <tr>
+            <td>{{ order_item.sku }}</td>
+            <td>{{ order_item.product }}</td>
+            <td>{{ order_item.qty }} {{ order_item.get_unit_display }}</td>
+            <td colspan="2">{{ order_item.tag_value }} - {{ order_item.tag_discount }} - {{ order_item.tag_final_value }}</td>
+            <td>{{ order_item.tag_total_clean_value }}</td>
+            <td>
+                <a href="{{ order_item.get_edit_url }}" class="btn btn-sm btn-info edit_button"><i class="fa fa-edit"></i></a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan='6'>No items added</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    
+</table>
+

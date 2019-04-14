@@ -8,6 +8,7 @@ class ProductForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Product
         fields = ['title', 'sku',
+                  'vendor', 'order_code',
                   'brand', 'slug',
                   'price', 'price_discount',
                   'qty', 'qty_measure',
@@ -21,6 +22,7 @@ class ProductNoQty(BaseForm, forms.ModelForm):
     class Meta:
         model = Product
         fields = ['title', 'sku',
+                  'vendor', 'order_code',
                   'brand', 'slug',
                   'price', 'price_discount',
                   'qty_measure', 'measure_unit',

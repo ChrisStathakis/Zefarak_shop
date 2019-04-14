@@ -48,6 +48,10 @@ class Product(DefaultBasicModel):
 
     qty_measure = models.DecimalField(max_digits=5, decimal_places=3, default=1, verbose_name='Pieces per Pack')
     qty = models.DecimalField(default=0, verbose_name="Qty", max_digits=10, decimal_places=2)
+    qty_add = models.DecimalField(default=0, verbose_name="Qty Add", max_digits=10, decimal_places=2,
+                                  help_text='System use it only if warehouse transations')
+    qty_remove = models.DecimalField(default=0, verbose_name="Qty Remove", max_digits=10, decimal_places=2,
+                                     help_text='System use it only if warehouse transations')
     barcode = models.CharField(max_length=100, null=True, blank=True)
     notes = models.TextField(null=True, blank=True, verbose_name='Περιγραφή')
     measure_unit = models.CharField(max_length=1, default='1', choices=UNIT, blank=True, null=True, verbose_name='Measute unit')
@@ -78,6 +82,10 @@ class Product(DefaultBasicModel):
     def save(self, *args, **kwargs):
         self.final_price = self.price_discount if self.price_discount > 0 else self.price
         self.is_offer = True if self.price_discount > 0 else False
+        if WAREHOUSE_ORDERS_TRANSCATIONS and not self.have_attr:
+            self.qty_add = self.warehouse_calculations()
+            self.qty_remove = 0
+            self.qty = self.qty_add - self.qty_remove
         if self.product_class.have_attribute:
             self.qty = self.calculate_qty_if_attributes()
         if self.product_class.have_transcations and not self.product_class.is_service:
@@ -95,15 +103,11 @@ class Product(DefaultBasicModel):
         return qty
 
     def warehouse_calculations(self):
-        qty = 0
-        order_items = self.order_product.all()
-        qty_analysis = order_items.values('order__order_type').annotate(
-            total_qty=(Sum('qty'))
-        ).order_by('order__order_type')
-        for qty_data in qty_analysis:
-            qty = qty + qty_data['total_qty'] if qty_data['order__order_type'] in ['1', '3'] else qty
-            qty = qty - qty_data['total_qty'] if qty_data['order__order_type'] == '5' else qty
-        return qty
+        warehouse_order_items = self.invoice_products.all()
+        add_invoices = warehouse_order_items.filter(order__order_type__in=['1', '2', '4'])
+        qty_add = add_invoices.aggregate(Sum('qty'))['qty__sum'] if add_invoices else 0
+        return qty_add
+
 
     def retail_order_calculations(self):
         qty = 0

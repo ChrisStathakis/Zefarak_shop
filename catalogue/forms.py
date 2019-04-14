@@ -4,6 +4,7 @@ from .product_attritubes import CharacteristicsValue, Characteristics, Attribute
 from .models import Product, ProductPhotos
 from .product_details import Vendor
 
+
 class BaseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -95,6 +96,7 @@ class ProductForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Product
         fields = ['title', 'sku',
+                  'vendor', 'order_code',
                   'brand', 'slug',
                   'price', 'price_discount',
                   'qty', 'qty_measure',

@@ -1,0 +1,30 @@
+<div class="row">
+    {% for product in products %}
+        <div class="col-lg-4 col-sm-6 ">
+            <div class="card card-hover">
+                <div class="content">
+                    <div class="row">
+                        <div class="col-xs-5">
+                            <div class="icon-big icon-danger text-center">
+                                <i class="ti-bell"></i>
+                            </div>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="numbers">
+                                <p>{{ product }}</p>
+                                <p>Sku: {{ product.sku }}</p>
+                                <a href="" class="btn btn-primary">Add</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <hr />
+                        <div class="stats">
+                            <a href=''><i class="ti-link"></i>Πωλήσεις</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

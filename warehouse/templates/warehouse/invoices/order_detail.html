@@ -1,0 +1,123 @@
+{% extends 'warehouse/dashboard.html' %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                   <div class="card">
+                       <div class="header">
+                           <h4 class="title text-center">Order {{ object.number }}</h4>
+                           <p class="category">Date... {{ object.date_expired }}</p>
+                           <br>
+                           <form class="form">
+                               <label>Search</label>
+                               <input type="text" class="form-control form-control-plaintext" data-href=""
+                                      id="search_products" placeholder="Search">
+                           </form>
+                       </div>
+                       <div id='products_container' class="content">
+                            <div class="row">
+                                {% for product in products %}
+                                    <div class="col-lg-4 col-sm-6 ">
+                                        <div class="card card-hover">
+                                            <div class="content">
+                                                <div class="row">
+                                                    <div class="col-xs-5">
+                                                        <div class="icon-big icon-danger text-center">
+                                                            <i class="ti-bell"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-7">
+                                                        <div class="numbers">
+                                                            <p>{{ product }}</p>
+                                                            <p>Code: {{ product.order_code }}</p>
+                                                            <a href="{% url 'warehouse:order_item_check' object.id product.id %}" class="btn btn-primary">Add</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="footer">
+                                                    <hr />
+                                                    <div class="stats">
+                                                        <a href=''><i class="ti-link"></i>Qty {{ product.qty }} {{ product.get_measure_unit_display }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                   </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <div class="title">
+                                <h3>Details</h3>
+                            </div>
+                        </div>
+                        <div class="content" id="order_items_container">
+                            {% include 'warehouse/ajax/order_container.html' %}
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header text-center">
+                            <button class="btn btn-primary"
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#actions_info"
+                                    aria-expanded="false"
+                                    aria-controls="actions_info"
+                            >General Info
+                            </button>
+                        </div>
+                        <div class="content">
+                            <div class="row collapse" id="actions_info">
+                                <div class="col-md-12">
+                                    <h4>Επεξεργασία</h4>
+                                    <form method="post">{% csrf_token %}
+                                        {{ form }}
+                                        <br>
+                                        <button type='submit' name='order_sub' class="btn btn-primary">Save</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='card'>
+                        <div class="header text-center">
+                           <button class="btn btn-primary"
+                                   type="button"
+                                   data-toggle="collapse"
+                                   data-target="#general_info"
+                                   aria-expanded="false"
+                                   aria-controls="general_info "
+                           >Actions</button>
+                        </div>
+                        <div class="content">
+                            <div class="row collapse" id="general_info">
+                                <div class="col-md-12">
+                                    <a onclick="return confirm('Are you sure?')" href="" class="btn btn-danger btn-lg btn-raised">Delete</a>
+                                    <a href="" class="btn btn-success btn-lg btn-raised">Paid</a>
+                                    <br>
+                                    <a href="" class="btn btn-primary">
+                                        Δημιουργία Παραστατικού Επιστροφής
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

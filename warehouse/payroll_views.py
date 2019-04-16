@@ -253,3 +253,5 @@ def payroll_quick_pay(request, pk):
     instance.save()
     messages.success(request, 'The payroll is Paid')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+

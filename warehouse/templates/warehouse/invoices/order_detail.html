@@ -1,4 +1,4 @@
-{% extends 'warehouse/dashboard.html' %}
+{% extends 'warehouse/dashboard.html' %}  {% load render_table from django_tables2 %}
 
 {% block content %}
     <div class="content">
@@ -96,17 +96,14 @@
                                    data-target="#general_info"
                                    aria-expanded="false"
                                    aria-controls="general_info "
-                           >Actions</button>
+                           >Images</button>
                         </div>
                         <div class="content">
                             <div class="row collapse" id="general_info">
                                 <div class="col-md-12">
-                                    <a onclick="return confirm('Are you sure?')" href="" class="btn btn-danger btn-lg btn-raised">Delete</a>
-                                    <a href="" class="btn btn-success btn-lg btn-raised">Paid</a>
+                                    <a href="{% url 'warehouse:create-order-image' instance.id %}" class="btn btn-success btn-lg btn-raised">Create New Image</a>
                                     <br>
-                                    <a href="" class="btn btn-primary">
-                                        Δημιουργία Παραστατικού Επιστροφής
-                                    </a>
+                                    {% render_table images_table %}
                                 </div>
                             </div>
                         </div>

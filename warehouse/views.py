@@ -27,8 +27,6 @@ class WarehouseDashboard(TemplateView):
         return context
 
 
-
-
 @method_decorator(staff_member_required, name='dispatch')
 class BillingHomepageView(ListView):
     template_name = 'warehouse/billing/transcation_list_view.html'

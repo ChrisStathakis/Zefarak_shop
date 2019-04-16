@@ -23,7 +23,7 @@ class Invoice(DefaultOrderModel):
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, related_name='vendor_orders')
     additional_value = models.DecimalField(default=0.00, max_digits=15, decimal_places=2)
     clean_value = models.DecimalField(default=0.00, max_digits=15, decimal_places=2,)
-    taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='3')
+    taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='1')
     taxes = models.DecimalField(default=0.00, max_digits=15, decimal_places=2,)
     order_type = models.CharField(default=1, max_length=1, choices=WAREHOUSE_ORDER_TYPE)
     objects = models.Manager()
@@ -37,10 +37,13 @@ class Invoice(DefaultOrderModel):
         if order_items.exists():
             self.clean_value = order_items.aggregate(Sum('total_clean_value'))['total_clean_value__sum']
             self.taxes = Decimal(self.clean_value) * Decimal((self.get_taxes_modifier_display())/100)
-            self.final_value = self.clean_value + self.taxes + self.additional_value
+
         else:
             self.clean_value, self.taxes, self.final_value = 0, 0, 0
+        self.final_value = self.clean_value + self.taxes + self.additional_value
+        self.paid_value = self.final_value if self.is_paid else self.paid_value
         super().save(*args, **kwargs)
+        self.vendor.save()
 
     def __str__(self):
         return self.title
@@ -67,7 +70,7 @@ class Invoice(DefaultOrderModel):
         search_name = request.GET.get('search_name', None)
         vendor_name = request.GET.getlist('vendor_name', None)
         balance_name = request.GET.get('balance_name', None)
-        paid_name = request.GET.get('is_paid_name', None)
+        paid_name = request.GET.get('paid_name', None)
         date_start, date_end, date_range, months_list = estimate_date_start_end_and_months(request)
         payment_name = request.GET.getlist('payment_name', None)
         order_type_name = request.GET.getlist('order_type_name', None)
@@ -78,8 +81,8 @@ class Invoice(DefaultOrderModel):
                                        Q(vendor__title__icontains=search_name)
                                        ).dinstict() if search_name else queryset
             queryset = queryset.filter(date_expired__range=[date_start, date_end]) if date_start else queryset
-            queryset = queryset.filter(is_paid=True) if paid_name == 'paid' else queryset.filter(is_paid=False) \
-                if paid_name == 'not_paid' else queryset
+            queryset = queryset.filter(is_paid=True) if paid_name == '1' else queryset.filter(is_paid=False) \
+                if paid_name == '2' else queryset
             queryset = queryset.filter(total_price__gte=balance_name) if balance_name else queryset
             queryset = queryset.filter(payment_name__id__in=payment_name) if payment_name else queryset
         except:
@@ -94,6 +97,12 @@ class InvoiceImage(models.Model):
 
     def __str__(self):
         return '%s-%s' % (self.order_related.title, self.id)
+
+    def get_edit_url(self):
+        return reverse('warehouse:update-order-image', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('warehouse:delete-order-image', kwargs={'pk': self.id})
 
 
 class InvoiceOrderItem(DefaultOrderItemModel):

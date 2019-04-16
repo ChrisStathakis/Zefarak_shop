@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'accounts',
 
     'mptt',
+    'django_tables2',
+    
 ]
 
 MIDDLEWARE = [

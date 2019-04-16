@@ -1,0 +1,21 @@
+<div class="card"> {{% load render_table from django_tables2 %}
+    <div class="header">
+        <div class="title">{{ page_title }}</div>
+    </div>
+    <div class="content">
+        {% render_table my_data %}
+        <table class="table">
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <td>Total_value</td>
+                    <th>{{ total_value }}</th>
+                </tr>
+                <tr>
+                    <td>Not Paid Value</td>
+                    <th>{{ paid_value }}</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

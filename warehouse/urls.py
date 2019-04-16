@@ -3,12 +3,15 @@ from .views import (
     WarehouseDashboard, BillingHomepageView, BillingStoreListView,
     CreateBillingInvoiceView, BillInvoiceEditView, quick_billing_pay,
     delete_bill_invoice_view, CreateBillingCategoryView, EditBillingCategoryView, delete_bill_category_view,
-
     )
 from .invoice_views import (WarehouseOrderList, create_warehouse_order_view, UpdateWarehouseOrderView,
                             CreateOrderItem, create_or_add_order_item, UpdateInvoiceOrderItem,
                             delete_warehouse_order_item_view,
-                            VendorListView, VendorCreateView, VendorUpdateView, delete_vendor)
+                            VendorListView, VendorCreateView, VendorUpdateView, delete_vendor,
+                            CreateInvoiceImageView, UpdateInvoiceImageView, delete_invoice_image_view,
+                            ajax_calculate_value
+                            )
+
 from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreateView, EmployeeEditView, delete_employee,
                             OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
                             PayrollCreateView, EmployeeCardView, payroll_quick_pay, PayrollUpdateView, delete_payroll
@@ -28,6 +31,11 @@ urlpatterns = [
     path('invoice/order-item/create/<int:pk>/<int:dk>/', CreateOrderItem.as_view(), name='create-order-item'),
     path('invoices/order-item/update/<int:pk>/', UpdateInvoiceOrderItem.as_view(), name='order-item-update'),
     path('invoices/order-item/delete/<int:pk>/', delete_warehouse_order_item_view, name='order-item-delete'),
+    path('ajax/calculate/<slug:question>/', ajax_calculate_value, name='ajax_invoice'),
+
+    path('invoice/order-image/create/<int:pk>/', CreateInvoiceImageView.as_view(), name='create-order-image'),
+    path('invoices/order-image/update/<int:pk>/', UpdateInvoiceImageView.as_view(), name='update-order-image'),
+    path('invoices/order-image/delete/<int:pk>/', delete_invoice_image_view, name='delete-order-image'),
 
 
     path('vendors/', VendorListView.as_view(), name='vendors'),

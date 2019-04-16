@@ -2,7 +2,7 @@ from django import forms
 from datetime import datetime
 from .billing import BillInvoice, BillCategory
 from .payroll import Employee, Occupation, Payroll
-from .models import Invoice, InvoiceOrderItem
+from .models import Invoice, InvoiceOrderItem, InvoiceImage
 from site_settings.models import Store
 from catalogue.models import Product
 
@@ -77,7 +77,7 @@ class CreateInvoiceForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['date_expired', 'title', 'order_type', 'vendor']
+        fields = ['date_expired', 'title', 'order_type', 'vendor', 'payment_method', 'taxes_modifier']
 
 
 class UpdateInvoiceForm(BaseForm, forms.ModelForm):
@@ -100,3 +100,11 @@ class CreateOrderItemForm(BaseForm, forms.ModelForm):
     class Meta:
         model = InvoiceOrderItem
         fields = ['order', 'product', 'sku', 'qty', 'value', 'discount_value', 'unit']
+
+
+class InvoiceImageForm(BaseForm, forms.ModelForm):
+    order_related = forms.ModelChoiceField(queryset=Invoice.objects.all(), widget=forms.HiddenInput())
+
+    class Meta:
+        model = InvoiceImage
+        fields = '__all__'

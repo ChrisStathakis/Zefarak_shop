@@ -4,6 +4,7 @@
     <title>{{ page_name }}</title>
     {% include 'warehouse/include/include_css.html' %}
     <link href="{% static 'my_static/index.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     {% block extra_css %} {% endblock %}
 </head>
 <body>
@@ -30,14 +31,14 @@
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Warehouse Orders</p>
-                                            +45
+                                           
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-timer"></i> <a href=''>Manage</a>
+                                        <i class="ti-timer"></i> <a href='{% url "warehouse:invoices" %}'>Manage</a>
                                     </div>
                                 </div>
                             </div>
@@ -280,5 +281,8 @@
 
 </body>
 {% include 'dashboard/include/include_js.html' %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 {% block extra_js %} {% endblock %}
 </html>

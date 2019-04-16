@@ -5,6 +5,24 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <div class="title">Actions</div>
+                            <br>
+                            <button data-href='{% url "warehouse:ajax_invoice" "value" %}' class="btn btn-info analysis_button">Value Analysis</button>
+                            <button data-href='{% url "warehouse:ajax_invoice" "vendors" %}' class="btn btn-info analysis_button">Vendor Analysis</button>
+                            <button class="btn btn-info">Calculate Paid</button>
+                        </div>
+                        <div class="content">
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" id="result_container">
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-9">
                     <div class="card">
                             <div class="header">
@@ -36,7 +54,7 @@
                                                     <td>{{ order.get_order_type_display }}</td>
                                                     <td>{{ order.vendor }}</td>
                                                     <td>{{ order.tag_clean_value }}</td>
-                                                    <td>{{ order.tag_final_value }}</td>
+                                                    <td{% if order.is_paid %} class="success" {% else %} class="warning"{% endif %}>{{ order.tag_final_value }}</td>
                                                     <td><a href="{{ order.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
                                                 </tr>
                                             {% endfor %}
@@ -47,36 +65,43 @@
                                                 <td>{{ total_products }}</td>
                                             </tr>
                                         </tfooter>
-                                    </table>
-                                </div>
-                        </div>
+                                </table>
+                            </div>
 
+                    </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="card">
                        <div class="header">
+                           <a href="{% url 'warehouse:dashboard' %}" class="btn btn-warning">Back</a>
                             <h4>Filters</h4>
                        </div>
                        <div class="content">
                            <form method="get">
-                                <div class="pagination">
-                                    <span class="step-links">
-                                        {% if page_obj.has_previous %}
-                                            <a href='{{ request.build_absolute_uri }}&page=1' class="btn btn-primary">First Page</a>
-                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.previous_page_number }}' class="btn btn-primary">Previous</a>
-                                        {% endif %}
-                                        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                                        {%  if page_obj.has_next %}
-                                            {% if '?' in request.build_absolute_uri %}
-                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
-                                            {% else %}
-                                            <a href='?page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
-                                            {% endif %}
-                                        {% endif %}
-                                    </span>
-                                </div>
-
+                               <div class="pagination">
+                                   <span class="step-links">
+                                       {% if page_obj.has_previous %}
+                                           <a href='{{ request.build_absolute_uri }}&page=1' class="btn btn-primary">First Page</a>
+                                           <a href='{{ request.build_absolute_uri }}&page={{ page_obj.previous_page_number }}' class="btn btn-primary">Previous</a>
+                                       {% endif %}
+                                       <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                                       {%  if page_obj.has_next %}
+                                           {% if '?' in request.build_absolute_uri %}
+                                               <a href='{{ request.build_absolute_uri }}&page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+                                           {% else %}
+                                               <a href='?page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+                                           {% endif %}
+                                       {% endif %}
+                                   </span>
+                               </div>
+                               <br>
+                               <label>Date</label>
+                               <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                   <i class="fa fa-calendar"></i>&nbsp;
+                                   <span></span> <i class="fa fa-caret-down"></i>
+                               </div>
+                               <label>Search</label>
                                <div class="form-group">
                                    <input type="text"
                                    {% if request.GET.search_name %}
@@ -87,12 +112,12 @@
                                    />
                                </div>
                                <div class="checkbox">
-                                   <input id="check_active" name="active_name" type="checkbox" value="1" {% if request.GET.active_name == '1' %} checked {% endif %}>
-                                   <label for="check_active">Active</label>
+                                   <input id="check_active" name="paid_name" type="checkbox" value="1" {% if request.GET.paid_name == '1' %} checked {% endif %}>
+                                   <label for="check_active">Paid</label>
                                </div>
                                <div class="red checkbox">
-                                   <input id="de_check_active" name="active_name" type="checkbox" value="2" {% if request.GET.active_name == '2' %} checked {% endif %}>
-                                   <label for="de_check_active">De-Active</label>
+                                   <input id="de_check_active" name="paid_name" type="checkbox" value="2" {% if request.GET.paid_name == '2' %} checked {% endif %}>
+                                   <label for="de_check_active">Not Paid</label>
                                </div>
 
                                <div id="accordion" role="tablist" aria-multiselectable="true">
@@ -101,58 +126,25 @@
                                            <h6 class="mb-0">
                                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
                                                   href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                   Choose Category
+                                                   Choose Vendor
                                                </a>
                                            </h6>
                                        </div>
                                        <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
                                            <div class="card-block">
-                                               {% for category in categories %}
-                                                   {% if category.id|stringformat:"s" in request.GET %}
+                                               {% for vendor in vendors %}
+                                                   {% if vendor.id|stringformat:"s" in request.GET %}
                                                    <div class="checkbox">
-                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox" checked>
+                                                       <input name="vendor_name" value="{{ vendor.id }}" id="checkbox1" type="checkbox" checked>
                                                        <label for="checkbox1">
-                                                           {{ category}}
+                                                           {{ vendor}}
                                                        </label>
                                                    </div>
                                                    {% else %}
                                                    <div class="checkbox">
-                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox">
+                                                       <input name="vendor_name" value="{{ vendor.id }}" id="checkbox1" type="checkbox">
                                                        <label for="checkbox1">
-                                                           {{ category}}
-                                                       </label>
-                                                   </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           </div>
-                                       </div>
-                                   </div>
-                                   <div class="card">
-                                       <div class="card-header" role="tab" id="headingThree">
-                                           <h6 class="mb-0">
-                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                                  href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                   Choose Brand
-                                               </a>
-                                           </h6>
-                                       </div>
-                                       <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-                                           <div class="card-block">
-                                               {% for brand in brands %}
-                                                  {% if brand.id|stringformat:"s" in request.GET %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox" checked>
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
-                                                       </label>
-                                                   </div>
-                                                   {% else %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox">
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
+                                                           {{ vendor}}
                                                        </label>
                                                    </div>
                                                    {% endif %}
@@ -171,6 +163,54 @@
        </div>
    </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $('.analysis_button').click(function (evt) {
+        evt.preventDefault();
+        const btn = $(this);
+        const url = btn.attr('data-href');
+        const params = '';
+        $.ajax({
+            method: 'GET',
+            dataType: 'json',
+            url: url + params,
+
+            success: function (data) {
+                $('#result_container').html(data.result)
+            }
+        })
+    })
+</script>
+
+
+<script type="text/javascript">
+$(function() {
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, cb);
+
+    cb(start, end);
+
+});
+</script>
 {% endblock %}
 
 

@@ -9,6 +9,7 @@ from django.dispatch import receiver
 
 from site_settings.constants import MEDIA_URL, CURRENCY, TAXES_CHOICES
 from site_settings.models import PaymentMethod
+from site_settings.tools import estimate_date_start_end_and_months
 from .validators import validate_file
 WAREHOUSE_ORDERS_TRANSCATIONS = settings.WAREHOUSE_ORDERS_TRANSCATIONS
 
@@ -169,3 +170,18 @@ class VendorPaycheck(models.Model):
 
     def get_delete_url(self):
         return reverse('warehouse:paycheck_delete', kwargs={'pk': self.id})
+
+    @staticmethod
+    def filters_data(request, queryset):
+        sorted_name = request.GET.get('sort', None)
+        date_start, date_end, date_range, months_list = estimate_date_start_end_and_months(request)
+        try:
+            queryset = queryset.order_by(sorted_name)
+        except:
+            queryset = queryset
+        print(date_start, date_end)
+        queryset = queryset.filter(date_expired__range=[date_start, date_end])
+
+
+
+        return queryset

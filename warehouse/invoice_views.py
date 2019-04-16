@@ -191,6 +191,10 @@ class PayCheckListView(ListView):
     template_name = 'warehouse/invoices/paycheck_list.html'
     paginate_by = 50
 
+    def get_queryset(self):
+        queryset = VendorPaycheck.filters_data(self.request, VendorPaycheck.objects.all())
+        return queryset
+
     def get_context_data(self,  **kwargs):
         context = super().get_context_data(**kwargs)
         vendors = Vendor.objects.filter(active=True)

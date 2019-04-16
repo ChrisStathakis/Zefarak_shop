@@ -35,9 +35,8 @@ def clean_date_filter(request, date_pick, date_start=None, date_end=None, date_r
 
 
 def estimate_date_start_end_and_months(request):
-    day_now, start_year = datetime.datetime.now(), datetime.datetime(datetime.datetime.now().year, 2, 1)
+    day_now, start_year = datetime.datetime.now(), datetime.datetime(datetime.datetime.now().year, 1, 1)
     date_pick = request.GET.get('daterange', None)
-    print('datepick', date_pick)
     start_year, day_now, date_range = clean_date_filter(request, date_pick, date_start=start_year, date_end=day_now)
     months_list = 12
     return [start_year, day_now, date_range, months_list]

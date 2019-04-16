@@ -8,11 +8,11 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from .models import Invoice, InvoiceOrderItem, InvoiceImage
 from catalogue.models import Product
-from catalogue.product_details import Vendor
-from catalogue.forms import VendorForm
+from catalogue.product_details import Vendor, VendorPaycheck
+from catalogue.forms import VendorForm, PaycheckVendorForm
 from site_settings.constants import CURRENCY
 from .forms import CreateInvoiceForm, UpdateInvoiceForm, CreateOrderItemForm, InvoiceImageForm
-from .tables import InvoiceImageTable
+from .tables import InvoiceImageTable, PaycheckTable
 
 from django_tables2 import RequestConfig
 
@@ -186,6 +186,56 @@ def delete_vendor(request, pk):
 
 
 @method_decorator(staff_member_required, name='dispatch')
+class PayCheckListView(ListView):
+    model = VendorPaycheck
+    template_name = 'warehouse/invoices/paycheck_list.html'
+    paginate_by = 50
+
+    def get_context_data(self,  **kwargs):
+        context = super().get_context_data(**kwargs)
+        vendors = Vendor.objects.filter(active=True)
+        payment_checks = PaycheckTable(self.object_list)
+        RequestConfig(self.request).configure(payment_checks)
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class PaycheckDetailView(UpdateView):
+    model = VendorPaycheck
+    form_class = PaycheckVendorForm
+    template_name = 'warehouse/form.html'
+    success_url = reverse_lazy('warehouse:paychecks')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_title = f'Edit {self.object}'
+        back_url, delete_url = self.success_url, self.object.get_delete_url
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class PaycheckCreateView(CreateView):
+    model = VendorPaycheck
+    form_class = PaycheckVendorForm
+    template_name = 'warehouse/form.html'
+    success_url = reverse_lazy('warehouse:paychecks')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_title = 'Create New Payment'
+        back_url, delete_url = self.success_url, None
+        context.update(locals())
+        return context
+
+
+@staff_member_required
+def delete_paycheck(request, pk):
+    pass
+
+
+@method_decorator(staff_member_required, name='dispatch')
 class CreateInvoiceImageView(CreateView):
     model = InvoiceImage
     form_class = InvoiceImageForm
@@ -239,25 +289,23 @@ def ajax_calculate_value(request, question):
     queryset = Invoice.filter_data(request, queryset)
     data = dict()
     if question == 'value':
+        page_title = 'Analysis Value'
         total_value = queryset.aggregate(Sum('final_value'))['final_value__sum'] if queryset.exists() else 0
-        total_value = f'{total_value} {CURRENCY}'
         paid_value = queryset.aggregate(Sum('paid_value'))['paid_value__sum'] if queryset.exists() else 0
+        paid_value = total_value- paid_value
         paid_value = f'{paid_value} {CURRENCY}'
-        data['result'] = render_to_string(request=request,
-                                          template_name='warehouse/ajax/invoice_results.html',
-                                          context={'page_title': 'Analysis Value',
-                                                   'total_value': total_value,
-                                                   'paid_value': paid_value
-                                                  }
-                                          )
+        total_value = f'{total_value} {CURRENCY}'
+        my_data = [('Total Value', total_value), ('You own', paid_value)]
     if question == 'vendors':
         my_data = queryset.values_list('vendor__title').annotate(remaning=Sum(F('final_value')-F('paid_value')),
                                                                  total=Sum('final_value')).order_by('total')
-        page_title = 'Vendor_analysis'
+        print(my_data)
+        page_title = 'Vendor analysis'
     data['result'] = render_to_string(request=request,
                                       template_name='warehouse/ajax/invoice_results.html',
                                       context={'page_title': page_title,
                                                'my_data': my_data,
+                                               'question': question
                                                }
                                       )
     return JsonResponse(data)

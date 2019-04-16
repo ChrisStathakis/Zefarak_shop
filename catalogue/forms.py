@@ -2,7 +2,9 @@ from django import forms
 from .models import *
 from .product_attritubes import CharacteristicsValue, Characteristics, AttributeClass, AttributeTitle, ProductCharacteristics, Attribute
 from .models import Product, ProductPhotos
-from .product_details import Vendor
+from .product_details import Vendor, VendorPaycheck
+
+from dal import autocomplete
 
 
 class BaseForm(forms.Form):
@@ -131,3 +133,14 @@ class VendorForm(BaseForm, forms.ModelForm):
         model = Vendor
         fields = '__all__'
         exclude = ['balance', 'remaining_deposit']
+
+
+class PaycheckVendorForm(BaseForm, forms.ModelForm):
+    date_expired = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = VendorPaycheck
+        fields = ['date_expired', 'vendor', 'payment_method', 'title', 'is_paid', 'value']
+        widgets = {
+            'vendor': autocomplete.ModelSelect2(url='vendors_auto', attrs={'class': 'form-control'})
+        }

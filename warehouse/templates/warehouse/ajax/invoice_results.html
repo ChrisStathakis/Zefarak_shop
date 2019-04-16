@@ -1,21 +1,38 @@
-<div class="card"> {{% load render_table from django_tables2 %}
+<div class="card">
     <div class="header">
         <div class="title">{{ page_title }}</div>
     </div>
     <div class="content">
-        {% render_table my_data %}
         <table class="table">
+            {% if question == 'value' %}
             <thead></thead>
             <tbody>
+                {% for data in my_data %}
                 <tr>
-                    <td>Total_value</td>
-                    <th>{{ total_value }}</th>
+                    <td>{{ data.0 }}</td>
+                    <th>{{ data.1 }}</th>
                 </tr>
-                <tr>
-                    <td>Not Paid Value</td>
-                    <th>{{ paid_value }}</th>
-                </tr>
+                {% endfor %}
             </tbody>
+            {% endif %}
+            {% if question == 'vendors' %}
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Total Value</th>
+                        <th>Paid Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in my_data %}
+                    <tr>
+                        <td>{{ data.0 }}</td>
+                        <td class="primary">{{ data.2 }}</td>
+                        <td class="success">{{ data.1 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            {% endif %}
         </table>
     </div>
 </div>

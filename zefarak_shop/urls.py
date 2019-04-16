@@ -6,6 +6,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
+    path('admin/catelogue/auto-complete/', include('catalogue.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('site-settings/', include('site_settings.urls')),
     path('point-of-sale/', include('point_of_sale.urls')),

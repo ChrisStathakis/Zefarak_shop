@@ -1,0 +1,82 @@
+{% extends 'warehouse/dashboard.html' %}  {% load render_table from django_tables2 %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Vendor List</h4>
+                            <p class="category">
+                                <a href="{% url 'warehouse:paycheck_create' %}" class="btn btn-success">Create Paycheck</a>
+                            </p>
+                        </div>
+                        <div class="content">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <br>
+                                    {% render_table payment_checks %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card">
+                       <div class="header">
+                            <h4>Filters</h4>
+                       </div>
+                       <div class="content">
+                           <form method="get">
+                                <div class="pagination">
+                                    <span class="step-links">
+                                        {% if page_obj.has_previous %}
+                                            <a href='{{ request.build_absolute_uri }}&page=1' class="btn btn-primary">First Page</a>
+                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.previous_page_number }}' class="btn btn-primary">Previous</a>
+                                        {% endif %}
+                                        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                                        {%  if page_obj.has_next %}
+                                            {% if '?' in request.build_absolute_uri %}
+                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+                                            {% else %}
+                                            <a href='?page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                {% include 'filters/date_range_filter.html' %}
+                                <br>
+                               <div class="form-group">
+                                   <input type="text"
+                                   {% if request.GET.search_name %}
+                                         value="{{ request.GET.search_name }}" placeholder="{{ request.GET.search_name }}"
+                                    {% else %}
+                                          placeholder="Search" {% endif %}
+                                          class="form-control" name="search_name"
+                                   />
+                               </div>
+                               <div class="checkbox">
+                                   <input id="check_active" name="active_name" type="checkbox" value="1" {% if request.GET.active_name == '1' %} checked {% endif %}>
+                                   <label for="check_active">Active</label>
+                               </div>
+                               <div class="red checkbox">
+                                   <input id="de_check_active" name="active_name" type="checkbox" value="2" {% if request.GET.active_name == '2' %} checked {% endif %}>
+                                   <label for="de_check_active">De-Active</label>
+                               </div>
+                                <br> <br>
+                               <button type="submit" class="btn btn-primary">Submit</button>
+                               <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
+                           </form>
+                       </div>
+                    </div>
+               </div>
+           </div>
+       </div>
+   </div>
+
+{% endblock %}
+
+
+

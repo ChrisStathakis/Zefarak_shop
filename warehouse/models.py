@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib import messages
-from catalogue.product_details import Vendor
+from catalogue.product_details import Vendor, VendorPaycheck
 from .payroll import *
 from .billing import *
 from .abstract_models import DefaultOrderModel, DefaultOrderItemModel
@@ -26,6 +26,7 @@ class Invoice(DefaultOrderModel):
     taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='1')
     taxes = models.DecimalField(default=0.00, max_digits=15, decimal_places=2,)
     order_type = models.CharField(default=1, max_length=1, choices=WAREHOUSE_ORDER_TYPE)
+    paycheck = models.ManyToManyField(VendorPaycheck)
     objects = models.Manager()
 
     class Meta:
@@ -42,6 +43,8 @@ class Invoice(DefaultOrderModel):
             self.clean_value, self.taxes, self.final_value = 0, 0, 0
         self.final_value = self.clean_value + self.taxes + self.additional_value
         self.paid_value = self.final_value if self.is_paid else self.paid_value
+        if self.is_paid:
+            self.paycheck.all().update(is_paid=True)
         super().save(*args, **kwargs)
         self.vendor.save()
 

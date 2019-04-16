@@ -8,25 +8,26 @@ from django.conf import settings
 from django.dispatch import receiver
 
 from site_settings.constants import MEDIA_URL, CURRENCY, TAXES_CHOICES
+from site_settings.models import PaymentMethod
 from .validators import validate_file
 WAREHOUSE_ORDERS_TRANSCATIONS = settings.WAREHOUSE_ORDERS_TRANSCATIONS
 
 
 class Vendor(models.Model):
     active = models.BooleanField(default=True)
-    title = models.CharField(unique=True, max_length=70, verbose_name="'Ονομα")
+    title = models.CharField(unique=True, max_length=70, verbose_name="'Title")
     vat = models.CharField(max_length=9, blank=True, null=True, verbose_name="VAT")
-    vat_city = models.CharField(max_length=100, blank=True, null=True, verbose_name="ΑΦΜ")
-    phone = models.CharField(max_length=10, null=True, blank=True, verbose_name="Τηλέφωνο")
-    phone1 = models.CharField(max_length=10, null=True, blank=True, verbose_name="Τηλέφωνο")
+    vat_city = models.CharField(max_length=100, blank=True, null=True, verbose_name="Vat City")
+    phone = models.CharField(max_length=10, null=True, blank=True, verbose_name="Cellphone")
+    phone1 = models.CharField(max_length=10, null=True, blank=True, verbose_name="Phone")
     fax = models.CharField(max_length=10, null=True, blank=True, verbose_name="Fax")
     email = models.EmailField(null=True, blank=True, verbose_name="Email")
 
     site = models.URLField(max_length=40, blank=True, null=True, verbose_name='Site')
-    address = models.CharField(max_length=40, null=True, blank=True, verbose_name='Διεύθυνση')
-    city = models.CharField(max_length=40, null=True, blank=True, verbose_name='Πόλη')
-    zipcode = models.CharField(max_length=40, null=True, blank=True, verbose_name='TK')
-    description = models.TextField(null=True, blank=True, verbose_name="Περιγραφή")
+    address = models.CharField(max_length=40, null=True, blank=True, verbose_name='Address')
+    city = models.CharField(max_length=40, null=True, blank=True, verbose_name='City')
+    zipcode = models.CharField(max_length=40, null=True, blank=True, verbose_name='Zipcode')
+    description = models.TextField(null=True, blank=True, verbose_name="Detaiks")
     timestamp = models.DateField(auto_now_add=True)
     taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='3')
     # managing deposits
@@ -64,12 +65,13 @@ class Vendor(models.Model):
     @staticmethod
     def filter_data(request, queryset):
         search_name = request.GET.get('search_name', None)
-        vendor_name = request.GET.getlist('vendor_name', None)
         balance_name = request.GET.get('balance_name', None)
+        active_name = request.GET.get('active_name', None)
         try:
-            queryset = queryset.filter(title__icontains=search_name) if search_name else queryset
+            queryset = queryset.filter(active=True) if active_name == '1' else queryset.filter(active=False)\
+                if active_name == '2' else queryset
+            queryset = queryset.filter(title__contains=search_name) if search_name else queryset
             queryset = queryset.filter(balance__gte=1) if balance_name else queryset
-            queryset = queryset.filter(id__in=vendor_name) if vendor_name else queryset
         except:
             queryset = queryset
         return queryset
@@ -148,3 +150,22 @@ def create_slug(sender, instance, **kwargs):
         qs_exists = Brand.objects.filter(slug=new_slug).exists()
         instance.slug = f'{new_slug}-{instance.id}' if qs_exists else new_slug
         instance.save()
+
+
+class VendorPaycheck(models.Model):
+    timestamp = models.DateField(auto_now_add=True)
+    title = models.CharField(max_length=150)
+    date_expired = models.DateField()
+    payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL)
+    value = models.DecimalField(default=0.00, decimal_places=2, max_digits=20)
+    is_paid = models.BooleanField(default=False)
+    vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'{self.title} - {self.vendor}'
+
+    def get_edit_url(self):
+        return reverse('warehouse:paycheck_detail', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('warehouse:paycheck_delete', kwargs={'pk': self.id})

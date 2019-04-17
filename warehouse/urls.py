@@ -17,7 +17,7 @@ from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreat
                             OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
                             PayrollCreateView, EmployeeCardView, payroll_quick_pay, PayrollUpdateView, delete_payroll
                             )
-
+from .ajax_calls import ajax_paycheck_actions
 
 app_name = 'warehouse'
 
@@ -32,7 +32,11 @@ urlpatterns = [
     path('invoice/order-item/create/<int:pk>/<int:dk>/', CreateOrderItem.as_view(), name='create-order-item'),
     path('invoices/order-item/update/<int:pk>/', UpdateInvoiceOrderItem.as_view(), name='order-item-update'),
     path('invoices/order-item/delete/<int:pk>/', delete_warehouse_order_item_view, name='order-item-delete'),
+
+    # ajax urls
     path('ajax/calculate/<slug:question>/', ajax_calculate_value, name='ajax_invoice'),
+    path('ajax/paycheck-actions/<slug:question>/', ajax_paycheck_actions, name='ajax_paycheck_actions'),
+
 
     path('invoice/order-image/create/<int:pk>/', CreateInvoiceImageView.as_view(), name='create-order-image'),
     path('invoices/order-image/update/<int:pk>/', UpdateInvoiceImageView.as_view(), name='update-order-image'),

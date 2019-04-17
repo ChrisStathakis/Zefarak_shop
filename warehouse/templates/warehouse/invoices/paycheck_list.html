@@ -4,6 +4,24 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="header">
+                            <div class="title">Actions</div>
+                        </div>
+                        <div class="content">
+                            <button data-href="{% url 'warehouse:ajax_paycheck_actions' 'value' %}" class="btn btn-primary analysis-button">Calculate Value</button>
+                            <button data-href="{% url 'warehouse:ajax_paycheck_actions' 'vendors' %}" class="btn btn-primary analysis-button">Vendor Analysis</button>
+                            <button data-href="{% url 'warehouse:ajax_paycheck_actions' 'payments' %}" class="btn btn-primary analysis-button">Payment Analysis</button>
+                            <a href="{{ request.full_path }}" class="btn btn-danger">Clear</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" id="result_container">
+
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-9">
                     <div class="card">
                         <div class="header">
@@ -51,7 +69,9 @@
                                 {% include 'filters/search_filter.html' %}
                                 <br>
                                 {% include 'filters/paid_filter.html' %}
-                                <br> <br>
+                                <br>
+                               {% include 'filters/vendors_filter.html' %}
+                               <br>
                                <button type="submit" class="btn btn-primary">Submit</button>
                                <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
                            </form>
@@ -64,5 +84,27 @@
 
 {% endblock %}
 
+{% block extra_js %}
+    <script>
+        $('.analysis-button').click(function (evt) {
+            evt.preventDefault();
+            const btn = $(this);
+            const url = btn.attr('data-href');
+            const params = window.location.search.substr(1);
+            console.log(params);
+            $.ajax({
+                dataType: 'json',
+                url: url + '?'+ params,
+                method: 'GET',
 
+                success: function (data) {
+                    $('#result_container').html(data.result)
+
+                }
+            })
+        })
+    </script>
+
+
+{% endblock %}
 

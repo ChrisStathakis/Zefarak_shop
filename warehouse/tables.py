@@ -20,7 +20,9 @@ class InvoiceImageTable(tables.Table):
 
 
 class PaycheckTable(tables.Table):
-    edit_button = tables.TemplateColumn("<a href='{{ record.get_edit_url }}' class='btn btn-primary'>Edit</a>")
+    action = tables.TemplateColumn("<a href='{{ record.get_edit_url }}' class='btn btn-primary'>Edit</a>",
+                                        orderable=False,
+                                        )
 
     class Meta:
         model = VendorPaycheck

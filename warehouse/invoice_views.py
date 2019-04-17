@@ -288,6 +288,7 @@ def delete_invoice_image_view(request, pk):
 
 @staff_member_required
 def ajax_calculate_value(request, question):
+    print('i am here')
     page_title, my_data = '', []
     queryset = Invoice.objects.all()
     queryset = Invoice.filter_data(request, queryset)

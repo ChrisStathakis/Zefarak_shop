@@ -3,7 +3,7 @@ from django.utils.text import slugify
 from django.db import models
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.conf import settings
 from django.dispatch import receiver
 
@@ -159,11 +159,18 @@ class VendorPaycheck(models.Model):
     date_expired = models.DateField()
     payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.SET_NULL)
     value = models.DecimalField(default=0.00, decimal_places=2, max_digits=20)
+    paid_value = models.DecimalField(default=0.00, decimal_places=2, max_digits=20)
     is_paid = models.BooleanField(default=False)
     vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)
 
     def __str__(self):
         return f'{self.title} - {self.vendor}'
+
+    def save(self, *args, **kwargs):
+        if self.is_paid:
+            self.paid_value = self.value
+        super().save(*args, **kwargs)
+        self.vendor.save()
 
     def get_edit_url(self):
         return reverse('warehouse:paycheck_detail', kwargs={'pk': self.id})
@@ -176,11 +183,17 @@ class VendorPaycheck(models.Model):
         sorted_name = request.GET.get('sort', None)
         date_start, date_end, date_range, months_list = estimate_date_start_end_and_months(request)
         paid_name = request.GET.get('paid_name', None)
+        search_name = request.GET.get('search_name', None)
         vendor_name = request.GET.get('vendor_name')
         try:
             queryset = queryset.order_by(sorted_name)
         except:
             queryset = queryset
-
+        queryset = queryset.filter(is_paid=True) if paid_name == '1' else \
+            queryset.filter(is_paid=False) if queryset == '2' else queryset
         queryset = queryset.filter(date_expired__range=[date_start, date_end])
+        queryset = queryset.filter(Q(title__contains=search_name) |
+                                   Q(vendor__title__contains=search_name)
+                                   ).distinct() if search_name else queryset
+        queryset = queryset.filter(vendor__id__in=vendor_name) if vendor_name else queryset
         return queryset

@@ -3,6 +3,7 @@
         <div class="title">{{ page_title }}</div>
     </div>
     <div class="content">
+        <canvas id="myChart" width="400" height="200"></canvas>
         <table class="table">
             {% if question == 'value' %}
             <thead></thead>
@@ -10,12 +11,12 @@
                 {% for data in my_data %}
                 <tr>
                     <td>{{ data.0 }}</td>
-                    <th>{{ data.1 }}</th>
+                    <th {% if forloop.last %} class="danger" {% endif %}>{{ data.1 }}</th>
                 </tr>
                 {% endfor %}
             </tbody>
             {% endif %}
-            {% if question == 'vendors' %}
+            {% if question == 'annotate' %}
                 <thead>
                     <tr>
                         <th>Vendor</th>
@@ -36,3 +37,77 @@
         </table>
     </div>
 </div>
+
+{% if question == 'value' %}
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: ['Total Value', 'Own'],
+            datasets: [{
+            label: '{{ currency }} of Values',
+            data: ['{{ my_data.0.1 }}', '{{ my_data.1.1 }}'],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+{% endif %}
+
+
+
+{% if question == 'annotate' %}
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+        labels: [{% for ele in my_data %} {% if forloop.last %}'{{ ele.0 }}' {% else %} '{{ ele.0 }}',{% endif %} {% endfor %}],
+            datasets: [{
+            label: '{{ currency }} of {{ page_title }}',
+            data: [{% for ele in my_data %} {% if forloop.last %}'{{ ele.1 }}' {% else %} '{{ ele.1 }}',{% endif %} {% endfor %}],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+{% endif %}

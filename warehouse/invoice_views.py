@@ -56,8 +56,12 @@ class UpdateWarehouseOrderView(UpdateView):
     form_class = UpdateInvoiceForm
     success_url = reverse_lazy('warehouse:invoices')
 
+    def get_success_url(self):
+        return reverse('warehouse:update_order', kwargs={'pk':self.kwargs['pk']})
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        back_url = reverse('warehouse:invoices')
         products = Product.my_query.active().filter(vendor=self.object.vendor)
         instance = self.object
         images = InvoiceImage.objects.filter(order_related=self.object)
@@ -136,6 +140,23 @@ def delete_warehouse_order_view(request, pk):
     instance = get_object_or_404(InvoiceOrderItem, id=pk)
     instance.delete()
     return redirect(reverse('warehouse:update_order', kwargs={'pk': instance.order.id}))
+
+
+@staff_member_required
+def create_payment_from_order_view(request, pk):
+    instance = get_object_or_404(Invoice, id=pk)
+    total = instance.paycheck.all().aggregate(Sum('value'))['value__sum'] if instance.paycheck.all().exists() else 0
+    if instance.final_value > total:
+        new_payment = VendorPaycheck.objects.create(
+            title=instance.title,
+            date_expired=instance.date_expired,
+            value=instance.final_value-total,
+            vendor=instance.vendor,
+            is_paid=instance.is_paid,
+            payment_method=instance.payment_method
+        )
+        instance.paycheck.add(new_payment)
+    return redirect(instance.get_edit_url())
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -238,7 +259,10 @@ class PaycheckCreateView(CreateView):
 
 @staff_member_required
 def delete_paycheck(request, pk):
-    pass
+    instance = get_object_or_404(VendorPaycheck, id=pk)
+    instance.delete()
+
+    return redirect('warehouse:paychecks')
 
 
 @method_decorator(staff_member_required, name='dispatch')

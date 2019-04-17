@@ -66,6 +66,9 @@ class Invoice(DefaultOrderModel):
     def get_edit_url(self):
         return reverse('warehouse:update_order', kwargs={'pk': self.id})
 
+    def get_payment_url(self):
+        return reverse('warehouse:create-payment-order', kwargs={'pk': self.id})
+
     @staticmethod
     def filter_data(request, queryset):
         search_name = request.GET.get('search_name', None)

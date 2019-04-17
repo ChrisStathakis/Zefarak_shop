@@ -50,11 +50,12 @@
                        </div>
                    </div>
                 </div>
-
                 <div class="col-md-6">
                     <div class="card">
                         <div class="header">
                             <div class="title">
+                                <a href="{{ back_url }}" class="btn btn-warning">Back</a>
+                                <a onclick="confirm('Are you sure?')" href="{{ instance.get_payment_url }}" class="btn btn-info">Create Payment Order</a>
                                 <h3>Details</h3>
                             </div>
                         </div>

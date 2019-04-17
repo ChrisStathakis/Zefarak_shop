@@ -84,6 +84,7 @@ class CreateInvoiceForm(BaseForm, forms.ModelForm):
 
 
 class UpdateInvoiceForm(BaseForm, forms.ModelForm):
+    date_expired = forms.DateTimeField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
 
     class Meta:
         model = Invoice

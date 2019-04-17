@@ -7,6 +7,7 @@ from .product_attritubes import (Characteristics, CharacteristicsValue,
                                  ProductCharacteristics, AttributeTitle, Attribute,
                                  AttributeClass, AttributeProductClass
                                  )
+from .product_details import VendorPaycheck
 from .inlines import ProductCharacteristicsInline, ProductPhotosInline
 
 from mptt.admin import DraggableMPTTAdmin
@@ -14,6 +15,10 @@ from mptt.admin import DraggableMPTTAdmin
 
 WAREHOUSE_ORDERS_TRANSCATIONS = settings.WAREHOUSE_ORDERS_TRANSCATIONS
 
+
+@admin.register(VendorPaycheck)
+class VendorPaycheckAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(Characteristics)
 class CharacteristicsAdmin(admin.ModelAdmin):

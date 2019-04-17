@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
 from site_settings.models import PaymentMethod
 from site_settings.constants import CURRENCY
 
 import uuid
-from datetime import datetime
+
 User = get_user_model()
 
 
@@ -20,7 +20,7 @@ class DefaultOrderModel(models.Model):
                                        null=True,
                                        on_delete=models.PROTECT,
                                        verbose_name='Payment Type')
-    date_expired = models.DateField(default=datetime.now(), verbose_name='Date')
+    date_expired = models.DateField(default=timezone.now(), verbose_name='Date')
     value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Value')
     taxes = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Taxes')
     paid_value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Paid Value')

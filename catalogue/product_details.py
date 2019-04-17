@@ -11,6 +11,7 @@ from site_settings.constants import MEDIA_URL, CURRENCY, TAXES_CHOICES
 from site_settings.models import PaymentMethod
 from site_settings.tools import estimate_date_start_end_and_months
 from .validators import validate_file
+from decimal import Decimal
 WAREHOUSE_ORDERS_TRANSCATIONS = settings.WAREHOUSE_ORDERS_TRANSCATIONS
 
 
@@ -41,7 +42,7 @@ class Vendor(models.Model):
         ordering = ['title', ]
 
     def save(self, *args, **kwargs):
-        self.balance = self.output_value - self.input_value
+        self.balance = Decimal(self.output_value) - Decimal(self.input_value)
         super(Vendor, self).save(*args, **kwargs)
 
     def update_input_value(self):

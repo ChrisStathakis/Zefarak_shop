@@ -1,6 +1,12 @@
 from django.contrib import admin
 from .billing import BillInvoice, BillCategory
 from .payroll import Payroll, Employee, Occupation
+from .models import Invoice
+
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(BillCategory)

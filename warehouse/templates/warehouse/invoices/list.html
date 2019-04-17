@@ -1,4 +1,4 @@
-{% extends 'warehouse/dashboard.html' %}
+{% extends 'warehouse/dashboard.html' %} {% load render_table from django_tables2 %}
 
 
 {% block content %}
@@ -10,8 +10,8 @@
                         <div class="header">
                             <div class="title">Actions</div>
                             <br>
-                            <button data-href='{% url "warehouse:ajax_invoice" "value" %}' class="btn btn-info analysis_button">Value Analysis</button>
-                            <button data-href='{% url "warehouse:ajax_invoice" "vendors" %}' class="btn btn-info analysis_button">Vendor Analysis</button>
+                            <button data-href='{% url "warehouse:ajax_invoice" "value" %}' class="btn btn-info analysis-button">Value Analysis</button>
+                            <button data-href='{% url "warehouse:ajax_invoice" "vendors" %}' class="btn btn-info analysis-button">Vendor Analysis</button>
                             <button class="btn btn-info">Calculate Paid</button>
                         </div>
                         <div class="content">
@@ -32,40 +32,7 @@
                                 </p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Date</th>
-                                            <th>Title</th>
-                                            <th>Order Type</th>
-                                            <th>Vendor</th>
-                                            <th>Clean Value</th>
-                                            <th>Value</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for order in object_list %}
-                                                <tr>
-                                                    <td>{{ order.id }}</td>
-                                                    <td>{{ order.date_expired }}</td>
-                                                    <td>{{ order|truncatechars:'30'}}</td>
-                                                    <td>{{ order.get_order_type_display }}</td>
-                                                    <td>{{ order.vendor }}</td>
-                                                    <td>{{ order.tag_clean_value }}</td>
-                                                    <td{% if order.is_paid %} class="success" {% else %} class="warning"{% endif %}>{{ order.tag_final_value }}</td>
-                                                    <td><a href="{{ order.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                        <tfooter>
-                                            <tr>
-                                                <td colspan="2">Total Invoices</td>
-                                                <td>{{ total_products }}</td>
-                                            </tr>
-                                        </tfooter>
-                                </table>
+                               {% render_table table %}
                             </div>
 
                     </div>
@@ -96,63 +63,14 @@
                                    </span>
                                </div>
                                <br>
-                               <label>Date</label>
-                               <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-                                   <i class="fa fa-calendar"></i>&nbsp;
-                                   <span></span> <i class="fa fa-caret-down"></i>
-                               </div>
-                               <label>Search</label>
-                               <div class="form-group">
-                                   <input type="text"
-                                   {% if request.GET.search_name %}
-                                         value="{{ request.GET.search_name }}" placeholder="{{ request.GET.search_name }}"
-                                    {% else %}
-                                          placeholder="Search" {% endif %}
-                                          class="form-control" name="search_name"
-                                   />
-                               </div>
-                               <div class="checkbox">
-                                   <input id="check_active" name="paid_name" type="checkbox" value="1" {% if request.GET.paid_name == '1' %} checked {% endif %}>
-                                   <label for="check_active">Paid</label>
-                               </div>
-                               <div class="red checkbox">
-                                   <input id="de_check_active" name="paid_name" type="checkbox" value="2" {% if request.GET.paid_name == '2' %} checked {% endif %}>
-                                   <label for="de_check_active">Not Paid</label>
-                               </div>
-
-                               <div id="accordion" role="tablist" aria-multiselectable="true">
-                                   <div class="card">
-                                       <div class="card-header" role="tab" id="headingTwo">
-                                           <h6 class="mb-0">
-                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                                  href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                   Choose Vendor
-                                               </a>
-                                           </h6>
-                                       </div>
-                                       <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                           <div class="card-block">
-                                               {% for vendor in vendors %}
-                                                   {% if vendor.id|stringformat:"s" in request.GET %}
-                                                   <div class="checkbox">
-                                                       <input name="vendor_name" value="{{ vendor.id }}" id="checkbox1" type="checkbox" checked>
-                                                       <label for="checkbox1">
-                                                           {{ vendor}}
-                                                       </label>
-                                                   </div>
-                                                   {% else %}
-                                                   <div class="checkbox">
-                                                       <input name="vendor_name" value="{{ vendor.id }}" id="checkbox1" type="checkbox">
-                                                       <label for="checkbox1">
-                                                           {{ vendor}}
-                                                       </label>
-                                                   </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
+                               {% include 'filters/date_range_filter.html' %}
+                               <br>
+                               {% include 'filters/search_filter.html' %}
+                               <br>
+                               {% include 'filters/paid_filter.html' %}
+                                <br>
+                               {% include 'filters/vendors_filter.html' %}
+                                <br>
                                <button type="submit" class="btn btn-primary">Submit</button>
                                <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
                            </form>
@@ -166,24 +84,25 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    $('.analysis_button').click(function (evt) {
-        evt.preventDefault();
-        const btn = $(this);
-        const url = btn.attr('data-href');
-        const params = '';
-        $.ajax({
-            method: 'GET',
-            dataType: 'json',
-            url: url + params,
+    <script>
+        $('.analysis-button').click(function (evt) {
+            evt.preventDefault();
+            const btn = $(this);
+            const url = btn.attr('data-href');
+            const params = window.location.search.substr(1);
+            console.log(params);
+            $.ajax({
+                dataType: 'json',
+                url: url + '?'+ params,
+                method: 'GET',
 
-            success: function (data) {
-                $('#result_container').html(data.result)
-            }
+                success: function (data) {
+                    $('#result_container').html(data.result)
+
+                }
+            })
         })
-    })
-</script>
-
+    </script>
 
 
 {% endblock %}

@@ -12,7 +12,7 @@ from catalogue.product_details import Vendor, VendorPaycheck
 from catalogue.forms import VendorForm, PaycheckVendorForm
 from site_settings.constants import CURRENCY
 from .forms import CreateInvoiceForm, UpdateInvoiceForm, CreateOrderItemForm, InvoiceImageForm
-from .tables import InvoiceImageTable, PaycheckTable
+from .tables import InvoiceImageTable, PaycheckTable, InvoiceTable
 
 from django_tables2 import RequestConfig
 
@@ -30,6 +30,8 @@ class WarehouseOrderList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        table = InvoiceTable(self.object_list)
+        RequestConfig(self.request).configure(table)
         vendors = Vendor.objects.filter(active=True)
         context.update(locals())
         return context
@@ -286,31 +288,4 @@ def delete_invoice_image_view(request, pk):
     return redirect(reverse('warehouse:update_order', kwargs={'pk': instance.order_related.id}))
 
 
-@staff_member_required
-def ajax_calculate_value(request, question):
-    print('i am here')
-    page_title, my_data = '', []
-    queryset = Invoice.objects.all()
-    queryset = Invoice.filter_data(request, queryset)
-    data = dict()
-    if question == 'value':
-        page_title = 'Analysis Value'
-        total_value = queryset.aggregate(Sum('final_value'))['final_value__sum'] if queryset.exists() else 0
-        paid_value = queryset.aggregate(Sum('paid_value'))['paid_value__sum'] if queryset.exists() else 0
-        paid_value = total_value- paid_value
-        paid_value = f'{paid_value} {CURRENCY}'
-        total_value = f'{total_value} {CURRENCY}'
-        my_data = [('Total Value', total_value), ('You own', paid_value)]
-    if question == 'vendors':
-        my_data = queryset.values_list('vendor__title').annotate(remaning=Sum(F('final_value')-F('paid_value')),
-                                                                 total=Sum('final_value')).order_by('total')
-        print(my_data)
-        page_title = 'Vendor analysis'
-    data['result'] = render_to_string(request=request,
-                                      template_name='warehouse/ajax/invoice_results.html',
-                                      context={'page_title': page_title,
-                                               'my_data': my_data,
-                                               'question': question
-                                               }
-                                      )
-    return JsonResponse(data)
+

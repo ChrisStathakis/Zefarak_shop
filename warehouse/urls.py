@@ -9,7 +9,6 @@ from .invoice_views import (WarehouseOrderList, create_warehouse_order_view, Upd
                             delete_warehouse_order_item_view,
                             VendorListView, VendorCreateView, VendorUpdateView, delete_vendor,
                             CreateInvoiceImageView, UpdateInvoiceImageView, delete_invoice_image_view,
-                            ajax_calculate_value,
                             PaycheckCreateView, PayCheckListView, PaycheckDetailView, delete_paycheck
                             )
 
@@ -17,7 +16,7 @@ from .payroll_views import (PayrollHomepageView, EmployeeListView, EmployeeCreat
                             OccupationCreateView, OccupationListView, OccupationUpdateView, delete_occupation, EmployeeListCardView,
                             PayrollCreateView, EmployeeCardView, payroll_quick_pay, PayrollUpdateView, delete_payroll
                             )
-from .ajax_calls import ajax_paycheck_actions
+from .ajax_calls import ajax_paycheck_actions, ajax_calculate_value
 
 app_name = 'warehouse'
 

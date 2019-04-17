@@ -1,10 +1,10 @@
 from django import forms
-from datetime import datetime
 from .billing import BillInvoice, BillCategory
 from .payroll import Employee, Occupation, Payroll
 from .models import Invoice, InvoiceOrderItem, InvoiceImage
 from site_settings.models import Store
 from catalogue.models import Product
+from dal import autocomplete
 
 
 class BaseForm(forms.Form):
@@ -78,6 +78,9 @@ class CreateInvoiceForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Invoice
         fields = ['date_expired', 'title', 'order_type', 'vendor', 'payment_method', 'taxes_modifier']
+        widgets = {
+            'vendor': autocomplete.ModelSelect2(url='vendors_auto', attrs={'class': 'form-control'})
+        }
 
 
 class UpdateInvoiceForm(BaseForm, forms.ModelForm):

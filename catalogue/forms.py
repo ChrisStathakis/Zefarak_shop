@@ -132,7 +132,7 @@ class VendorForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Vendor
         fields = '__all__'
-        exclude = ['balance', 'remaining_deposit']
+        exclude = ['balance', 'output_value', 'input_value']
 
 
 class PaycheckVendorForm(BaseForm, forms.ModelForm):

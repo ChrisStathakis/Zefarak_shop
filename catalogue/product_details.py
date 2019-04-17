@@ -32,19 +32,27 @@ class Vendor(models.Model):
     timestamp = models.DateField(auto_now_add=True)
     taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='3')
     # managing deposits
-    remaining_deposit = models.DecimalField(default=0, decimal_places=2, max_digits=100,
-                                            verbose_name='Υπόλοιπο προκαταβολών')
-    balance = models.DecimalField(default=0, max_digits=100, decimal_places=2, verbose_name="Υπόλοιπο")
+    input_value = models.DecimalField(default=0.00, max_digits=100, decimal_places=2, help_text='Total Payments')
+    output_value = models.DecimalField(default=0.00, max_digits=100, decimal_places=2, help_text='Total Invoice Cost')
+    balance = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
 
     class Meta:
         verbose_name_plural = '9. Προμηθευτές'
         ordering = ['title', ]
 
     def save(self, *args, **kwargs):
-        orders = self.vendor_orders.all()
-        self.balance = orders.aggregate(Sum('final_value'))['final_value__sum'] if orders else 0
-        self.balance -= orders.aggregate(Sum('paid_value'))['paid_value__sum'] if orders else 0
+        self.balance = self.output_value - self.input_value
         super(Vendor, self).save(*args, **kwargs)
+
+    def update_input_value(self):
+        qs = self.vendor_paychecks.all().filter(is_paid=True)
+        self.input_value = qs.aggregate(Sum('value'))['value__sum'] if qs.exists() else 0.00
+        self.save()
+
+    def update_output_value(self):
+        qs = self.vendor_orders.all()
+        self.output_value = qs.aggregate(Sum('final_value'))['final_value__sum'] if qs.exists() else 0.00
+        self.save()
 
     def get_edit_url(self):
         return reverse('warehouse:vendor_detail', kwargs={'pk': self.id})
@@ -161,7 +169,7 @@ class VendorPaycheck(models.Model):
     value = models.DecimalField(default=0.00, decimal_places=2, max_digits=20)
     paid_value = models.DecimalField(default=0.00, decimal_places=2, max_digits=20)
     is_paid = models.BooleanField(default=False)
-    vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT)
+    vendor = models.ForeignKey(Vendor, on_delete=models.PROTECT, related_name='vendor_paychecks')
 
     def __str__(self):
         return f'{self.title} - {self.vendor}'
@@ -170,7 +178,7 @@ class VendorPaycheck(models.Model):
         if self.is_paid:
             self.paid_value = self.value
         super().save(*args, **kwargs)
-        self.vendor.save()
+        self.vendor.update_input_value()
 
     def get_edit_url(self):
         return reverse('warehouse:paycheck_detail', kwargs={'pk': self.id})

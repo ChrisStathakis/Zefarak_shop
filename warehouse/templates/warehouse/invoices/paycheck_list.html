@@ -48,23 +48,9 @@
                                 </div>
                                 {% include 'filters/date_range_filter.html' %}
                                 <br>
-                               <div class="form-group">
-                                   <input type="text"
-                                   {% if request.GET.search_name %}
-                                         value="{{ request.GET.search_name }}" placeholder="{{ request.GET.search_name }}"
-                                    {% else %}
-                                          placeholder="Search" {% endif %}
-                                          class="form-control" name="search_name"
-                                   />
-                               </div>
-                               <div class="checkbox">
-                                   <input id="check_active" name="active_name" type="checkbox" value="1" {% if request.GET.active_name == '1' %} checked {% endif %}>
-                                   <label for="check_active">Active</label>
-                               </div>
-                               <div class="red checkbox">
-                                   <input id="de_check_active" name="active_name" type="checkbox" value="2" {% if request.GET.active_name == '2' %} checked {% endif %}>
-                                   <label for="de_check_active">De-Active</label>
-                               </div>
+                                {% include 'filters/search_filter.html' %}
+                                <br>
+                                {% include 'filters/paid_filter.html' %}
                                 <br> <br>
                                <button type="submit" class="btn btn-primary">Submit</button>
                                <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>

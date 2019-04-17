@@ -245,7 +245,6 @@ class Gifts(models.Model):
     product_related = models.ManyToManyField(Product, related_name='product_related')
     products_gift = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
 
-
     def __str__(self):
         return self.title
 

@@ -1,0 +1,5 @@
+ <div class="form-group">
+    <label>Search</label>
+    <input type="text"{% if request.GET.search_name %} value="{{ request.GET.search_name }}" placeholder="{{ request.GET.search_name }}"
+    {% else %} placeholder="Search" {% endif %} class="form-control" name="search_name"/>
+</div>

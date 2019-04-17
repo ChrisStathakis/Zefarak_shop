@@ -175,13 +175,12 @@ class VendorPaycheck(models.Model):
     def filters_data(request, queryset):
         sorted_name = request.GET.get('sort', None)
         date_start, date_end, date_range, months_list = estimate_date_start_end_and_months(request)
+        paid_name = request.GET.get('paid_name', None)
+        vendor_name = request.GET.get('vendor_name')
         try:
             queryset = queryset.order_by(sorted_name)
         except:
             queryset = queryset
-        print(date_start, date_end)
+
         queryset = queryset.filter(date_expired__range=[date_start, date_end])
-
-
-
         return queryset

@@ -1,0 +1,138 @@
+[
+  {
+    "model": "site_settings.paymentmethod",
+    "pk": 1,
+    "fields": {
+      "title": "Cash",
+      "active": true,
+      "site_active": false
+    }
+  },
+  {
+    "model": "site_settings.paymentmethod",
+    "pk": 2,
+    "fields": {
+      "title": "PayPal",
+      "active": true,
+      "site_active": false
+    }
+  },
+  {
+    "model": "site_settings.paymentmethod",
+    "pk": 3,
+    "fields": {
+      "title": "Bank",
+      "active": true,
+      "site_active": false
+    }
+  },
+  {
+    "model": "site_settings.shipping",
+    "pk": 1,
+    "fields": {
+      "title": "Παραλαβή Από το κατάστημα",
+      "active": true
+
+    }
+  },
+  {
+    "model": "site_settings.shipping",
+    "pk": 2,
+    "fields": {
+      "title": "Γενική Ταχυδρομική",
+      "active": true,
+      "additional_cost":5,
+      "limit_value":40
+
+    }
+  },
+  {
+    "model": "site_settings.shipping",
+    "pk": 3,
+    "fields": {
+      "title": "ACS",
+      "active": true,
+      "additional_cost":3,
+      "limit_value":25
+    }
+  },
+  {
+    "model": "catalogue.productclass",
+    "pk": 1,
+    "fields": {
+      "title": "Shoes",
+      "is_service": false,
+      "have_transcations": true,
+      "have_attribute": true
+    }
+  },
+  {
+    "model": "catalogue.productclass",
+    "pk": 2,
+    "fields": {
+      "title": "Consoles",
+      "is_service": false,
+      "have_transcations": true,
+      "have_attribute": false
+    }
+  },
+  {
+    "model": "catalogue.productclass",
+    "pk": 3,
+    "fields": {
+      "title": "VideoGames",
+      "is_service": false,
+      "have_transcations": true,
+      "have_attribute": false
+    }
+  },
+  {
+    "model": "catalogue.brand",
+    "pk": 1,
+    "fields": {
+      "title": "Sony",
+      "active": true
+    }
+  },
+  {
+    "model": "catalogue.brand",
+    "pk": 2,
+    "fields": {
+      "title": "Microsoft",
+      "active": true
+    }
+  },
+  {
+    "model": "catalogue.brand",
+    "pk": 3,
+    "fields": {
+      "title": "Nintento",
+      "active": true
+    }
+  },
+  {
+    "model": "catalogue.vendor",
+    "pk": 1,
+    "fields": {
+      "title": "Sony Inc",
+      "active": true
+    }
+  },
+  {
+    "model": "catalogue.vendor",
+    "pk": 2,
+    "fields": {
+      "title": "Microsoft Corp",
+      "active": true
+    }
+  },
+  {
+    "model": "catalogue.vendor",
+    "pk": 3,
+    "fields": {
+      "title": "Nintento Corp",
+      "active": true
+    }
+  }
+
+]

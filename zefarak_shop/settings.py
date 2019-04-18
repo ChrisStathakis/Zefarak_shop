@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'mptt',
     'django_tables2',
+    'import_export',
     
 ]
 

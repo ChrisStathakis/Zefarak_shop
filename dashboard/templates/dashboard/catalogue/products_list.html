@@ -99,75 +99,11 @@
                            <form method="get">
                                {% include 'filters/pagination.html' %}
                                {% include 'filters/search_filter.html' %}
-                               {% include 'filters/a' %}
+                               {% include 'filters/active_filter.html' %}
+                               {% include 'filters/warehouse_category.html' %}
+                               {% include 'filters/brand_filter.html' %}
+                               {% include 'filters/vendors_filter.html' %}
 
-
-                               <div id="accordion" role="tablist" aria-multiselectable="true">
-                                   <div class="card">
-                                       <div class="card-header" role="tab" id="headingTwo">
-                                           <h6 class="mb-0">
-                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                                  href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                   Choose Category
-                                               </a>
-                                           </h6>
-                                       </div>
-                                       <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                           <div class="card-block">
-                                               {% for category in categories %}
-                                                   {% if category.id|stringformat:"s" in request.GET|get_item:'cate_name' %}
-                                                   <div class="checkbox">
-                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox" checked>
-                                                       <label for="checkbox1">
-                                                           {{ category}}
-                                                       </label>
-                                                   </div>
-                                                   {% else %}
-                                                   <div class="checkbox">
-                                                       <input name="cate_name" value="{{ category.id }}" id="checkbox1" type="checkbox">
-                                                       <label for="checkbox1">
-                                                           {{ category}}
-                                                       </label>
-                                                   </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           </div>
-                                       </div>
-                                   </div>
-                                   <div class="card">
-                                       <div class="card-header" role="tab" id="headingThree">
-                                           <h6 class="mb-0">
-                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                                  href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                   Choose Brand
-                                               </a>
-                                           </h6>
-                                       </div>
-                                       <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-                                           <div class="card-block">
-                                               {% for brand in brands %}
-                                                  {% if brand.id|stringformat:"s" in request.GET|get_item:'brand_name' %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox" checked>
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
-                                                       </label>
-                                                   </div>
-                                                   {% else %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox">
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
-                                                       </label>
-                                                   </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
                                <button type="submit" class="btn btn-primary">Submit</button>
                                <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
                            </form>

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render
+from django.db.models import Sum, F
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -8,6 +9,7 @@ from catalogue.models import Product, ProductPhotos
 from catalogue.product_attritubes import AttributeTitle, AttributeProductClass, Attribute
 
 from catalogue.forms import CategorySiteForm, BrandForm
+from site_settings.constants import CURRENCY
 from decimal import Decimal
 
 
@@ -126,3 +128,24 @@ def popup_brand(request):
         return HttpResponse(
             '<script>opener.closePopup(window, "%s", "%s", "#id_brand");</script>' % (instance.pk, instance))
     return render(request, "dashboard/settings/form.html", locals())
+
+
+@staff_member_required
+def ajax_product_calculate_view(request, question):
+    data = dict()
+    queryset = Product.filters_data(request, Product.objects.all())
+    my_data, page_title = [], ''
+    if question == 'value':
+        page_title = 'Total Value Analysis'
+        total_buy_value = queryset.aggregate(total=Sum(F('price_buy')*F('qty')))['total__sum'] if queryset.exists() else 0
+        total_sell_value = queryset.aggregate(total=Sum(F('final_price')*F('qty')))['total__sum'] if queryset.exists() else 0
+        my_data = [('Total Buy Cost', total_buy_value), ('Total Sell', total_sell_value)]
+
+    data['result'] = render_to_string(template_name='',
+                                      request=request,
+                                      context={'my_data': my_data,
+                                               'currency': CURRENCY,
+                                               'page_title': page_title
+                                               }
+                                      )
+    return JsonResponse(data)

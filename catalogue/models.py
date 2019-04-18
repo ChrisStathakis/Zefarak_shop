@@ -148,6 +148,9 @@ class Product(DefaultBasicModel):
     def tag_final_price(self):
         return f'{self.final_price} {CURRENCY}'
 
+    def tag_price_buy(self):
+        return f'{self.price_buy} {CURRENCY}'
+
     def get_all_images(self):
         return ProductPhotos.objects.filter(active=True, product=self)
 
@@ -171,7 +174,11 @@ class Product(DefaultBasicModel):
         active_name = request.GET.get('active_name', None)
         discount_name = request.GET.get('discount_name')
         qty_name = request.GET.get('qty_exists_name')
+        vendor_name = request.GET.getlist('vendor_name', None)
+        ware_cate = request.GET.getlist('ware_cate', None)
 
+        queryset = queryset.filter(vendor__id__in=vendor_name) if vendor_name else queryset
+        queryset = queryset.filter(ware_cate__id__in=ware_cate) if ware_cate else queryset
         queryset = queryset.filter(active=True) if active_name == '1' else queryset.filter(
             active=False) if active_name == '2' else queryset
         queryset = queryset.filter(price_discount__gt=0) if discount_name else queryset

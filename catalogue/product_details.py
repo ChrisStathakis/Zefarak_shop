@@ -30,7 +30,7 @@ class Vendor(models.Model):
     city = models.CharField(max_length=40, null=True, blank=True, verbose_name='City')
     zipcode = models.CharField(max_length=40, null=True, blank=True, verbose_name='Zipcode')
     description = models.TextField(null=True, blank=True, verbose_name="Detaiks")
-    timestamp = models.DateField(auto_now_add=True)
+    timestamp = models.DateField(auto_now_add=True, null=True)
     taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='3')
     # managing deposits
     input_value = models.DecimalField(default=0.00, max_digits=100, decimal_places=2, help_text='Total Payments')

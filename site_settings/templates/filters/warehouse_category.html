@@ -1,0 +1,36 @@
+{% load zefarak_tags %}
+<div id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="card">
+        <div class="card-header" role="tab" id="headingWareCate">
+            <h6 class="mb-0">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Choose Warehouse Category
+                </a>
+            </h6>
+        </div>
+        <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingWareCate">
+            <div class="card-block">
+                {% for category in ware_cate %}
+                    {% if category.id|stringformat:"s" in request.GET|get_item:'ware_cate' %}
+                        <div class="checkbox">
+                            <input name="ware_cate" value="{{ category.id }}" id="checkbox1" type="checkbox" checked>
+                            <label for="checkbox1">
+                                {{ category}}
+                            </label>
+                        </div>
+                    {% else %}
+                        <div class="checkbox">
+                            <input name="ware_cate" value="{{ category.id }}" id="checkbox1" type="checkbox">
+                            <label for="checkbox1">
+                                {{ category}}
+                            </label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+

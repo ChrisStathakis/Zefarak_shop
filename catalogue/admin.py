@@ -7,10 +7,12 @@ from .product_attritubes import (Characteristics, CharacteristicsValue,
                                  ProductCharacteristics, AttributeTitle, Attribute,
                                  AttributeClass, AttributeProductClass
                                  )
-from .product_details import VendorPaycheck
+from .product_details import VendorPaycheck, Vendor
+from .models import WarehouseCategory
 from .inlines import ProductCharacteristicsInline, ProductPhotosInline
 
 from mptt.admin import DraggableMPTTAdmin
+from import_export.admin import ImportExportModelAdmin
 
 
 WAREHOUSE_ORDERS_TRANSCATIONS = settings.WAREHOUSE_ORDERS_TRANSCATIONS
@@ -19,6 +21,7 @@ WAREHOUSE_ORDERS_TRANSCATIONS = settings.WAREHOUSE_ORDERS_TRANSCATIONS
 @admin.register(VendorPaycheck)
 class VendorPaycheckAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(Characteristics)
 class CharacteristicsAdmin(admin.ModelAdmin):
@@ -84,7 +87,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin):
     list_display = ['title', 'product_class', 'tag_final_price', 'qty', 'active']
     list_filter = ['active', 'is_offer', 'category']
     filter_horizontal = ['related_products', 'category_site', ]
@@ -143,13 +146,13 @@ class ProductPhotosAdmin(admin.ModelAdmin):
 #  warehouse admin
 
 @admin.register(WarehouseCategory)
-class WarehouseCategoryAdmin(admin.ModelAdmin):
+class WarehouseCategoryAdmin(ImportExportModelAdmin):
     list_display = ['title', 'active']
     list_filter = ['active', ]
 
 
 @admin.register(Vendor)
-class VendorAdmin(admin.ModelAdmin):
+class VendorAdmin(ImportExportModelAdmin):
     list_display = ['title', 'vat', 'phone', 'tag_balance', 'active']
     list_filter = ['active', ]
     search_fields = ['title', 'email', 'phone', 'cellphone']

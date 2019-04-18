@@ -29,3 +29,4 @@ model-mommy==1.6.0
 
 
 django-autocomplete-light
+django-tables2

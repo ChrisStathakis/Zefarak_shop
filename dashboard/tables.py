@@ -6,15 +6,15 @@ from catalogue.models import Product
 class ImageColumn(tables.Column):
 
     def render(self, value):
-        return format_html('<img class="img-thumbnail" style="width:100px;height:100px" src="/media/{}" />', value)
+        return format_html('<img class="img img-thumbnail" style="width:50px;height:50px" src="/media/{}" />', value)
 
 
 class TableProduct(tables.Table):
     action = tables.TemplateColumn("<a href='{{ record.get_edit_url }}' class='btn btn-primary'>Edit</a>", orderable=False)
-    image = ImageColumn()
-    tag_final_value = tables.Column(orderable=False, verbose_name='Value')
+    tag_final_price = tables.Column(orderable=False, verbose_name='Price')
+    tag_price_buy = tables.Column(orderable=False, verbose_name='Price Buy')
 
     class Meta:
         model = Product
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['image', 'id', 'title', 'vendor', 'category', 'tag_final_value', 'qty', 'active', 'action']
+        fields = ['id', 'title', 'vendor', 'tag_price_buy', 'tag_final_price', 'qty', 'category', 'active', 'action']

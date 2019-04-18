@@ -13,7 +13,7 @@ from django.db import connection
 from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta
 from django_tables2 import RequestConfig
-from catalogue.models import Product, ProductPhotos, ProductClass
+from catalogue.models import Product, ProductPhotos, ProductClass, WarehouseCategory
 from catalogue.categories import Category
 from catalogue.product_details import Brand, Vendor
 from catalogue.forms import CreateProductForm, ProductPhotoUploadForm, ProductCharacteristicForm, AttributeForm
@@ -64,12 +64,7 @@ class ProductsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ProductsListView, self).get_context_data(**kwargs)
-        categories, vendors, brands, site_categories = Category.objects.all(), Vendor.objects.all(), \
-                                                       Brand.objects.all(), \
-                                                        Category.objects.all()
-        # get filters data
-        total_products = self.total_products
-        products, currency = True, CURRENCY
+        ware_cate, vendors, brands = WarehouseCategory.objects.filter(active=True), Vendor.objects.all(), Brand.objects.all()
         products = TableProduct(self.object_list)
         RequestConfig(self.request).configure(products)
         context.update(locals())

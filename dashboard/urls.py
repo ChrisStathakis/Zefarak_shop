@@ -18,7 +18,8 @@ from .settings_view import (ProductClassView, ProductClassCreateView,
 from .dashboard_actions import copy_product_view
 from .ajax_views import (ajax_category_site, ajax_product_images, ajax_add_or_delete_attribute,
                          ajax_change_qty_on_attribute,
-                         popup_category, popup_brand
+                         popup_category, popup_brand,
+                         ajax_product_calculate_view,
                          )
 app_name = 'dashboard'
 
@@ -48,6 +49,7 @@ urlpatterns = [
     path('product/related/<int:pk>/', RelatedProductsView.as_view(), name='related_products_manager_view'),
 
 
+    path('ajax/product/analysis/<slug:question>/', ajax_product_calculate_view, name='ajax_product_analysis'),
     path('ajax/category-site-manager/<slug:slug>/<int:pk>/<int:dk>/', ajax_category_site, name='ajax_category_site'),
     path('ajax/image-manager/<slug:slug>/<int:pk>/<int:dk>/', ajax_product_images, name='ajax_image'),
     path('ajax/add-or-delete-attr/<slug:slug>/<int:pk>/<int:dk>/', ajax_add_or_delete_attribute, name='ajax_manage_attribute'),

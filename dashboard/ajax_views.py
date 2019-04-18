@@ -137,15 +137,16 @@ def ajax_product_calculate_view(request, question):
     my_data, page_title = [], ''
     if question == 'value':
         page_title = 'Total Value Analysis'
-        total_buy_value = queryset.aggregate(total=Sum(F('price_buy')*F('qty')))['total__sum'] if queryset.exists() else 0
-        total_sell_value = queryset.aggregate(total=Sum(F('final_price')*F('qty')))['total__sum'] if queryset.exists() else 0
+        total_buy_value = queryset.aggregate(total=Sum(F('price_buy')*F('qty')))['total'] if queryset.exists() else 0  #aggregate(total=Sum(F('qty')*F('price')))['total'] else 0
+        total_sell_value = queryset.aggregate(total=Sum(F('final_price')*F('qty')))['total'] if queryset.exists() else 0
         my_data = [('Total Buy Cost', total_buy_value), ('Total Sell', total_sell_value)]
 
-    data['result'] = render_to_string(template_name='',
+    data['result'] = render_to_string(template_name='ajax_site/results.html',
                                       request=request,
                                       context={'my_data': my_data,
                                                'currency': CURRENCY,
-                                               'page_title': page_title
+                                               'page_title': page_title,
+                                               'question': question
                                                }
                                       )
     return JsonResponse(data)

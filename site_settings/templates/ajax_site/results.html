@@ -19,19 +19,18 @@
             {% if question == 'annotate' %}
                 <thead>
                     <tr>
-                        <th>Vendor</th>
-                        <th>Total Value</th>
-                        <th>Paid Value</th>
-                        <th>Remaining Value</th>
+                        {% for ele in header_list %}
+                        <th class="{{ ele.1 }}">{{ ele.0 }}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for data in my_data %}
                     <tr>
                         <td>{{ data.0 }}</td>
-                        <td class="primary">{{ data.1 }} {{ currency }}</td>
-                        <td class="success">{{ data.2 }} {{ currency }}</td>
-                        <td class="danger">{{ data.3 }} {{ currency }}</td>
+                        <td>{{ data.1 }}</td>
+                        <td>{{ data.2 }} {{ currency }}</td>
+                        <td>{{ data.3 }} {{ currency }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

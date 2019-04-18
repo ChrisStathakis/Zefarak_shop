@@ -359,3 +359,6 @@ def delete_product(request, dk):
     instance = get_object_or_404(Product, id=dk)
     instance.delete()
     return HttpResponseRedirect(reverse('dashboard:products'))
+
+
+# @method_decorator(staff_member_required,)

@@ -178,7 +178,7 @@ class Product(DefaultBasicModel):
         ware_cate = request.GET.getlist('ware_cate', None)
 
         queryset = queryset.filter(vendor__id__in=vendor_name) if vendor_name else queryset
-        queryset = queryset.filter(ware_cate__id__in=ware_cate) if ware_cate else queryset
+        queryset = queryset.filter(category__id__in=ware_cate) if ware_cate else queryset
         queryset = queryset.filter(active=True) if active_name == '1' else queryset.filter(
             active=False) if active_name == '2' else queryset
         queryset = queryset.filter(price_discount__gt=0) if discount_name else queryset

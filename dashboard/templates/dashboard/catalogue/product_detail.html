@@ -86,6 +86,7 @@
                 <div class="card">
                     <div class="header text-center">
                         <div class="title">
+                            <a href="{% url 'dashboard:products' %}" class="btn btn-warning">Back</a>
                             <h3>{{ instance.title }}</h3>
                         </div>
                     </div>
@@ -318,5 +319,10 @@
             $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>');
             win.close();
         }
-</script>
+
+
+        </script>
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+    {{ form.media }}
 {% endblock %}

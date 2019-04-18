@@ -134,19 +134,36 @@ def popup_brand(request):
 def ajax_product_calculate_view(request, question):
     data = dict()
     queryset = Product.filters_data(request, Product.objects.all())
-    my_data, page_title = [], ''
+    my_data, page_title, header_list = [], '', []
     if question == 'value':
         page_title = 'Total Value Analysis'
-        total_buy_value = queryset.aggregate(total=Sum(F('price_buy')*F('qty')))['total'] if queryset.exists() else 0  #aggregate(total=Sum(F('qty')*F('price')))['total'] else 0
+        total_buy_value = queryset.aggregate(total=Sum(F('price_buy')*F('qty')))['total'] if queryset.exists() else 0
         total_sell_value = queryset.aggregate(total=Sum(F('final_price')*F('qty')))['total'] if queryset.exists() else 0
         my_data = [('Total Buy Cost', total_buy_value), ('Total Sell', total_sell_value)]
-
+    if question == 'vendors':
+        my_data = queryset.values_list('vendor__title').annotate(count_items=Sum('qty'),
+                                                                 buy_total=Sum(F('qty')*F('price_buy')),
+                                                                 total=Sum(F('qty') * F('final_price'))
+                                                                 ).order_by('-count_items')
+        page_title = 'Vendor Analysis'
+        question = 'annotate'
+        header_list = [('Vendor', ''), ('Qty', ''), ('Total Warehouse Value', 'danger'), ('Total Sell Value', 'success')]
+    if question == 'categories':
+        my_data = queryset.values_list('category__title').annotate(count_items=Sum('qty'),
+                                                                 buy_total=Sum(F('qty') * F('price_buy')),
+                                                                 total=Sum(F('qty') * F('final_price'))
+                                                                 ).order_by('-count_items')
+        page_title = 'Category Analysis'
+        question = 'annotate'
+        header_list = [('Category', ''), ('Qty', ''), ('Total Warehouse Value', 'danger'),
+                       ('Total Sell Value', 'success')]
     data['result'] = render_to_string(template_name='ajax_site/results.html',
                                       request=request,
                                       context={'my_data': my_data,
                                                'currency': CURRENCY,
                                                'page_title': page_title,
-                                               'question': question
+                                               'question': question,
+                                               'header_list': header_list
                                                }
                                       )
     return JsonResponse(data)

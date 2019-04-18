@@ -142,5 +142,5 @@ class PaycheckVendorForm(BaseForm, forms.ModelForm):
         model = VendorPaycheck
         fields = ['date_expired', 'vendor', 'payment_method', 'title', 'is_paid', 'value']
         widgets = {
-            'vendor': autocomplete.ModelSelect2(url='vendors_auto', attrs={'class': 'form-control'})
+            'vendor': autocomplete.ModelSelect2(url='vendors_auto', attrs={'class': 'form-control', })
         }

@@ -32,7 +32,8 @@
                             <br>
                             <button data-href='{% url "dashboard:ajax_product_analysis" "value" %}' class="btn btn-info analysis-button">Value Analysis</button>
                             <button data-href='{% url "dashboard:ajax_product_analysis" "vendors" %}' class="btn btn-info analysis-button">Vendor Analysis</button>
-                            <button class="btn btn-info">Calculate Paid</button>
+                            <button data-href='{% url "dashboard:ajax_product_analysis" "categories" %}' class="btn btn-info analysis-button">Category Analysis</button>
+                            <a href="{{ request.full_path }}" class="btn btn-danger">Clear</a>
                         </div>
                         <div class="content">
                             <br>

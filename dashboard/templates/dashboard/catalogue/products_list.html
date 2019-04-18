@@ -1,4 +1,4 @@
-{% extends 'dashboard/dashboard.html' %} {% load static %} {% load zefarak_tags %}
+{% extends 'dashboard/dashboard.html' %} {% load static %} {% load zefarak_tags %} {% load render_table from django_tables2 %}
 
 {% block extra_css %}
 <style>
@@ -38,50 +38,7 @@
                                 </p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Price</th>
-                                            <th>Category</th>
-                                            <th>Brand</th>
-                                            <th>Qty</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for product in object_list %}
-                                            <tr>
-                                                <td>
-                                                    <div class="red checkbox">
-                                                        <input id="de_check_active" name="choice_name" type="checkbox" value="{{ product.id }}">
-                                                    </div>
-                                                </td>
-                                                <td>{{ product.id }}</td>
-                                                <td>{{ product|truncatechars:'30'}}</td>
-                                                <td>{{ product.tag_final_price }}</td>
-                                                <td>{{ product.category|truncatechars:'30' }}</td>
-                                                <td>{{ product.brand|truncatechars:'30' }}</td>
-                                                <td>{{ product.tag_qty }}</td>
-                                                {% if product.active %}
-                                                    <td><span class="badge badge-success">Active</span></td>
-                                                {% else %}
-                                                    <td><span class="badge badge-danger">Warning</span></td>
-                                                {% endif %}
-                                                <td><a href="{{ product.get_edit_url }}" class="btn btn-primary">Edit</a> </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                        <tfooter>
-                                            <tr>
-                                                <td colspan="2">Total Products</td>
-                                                <td>{{ total_products }}</td>
-                                            </tr>
-                                        </tfooter>
-                                    </table>
+                                   {% render_table products %}
                                 </div>
                         </div>
 
@@ -135,44 +92,15 @@
                 <div class="col-md-3">
                     <div class="card">
                        <div class="header">
+                            <a href="{% url 'dashboard:home' %}" class="btn btn-warning">Back</a>
                             <h4>Filters</h4>
                        </div>
                        <div class="content">
                            <form method="get">
-                                <div class="pagination">
-                                    <span class="step-links">
-                                        {% if page_obj.has_previous %}
-                                            <a href='{{ request.build_absolute_uri }}&page=1' class="btn btn-primary">First Page</a>
-                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.previous_page_number }}' class="btn btn-primary">Previous</a>
-                                        {% endif %}
-                                        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                                        {%  if page_obj.has_next %}
-                                            {% if '?' in request.build_absolute_uri %} 
-                                            <a href='{{ request.build_absolute_uri }}&page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
-                                            {% else %}
-                                            <a href='?page={{ page_obj.next_page_number }}' class="btn btn-primary">Next</a>
-                                            {% endif %}
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            
-                               <div class="form-group">
-                                   <input type="text" 
-                                   {% if request.GET.search_name %}
-                                         value="{{ request.GET.search_name }}" placeholder="{{ request.GET.search_name }}"
-                                    {% else %}
-                                          placeholder="Search" {% endif %}
-                                          class="form-control" name="search_name"
-                                   />
-                               </div>
-                               <div class="checkbox">
-                                   <input id="check_active" name="active_name" type="checkbox" value="1" {% if request.GET.active_name == '1' %} checked {% endif %}>
-                                   <label for="check_active">Active</label>
-                               </div>
-                               <div class="red checkbox">
-                                   <input id="de_check_active" name="active_name" type="checkbox" value="2" {% if request.GET.active_name == '2' %} checked {% endif %}>
-                                   <label for="de_check_active">De-Active</label>
-                               </div>
+                               {% include 'filters/pagination.html' %}
+                               {% include 'filters/search_filter.html' %}
+                               {% include 'filters/a' %}
+
 
                                <div id="accordion" role="tablist" aria-multiselectable="true">
                                    <div class="card">

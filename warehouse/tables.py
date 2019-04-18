@@ -4,6 +4,7 @@ from .models import InvoiceImage
 from catalogue.product_details import VendorPaycheck
 from .models import Invoice
 
+
 class ImageColumn(tables.Column):
     def render(self, value):
         return format_html('<img class="img-thumbnail" style="width:100px;height:100px" src="/media/{}" />', value)

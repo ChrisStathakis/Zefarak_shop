@@ -12,12 +12,13 @@ from django.conf import settings
 from django.db import connection
 from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta
-
+from django_tables2 import RequestConfig
 from catalogue.models import Product, ProductPhotos, ProductClass
 from catalogue.categories import Category
 from catalogue.product_details import Brand, Vendor
 from catalogue.forms import CreateProductForm, ProductPhotoUploadForm, ProductCharacteristicForm, AttributeForm
 from .product_forms import ProductForm, ProductNoQty
+from .tables import TableProduct
 from catalogue.product_attritubes import ProductCharacteristics, Characteristics, CharacteristicsValue, Attribute, AttributeTitle, AttributeClass, AttributeProductClass
 
 CURRENCY = settings.CURRENCY
@@ -52,7 +53,7 @@ class DashBoard(TemplateView):
 class ProductsListView(ListView):
     template_name = 'dashboard/catalogue/products_list.html'
     model = Product
-    paginate_by = 20
+    paginate_by = 100
     total_products = 0
 
     def get_queryset(self):
@@ -69,6 +70,8 @@ class ProductsListView(ListView):
         # get filters data
         total_products = self.total_products
         products, currency = True, CURRENCY
+        products = TableProduct(self.object_list)
+        RequestConfig(self.request).configure(products)
         context.update(locals())
         return context
 

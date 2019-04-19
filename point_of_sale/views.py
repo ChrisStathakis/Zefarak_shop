@@ -78,7 +78,7 @@ class OrderUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        products = Product.my_query.active()
+        products = Product.my_query.active()[:12]
         instance = self.object
         context.update(locals())
         return context

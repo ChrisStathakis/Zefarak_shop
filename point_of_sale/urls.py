@@ -3,6 +3,7 @@ from .views import (DashboardView, OrderListView, EshopListView, CreateOrderView
                     order_add_product, order_add_product_with_attr, check_product, add_to_order_with_attr, order_item_edit_with_attr
                     )
 from .ajax_views import ajax_order_item
+from .views_actions import create_retail_order_view
 app_name = 'point_of_sale'
 
 urlpatterns = [
@@ -19,5 +20,7 @@ urlpatterns = [
 
     path('order/ajax/edit-order-item/<slug:action>/<int:pk>/', ajax_order_item, name='ajax_order_item_edit'),
 
+    #  actions
+    path('action/create-order/', create_retail_order_view, name='action_create_order')
 
 ]

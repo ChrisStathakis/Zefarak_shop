@@ -17,7 +17,7 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-2 col-sm-4">
+                    <div class="col-lg-3 col-sm-6">
                         <div class="card card-hover">
                             <div class="content">
                                 <div class="row">
@@ -28,21 +28,21 @@
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Σημερινές Πωλήσεις</p>
-                                            {{ new_orders }}
+                                            <p>Create New Order</p>
+
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <a href=''><i class="ti-link"></i></a>
+                                        <a href='{% url 'point_of_sale:action_create_order' %}'><i class="ti-link"></i>Create Order</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-sm-4">
+                    <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="content">
                                 <div class="row">
@@ -53,7 +53,7 @@
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Έσοδα</p>
+                                            <p>Return Order</p>
                                             {{ revenues }} {{ currency }}
                                         </div>
                                     </div>
@@ -67,7 +67,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-sm-4">
+                    <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="content">
                                 <div class="row">
@@ -92,7 +92,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-sm-4">
+                    <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="content">
                                 <div class="row">

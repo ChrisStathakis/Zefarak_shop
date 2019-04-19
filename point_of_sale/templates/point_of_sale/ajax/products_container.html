@@ -1,6 +1,8 @@
+
+
 <div class="row">
     {% for product in products %}
-        <div class="col-lg-4 col-sm-6 ">
+        <div class="col-lg-3 col-sm-6 ">
             <div class="card card-hover">
                 <div class="content">
                     <div class="row">
@@ -8,7 +10,8 @@
                             <div>
                                 <p>{{ product|truncatechars:30 }}</p>
                                 <p>Sku: {{ product.sku }}</p>
-                                <a href="{% url 'point_of_sale:check_add' instance.id product.id %}" class="btn btn-primary">Add</a>
+                                <p>Price: {{ product.tag_final_price }}</p>
+                                <button data-href="{% url 'point_of_sale:ajax_add_product' instance.id product.id %}" class="btn btn-primary add_button">Add</button>
                             </div>
                         </div>
                     </div>
@@ -23,3 +26,20 @@
         </div>
     {% endfor %}
 </div>
+
+<script>
+    $('.add_button').click(function (evt) {
+            evt.preventDefault();
+            const btn = $(this);
+            const url = btn.attr('data-href');
+            $.ajax({
+                dataType: 'json',
+                url: url,
+                method: 'GET',
+
+                success: function (data) {
+                    $('#order_items_container').html(data.order_container)
+                }
+            })
+        })
+</script>

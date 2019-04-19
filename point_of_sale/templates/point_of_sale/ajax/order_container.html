@@ -1,3 +1,71 @@
+
+<div class="card">
+    <div class="header">
+        <div class="title">
+            <a onclick="confirm('Are you sure?')" href="{{ instance.get_delete_url }}" class="btn btn-warning">Delete</a>
+            <a onclick="confirm('Are you sure?')" href="/warehouse/invoices/create-payment-order/1/" class="btn btn-info">Done</a>
+            <h3>Title... {{ instance.title }}</h3>
+        </div>
+    </div>
+    <div class="content">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <table class="table table-responsive">
+                    <thead></thead>
+                    <tbody>
+                    <tr>
+                        <td>Date</td>
+                        <th>{{ instance.date_expired|date }}</th>
+                    </tr>
+                    <tr>
+                <td>Order Type</td>
+                <th>{{ instance.get_order_type_display }}</th>
+            </tr>
+            <tr>
+                <td>Costumer</td>
+                <th>{{ instance.user }}</th>
+            </tr>
+            <tr>
+                <td>Clean Value</td>
+                <th>{{ instance.tag_value }}</th>
+            </tr>
+            <tr>
+                <td>Taxes modifier</td>
+                <th>{{ instance.get_taxes_modifier_display }} %</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6 text-center">
+        <table class="table table-responsive">
+            <thead></thead>
+            <tbody>
+            <tr>
+                <td>Title</td>
+                <th>{{ instance.get_status_display }}</th>
+            </tr>
+            <tr>
+                <td>Value</td>
+                <th>{{ instance.tag_final_value }}</th>
+            </tr>
+            <tr>
+                <td>Discount</td>
+                <th>{{ instance.tag_discount }}</th>
+            </tr>
+            <tr>
+                <td>Taxes</td>
+                <th>{{ instance.tag_taxes }}</th>
+            </tr>
+            <tr>
+                <td>Paid </td>
+                <th>{{ instance.tag_paid }}</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br>
+
 <table class='table'>
     <thead>
     <tr>
@@ -66,4 +134,8 @@
                 }
             })
         })
+
+
     </script>
+    </div>
+</div>

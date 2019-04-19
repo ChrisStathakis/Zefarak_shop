@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from catalogue.models import Product
 from catalogue.product_attritubes import Attribute
 from .models import Order, OrderItem, OrderItemAttribute
-from .forms import OrderCreateForm, OrderItemCreateForm, OrderItemAttrForm
+from .forms import OrderCreateForm, OrderItemCreateForm, OrderItemAttrForm, OrderUpdateForm
 from site_settings.models import PaymentMethod
 
 
@@ -73,8 +73,11 @@ class CreateOrderView(CreateView):
 @method_decorator(staff_member_required, name='dispatch')
 class OrderUpdateView(UpdateView):
     model = Order
-    form_class = OrderCreateForm
+    form_class = OrderUpdateForm
     template_name = 'point_of_sale/order-detail.html'
+
+    def get_success_url(self):
+        return reverse('point_of_sale:order_detail', kwargs={'pk': self.kwargs['pk']})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -137,4 +140,13 @@ def order_item_edit_with_attr(request, pk):
     product = instance.title
     selected_attr = instance.attributes.all()
     return render(request, 'point_of_sale/order-item-edit.html', context=locals())
+
+
+@staff_member_required
+def delete_order(request, pk):
+    instance = get_object_or_404(Order, id=pk)
+    for ele in instance.order_items.all():
+        ele.delete()
+    instance.delete()
+    return redirect(reverse('point_of_sale:order_list'))
 

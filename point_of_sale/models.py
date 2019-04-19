@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 from django.shortcuts import get_object_or_404
 
 import datetime
@@ -74,13 +75,15 @@ class Order(DefaultOrderModel):
         # self.check_coupons()
         # self.update_order()
         self.final_value = self.shipping_cost + self.payment_cost + self.value - self.discount
-        self.paid_value = self.paid_value if self.paid_value else 0
-        if self.paid_value >= self.final_value: self.is_paid = True
+        self.paid_value = self.final_value if self.is_paid else 0
         self.title = f'{self.get_order_type_display()}- 000{self.id}' if not self.title else self.title
         super().save(*args, **kwargs)
 
     def get_edit_url(self):
-        return reverse('point_of_sale:order_detail', kwargs={'pk': self.id })
+        return reverse('point_of_sale:order_detail', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('point_of_sale:delete_order', kwargs={'pk': self.id})
 
     def get_detail_url(self):
         return reverse('order_detail', kwargs={'pk': self.id})
@@ -95,8 +98,18 @@ class Order(DefaultOrderModel):
 
     def tag_final_value(self):
         return '%s %s' % (self.final_value, CURRENCY)
-
     tag_final_value.short_description = 'Value'
+
+    def taxes(self):
+        return round(Decimal(self.final_value) * (Decimal(self.get_taxes_modifier_display())/100), 2)
+
+    def tag_taxes(self):
+        return f'{self.taxes()} {CURRENCY}'
+
+    def tag_paid(self):
+        if self.is_paid:
+            return format_html('<span class="badge badge-success">Paid</span>')
+        return format_html('<span class="badge badge-warning">Not Paid</span>')
 
     def tag_paid_value(self):
         return '%s %s' % (self.paid_value, CURRENCY)

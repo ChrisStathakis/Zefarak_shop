@@ -19,6 +19,14 @@ class OrderCreateForm(BaseForm, forms.ModelForm):
         fields = ['date_expired', 'status', 'payment_method', 'shipping']
 
 
+class OrderUpdateForm(BaseForm, forms.ModelForm):
+    date_expired = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = Order
+        fields = ['is_paid', 'discount', 'date_expired', 'title', 'payment_method', 'status']
+
+
 class OrderItemCreateForm(BaseForm, forms.ModelForm):
     title = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
     order = forms.ModelChoiceField(queryset=Order.objects.all(), widget=forms.HiddenInput())

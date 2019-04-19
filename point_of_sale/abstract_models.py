@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from site_settings.models import PaymentMethod
-from site_settings.constants import CURRENCY
+from site_settings.constants import CURRENCY, TAXES_CHOICES
 
 import uuid
 
@@ -22,7 +22,7 @@ class DefaultOrderModel(models.Model):
                                        verbose_name='Payment Type')
     date_expired = models.DateField(default=timezone.now(), verbose_name='Date')
     value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Value')
-    taxes = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Taxes')
+    taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='1')
     paid_value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Paid Value')
     final_value = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Final Value')
     discount = models.DecimalField(decimal_places=2, max_digits=20, default=0, verbose_name='Discount')

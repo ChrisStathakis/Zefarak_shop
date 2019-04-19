@@ -12,7 +12,7 @@
                            <br>
                            <form class="form">
                                <label>Search</label>
-                               <input type="text" class="form-control form-control-plaintext" data-href=""
+                               <input type="text" class="form-control form-control-plaintext" data-href="{% url 'point_of_sale:ajax_search' instance.id %}"
                                       id="search_products" placeholder="Search">
                            </form>
                        </div>
@@ -131,6 +131,7 @@
             const btn = $(this);
             const url = btn.attr('data-href');
             const search_name = btn.val();
+            console.log(search_name);
             $.ajax({
                 method: 'GET',
                 dataType: 'json',
@@ -145,10 +146,26 @@
             evt.preventDefault();
             const btn = $(this);
             const url = btn.attr('data-href');
+
             $.ajax({
                 method: 'GET',
                 dataType: 'json',
                 url: url,
+                success: function (data) {
+                    $('#order_items_container').html(data.order_container)
+                }
+            })
+        });
+
+        $('.add_button').click(function (evt) {
+            evt.preventDefault();
+            const btn = $(this);
+            const url = btn.attr('data-href');
+            $.ajax({
+                dataType: 'json',
+                url: url,
+                method: 'GET',
+
                 success: function (data) {
                     $('#order_items_container').html(data.order_container)
                 }

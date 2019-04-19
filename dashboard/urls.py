@@ -4,7 +4,8 @@ from django.urls import path, include, re_path
 from .views import (DashBoard, ProductsListView, ProductCreateView,
                     product_detail, CategorySiteManagerView, ProductMultipleImagesView, CharacteristicsManagerView,
                     ProductCharacteristicCreateView, ProductAttributeManagerView, create_attr_product_class,
-                    ProductAttriClassManagerView, RelatedProductsView, product_characteristic_delete_view
+                    ProductAttriClassManagerView, RelatedProductsView, product_characteristic_delete_view,
+                    WarehouseCategoryCreateView, WarehouseCategoryListView, WarehouseCategoryUpdateView, warehouse_category_delete
                     )
 
 from .settings_view import (ProductClassView, ProductClassCreateView,
@@ -86,6 +87,11 @@ urlpatterns = [
 
     path('atributes-title/edit/<int:pk>/', AttributeTitleEditView.as_view(), name='attribute_title_edit_view'),
     path('atributes-title/delete/<int:pk>/', attribute_title_delete_view, name='attribute_title_delete_view'),
+
+    path('warehouse-category/list/', WarehouseCategoryListView.as_view(), name='ware_cate_list_view'),
+    path('warehouse-category/create/', WarehouseCategoryCreateView.as_view(), name='ware_cate_create_view'),
+    path('warehouse-category/delete//<int:pk>/', warehouse_category_delete, name='ware_cate_delete_view'),
+    path('warehouse-category/edit/<int:pk>/', WarehouseCategoryUpdateView.as_view(), name='ware_cate_edit_view'),
 
 
 

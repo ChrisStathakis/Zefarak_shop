@@ -25,6 +25,21 @@ class WarehouseCategory(models.Model):
     def __str__(self):
         return self.title
 
+    def get_edit_url(self):
+        return reverse('dashboard:ware_cate_edit_view', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('dashboard:ware_cate_delete_view', kwargs={'pk': self.id})
+
+    @staticmethod
+    def filters_data(request, queryset):
+        search_name = request.GET.get('search_name', None)
+        active_name = request.GET.get('active_name', None)
+        queryset = queryset.filter(active=True) if active_name == '1' else queryset.filter(active=False) \
+            if active_name == '2' else queryset
+        queryset = queryset.filter(title__contains=search_name) if search_name else queryset
+        return queryset
+
 
 class Category(MPTTModel):
     active = models.BooleanField(default=True)

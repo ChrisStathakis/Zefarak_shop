@@ -144,3 +144,10 @@ class PaycheckVendorForm(BaseForm, forms.ModelForm):
         widgets = {
             'vendor': autocomplete.ModelSelect2(url='vendors_auto', attrs={'class': 'form-control', })
         }
+
+
+class WarehouseCategoryForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = WarehouseCategory
+        fields = '__all__'

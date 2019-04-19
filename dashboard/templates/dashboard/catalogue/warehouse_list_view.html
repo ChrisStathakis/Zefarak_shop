@@ -1,0 +1,47 @@
+{% extends 'dashboard/dashboard.html' %} {% load static %} {% load zefarak_tags %} {% load render_table from django_tables2 %}
+
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title text-center">Warehouse Category List</h4>
+                            <p class="category">
+                                <a href="{% url 'dashboard:ware_cate_create_view' %}"
+                                   class="btn btn-success">Create Product
+                                </a>
+                            </p>
+                        </div>
+                        <div class="content table-responsive table-full-width">
+                            {% render_table my_table %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card">
+                       <div class="header">
+                            <a href="{% url 'dashboard:home' %}" class="btn btn-warning">Back</a>
+                            <h4>Filters</h4>
+                       </div>
+                       <div class="content">
+                           <form method="get">
+                               {% include 'filters/pagination.html' %}
+                               {% include 'filters/search_filter.html' %}
+                               {% include 'filters/active_filter.html' %}
+                               <button type="submit" class="btn btn-primary">Submit</button>
+                               <a href="{{ request.path }}" class="btn btn-danger">Reset Filters</a>
+                           </form>
+                       </div>
+                    </div>
+               </div>
+           </div>
+       </div>
+   </div>
+
+{% endblock %}
+
+
+

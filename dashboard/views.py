@@ -16,9 +16,9 @@ from django_tables2 import RequestConfig
 from catalogue.models import Product, ProductPhotos, ProductClass, WarehouseCategory
 from catalogue.categories import Category
 from catalogue.product_details import Brand, Vendor
-from catalogue.forms import CreateProductForm, ProductPhotoUploadForm, ProductCharacteristicForm, AttributeForm
+from catalogue.forms import CreateProductForm, ProductPhotoUploadForm, ProductCharacteristicForm, WarehouseCategoryForm
 from .product_forms import ProductForm, ProductNoQty
-from .tables import TableProduct
+from .tables import TableProduct, WarehouseCategoryTable
 from catalogue.product_attritubes import ProductCharacteristics, Characteristics, CharacteristicsValue, Attribute, AttributeTitle, AttributeClass, AttributeProductClass
 
 CURRENCY = settings.CURRENCY
@@ -361,4 +361,56 @@ def delete_product(request, dk):
     return HttpResponseRedirect(reverse('dashboard:products'))
 
 
-# @method_decorator(staff_member_required,)
+@method_decorator(staff_member_required, name='dispatch')
+class WarehouseCategoryListView(ListView):
+    model = WarehouseCategory
+    template_name = 'dashboard/catalogue/warehouse_list_view.html'
+    paginate_by = 50
+
+    def get_queryset(self):
+        queryset = WarehouseCategory.filters_data(self.request, WarehouseCategory.objects.all())
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        my_table = WarehouseCategoryTable(self.object_list)
+        RequestConfig(self.request).configure(my_table)
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class WarehouseCategoryCreateView(CreateView):
+    model = WarehouseCategory
+    form_class = WarehouseCategoryForm
+    template_name = 'warehouse/form.html'
+    success_url = reverse_lazy('dashboard:ware_cate_list_view')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        back_url, delete_url = self.success_url, None
+        form_title = 'Create new Warehouse Category'
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class WarehouseCategoryUpdateView(UpdateView):
+    model = WarehouseCategory
+    form_class = WarehouseCategoryForm
+    template_name = 'warehouse/form.html'
+    success_url = reverse_lazy('dashboard:ware_cate_list_view')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        back_url, delete_url = self.success_url, self.object.get_delete_url()
+        form_title = f'Edit {self.object.title}'
+        context.update(locals())
+        return context
+
+
+@staff_member_required
+def warehouse_category_delete(request, pk):
+    instance = get_object_or_404(WarehouseCategory, id=pk)
+    instance.delete()
+    return redirect('dashboard:ware_cate_list_view')

@@ -53,12 +53,12 @@ class DashBoard(TemplateView):
 class ProductsListView(ListView):
     template_name = 'dashboard/catalogue/products_list.html'
     model = Product
-    paginate_by = 100
+    paginate_by = 50
     total_products = 0
 
     def get_queryset(self):
-        queryset = Product.objects.all()
-        queryset = Product.filters_data(self.request, queryset)
+        queryset = Product.objects.all()[:50]
+        queryset = Product.filters_data(self.request)
         self.total_products = queryset.count() if queryset else 0
         return queryset
 

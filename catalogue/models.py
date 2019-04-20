@@ -164,7 +164,8 @@ class Product(DefaultBasicModel):
         return self.qty * self.qty_kilo
 
     @staticmethod
-    def filters_data(request, queryset):
+    def filters_data(request):
+        queryset = Product.objects.all()
         search_name = request.GET.get('search_name', None)
         cate_name = request.GET.getlist('cate_name', None)
         brand_name = request.GET.getlist('brand_name', None)

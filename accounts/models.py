@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import F,Sum
+from django.db.models import Q, Sum, F
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-
+from django.urls import reverse
 from site_settings.models import Country
 from site_settings.constants import CURRENCY, ADDRESS_TYPES
 
@@ -38,15 +38,29 @@ class Profile(models.Model):
     is_eshop = models.BooleanField(default=True)
     vat = models.CharField(max_length=9, blank=True, verbose_name="ΑΦΜ")
     vat_city = models.CharField(max_length=100, blank=True, null=True)
+    value = models.DecimalField(max_digits=20, decimal_places=2, default=0, help_text='Off the record Manual Balance')
     balance = models.DecimalField(max_digits=20, decimal_places=2, default=0, verbose_name='Balance')
     my_query = CostumerAccountManager()
     objects = models.Manager()
+
+    def save(self, *args, **kwargs):
+        qs = self.profile_orders.all()
+        total_value = qs.aggregate(Sum('final_value'))['final_value__sum'] if qs.exists() else 0
+        paid_value = qs.aggregate(Sum('paid_value__sum')) if qs.exists() else 0
+        self.balance = total_value + self.value - paid_value
+        super().save(*args, **kwargs)
 
     def full_name(self):
         return '%s  %s' % (self.user.first_name, self.user.last_name) if self.user.first_name else 'No User'
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}' if self.first_name else 'No User'
+
+    def get_edit_url(self):
+        return reverse('point_of_sale:costumer_update_view', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('point_of_sale:costumer_delete_view', kwargs={'pk': self.id})
 
     def template_tag_balance(self):
         return '%s %s' % ('{0:2f}'.format(round(self.balance, 2)),CURRENCY)
@@ -81,6 +95,17 @@ class Profile(models.Model):
         self.cellphone = form.cleaned_data.get('cellphone', self.cellphone)
         self.phone = form.cleaned_data.get('phone', self.phone)
         self.save()
+
+    @staticmethod
+    def filters_data(request, queryset):
+        search_name = request.GET.get('search_name', None)
+
+        queryset = queryset.filter(Q(first_name__contains=search_name) |
+                                   Q(last_name__contains=search_name) |
+                                   Q(cellphone__contains=search_name) |
+                                   Q(phone__contains=search_name)
+                                   ).distinct() if search_name else queryset
+        return queryset
 
 
 @receiver(post_save, sender=User)

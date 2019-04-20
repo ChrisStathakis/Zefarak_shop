@@ -82,16 +82,7 @@ class Product(DefaultBasicModel):
     def save(self, *args, **kwargs):
         self.final_price = self.price_discount if self.price_discount > 0 else self.price
         self.is_offer = True if self.price_discount > 0 else False
-        if WAREHOUSE_ORDERS_TRANSCATIONS and not self.have_attr:
-            self.qty_add = self.warehouse_calculations()
-            self.qty_remove = 0
-            self.qty = self.qty_add - self.qty_remove
-        if self.product_class.have_attribute:
-            self.qty = self.calculate_qty_if_attributes()
-        if self.product_class.have_transcations and not self.product_class.is_service:
-            x = 1
-            # self.qty = self.warehouse_calculations()
-            # self.qty += self.retail_order_calculations()
+        self.qty = self.qty_add - self.qty_remove
         super(Product, self).save(*args, **kwargs)
 
     def calculate_qty_if_attributes(self):
@@ -103,21 +94,27 @@ class Product(DefaultBasicModel):
         return qty
 
     def warehouse_calculations(self):
+        if not WAREHOUSE_ORDERS_TRANSCATIONS:
+            pass
         warehouse_order_items = self.invoice_products.all()
         add_invoices = warehouse_order_items.filter(order__order_type__in=['1', '2', '4'])
         qty_add = add_invoices.aggregate(Sum('qty'))['qty__sum'] if add_invoices else 0
-        return qty_add
+        self.qty_add = qty_add
+        self.save()
 
-
-    def retail_order_calculations(self):
-        qty = 0
+    def order_calculations(self):
+        if self.product_class.is_service:
+            pass
+        if not self.product_class.have_transcations:
+            return self.qty
         order_items = self.retail_items.all()
         qty_analysis = order_items.values('order__order_type').annotate(total_qty=(Sum('qty'))).order_by(
             'order__order_type')
         for qty_data in qty_analysis:
             qty = qty - qty_data['total_qty'] if qty_data['order__order_type'] in ['r', 'e', 'wa'] else qty
             qty = qty + qty_data['total_qty'] if qty_data['order__order_type'] in ['b', 'wr'] else qty
-        return qty
+        self.qty_remove = qty
+        self.save()
 
     def __str__(self):
         return self.title

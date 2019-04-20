@@ -25,7 +25,7 @@ from site_settings.constants import CURRENCY, ORDER_STATUS, ORDER_TYPES, ADDRESS
 from cart.models import Cart, CartItem
 from .managers import OrderManager, OrderItemManager
 from .address_models import ShippingAddress, BillingAddress
-
+from accounts.models import Profile
 RETAIL_TRANSCATIONS, PRODUCT_ATTRITUBE_TRANSCATION  = settings.RETAIL_TRANSCATIONS, settings.PRODUCT_ATTRITUBE_TRANSCATION
 User = get_user_model()
 
@@ -39,11 +39,17 @@ class Order(DefaultOrderModel):
     user = models.ForeignKey(User,
                              blank=True,
                              null=True,
-                             verbose_name='Costumer',
+                             verbose_name='User Account',
                              on_delete=models.SET_NULL,
                              related_name='orders'
                              )
-
+    profile = models.ForeignKey(Profile,
+                             blank=True,
+                             null=True,
+                             verbose_name='Costumer',
+                             on_delete=models.SET_NULL,
+                             related_name='profile_orders'
+                             )
     #  eshop info only
     shipping = models.ForeignKey(Shipping, null=True, blank=True, on_delete=models.SET_NULL,
                                  verbose_name='Τρόπος Μεταφοράς')
@@ -255,7 +261,7 @@ class OrderItem(DefaultOrderItemModel):
             attributes = self.attributes.all()
             self.qty = attributes.aggregate(Sum('qty'))['qty__sum'] if attributes.exists() else 0
         super().save(*args, **kwargs)
-        self.title.save()
+        self.title.order_calculations()
         self.order.save()
 
     def update_warehouse(self, transcation_type, qty):

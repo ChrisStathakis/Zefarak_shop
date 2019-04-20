@@ -22,12 +22,12 @@ class LoginForm(BaseForm):
 
 
 class ProfileForm(BaseForm, forms.ModelForm):
-    user = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=False), widget=forms.HiddenInput())
+    user = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=False), widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = Profile
         fields = ['first_name', 'last_name', 'user',
                   'shipping_address', 'shipping_city', 'shipping_zip_code',
                   'billing_address', 'billing_city', 'billing_zip_code',
-                  'cellphone', 'phone'
+                  'cellphone', 'phone', 'value'
                   ]

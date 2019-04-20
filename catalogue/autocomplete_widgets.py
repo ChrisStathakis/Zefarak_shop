@@ -3,6 +3,7 @@ from .product_details import Vendor
 from .models import WarehouseCategory
 from django.utils.html import format_html
 
+
 class VendorAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):

@@ -94,8 +94,8 @@ ORDER_STATUS = (
     ('5', 'Επιστράφηκε'),
     ('6', 'Ακυρώθηκε'),
     ('7', 'Εισπράκτηκε'),
-    ('8', 'Ολοκληρώθηκε') # never change that
-        )
+    ('8', 'Ολοκληρώθηκε')  # never change that
+    )
 
 
 PAYROLL_CHOICES = (

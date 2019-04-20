@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView
 from django.shortcuts import reverse, get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
 
@@ -8,6 +9,10 @@ from catalogue.product_attritubes import Attribute
 from .models import Order, OrderItem, OrderItemAttribute
 from .forms import OrderCreateForm, OrderItemCreateForm, OrderItemAttrForm, OrderUpdateForm
 from site_settings.models import PaymentMethod
+from accounts.models import Profile, User
+from accounts.forms import ProfileForm
+from .tables import ProfileTable
+from django_tables2 import RequestConfig
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -150,3 +155,69 @@ def delete_order(request, pk):
     instance.delete()
     return redirect(reverse('point_of_sale:order_list'))
 
+
+@staff_member_required
+def done_order_view(request, pk):
+    instance = get_object_or_404(Order, id=pk)
+    instance.is_paid = True
+    instance.status = "8"
+    instance.save()
+    return redirect(reverse('point_of_sale:order_list', kwargs={'pk': instance.id}))
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CostumerListView(ListView):
+    model = Profile
+    template_name = 'point_of_sale/costumer-list-view.html'
+    paginate_by = 50
+
+    def get_queryset(self):
+        qs = Profile.objects.all()
+        qs = Profile.filters_data(self.request, qs)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        my_table = ProfileTable(self.object_list)
+        RequestConfig(self.request).configure(my_table)
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CostumerCreateView(CreateView):
+    form_class = ProfileForm
+    template_name = 'point_of_sale/form.html'
+    model = Profile
+    success_url = reverse_lazy('point_of_sale:costumer_list_view')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        back_url, delete_url = self.success_url, None
+        form_title = 'Create Costumer'
+        context.update(locals())
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CostumerUpdateView(UpdateView):
+    form_class = ProfileForm
+    template_name = 'point_of_sale/form.html'
+    model = Profile
+    success_url = reverse_lazy('point_of_sale:costumer_list_view')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        back_url, delete_url = self.success_url, self.object.get_delete_url()
+        form_title = 'Create Costumer'
+        context.update(locals())
+        return context
+
+
+@staff_member_required
+def delete_costumer_view(request, pk):
+    instance = get_object_or_404(Profile, id=pk)
+    if instance.user:
+        return redirect(reverse('point_of_sale:costumer_list_view'))
+    instance.delete()
+    return redirect(reverse('point_of_sale:costumer_list_view'))

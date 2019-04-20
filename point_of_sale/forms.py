@@ -1,6 +1,7 @@
 from django import forms
 from .models import Order, OrderItem, OrderItemAttribute
 from catalogue.models import Product
+from dal import autocomplete
 
 
 class BaseForm(forms.Form):
@@ -24,7 +25,10 @@ class OrderUpdateForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ['is_paid', 'discount', 'date_expired', 'title', 'payment_method', 'status']
+        fields = ['is_paid', 'discount', 'date_expired', 'title', 'payment_method', 'status', 'profile']
+        widgets = {
+            'profile': autocomplete.ModelSelect2(url='point_of_sale:autocomplete_profile', attrs={'class': 'form-control', })
+        }
 
 
 class OrderItemCreateForm(BaseForm, forms.ModelForm):

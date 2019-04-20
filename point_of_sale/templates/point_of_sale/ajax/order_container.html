@@ -2,8 +2,10 @@
 <div class="card">
     <div class="header">
         <div class="title">
-            <a onclick="confirm('Are you sure?')" href="{{ instance.get_delete_url }}" class="btn btn-warning">Delete</a>
-            <a onclick="confirm('Are you sure?')" href="/warehouse/invoices/create-payment-order/1/" class="btn btn-info">Done</a>
+            <a onclick="return confirm('Are you sure?')" href="{{ instance.get_delete_url }}" class="btn btn-warning"><i class="fa fa-remove"></i>Delete</a>
+            <a href="{% url 'point_of_sale:order_list' %}" class="btn"><i class="fa fa-save"></i> Save</a>
+            <br> <br>
+            <a href="{% url 'point_of_sale:action_order_done' instance.id %}" class="btn btn-info"><i class="fa fa-done"></i>Done</a>
             <h3>Title... {{ instance.title }}</h3>
         </div>
     </div>

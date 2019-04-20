@@ -11,8 +11,9 @@ class ProfileAutoComplete(autocomplete.Select2QuerySetView):
 
         qs = Profile.objects.all()
         if self.q:
-            qs = qs.filter(Q(first_name__startwith=self.q) |
-                           Q(last_name__startwith=self.q) |
-                           Q(cellphone__startwith=self.q)
+            self.q = self.q.capitalize()
+            qs = qs.filter(Q(first_name__startswith=self.q) |
+                           Q(last_name__startswith=self.q) |
+                           Q(cellphone__startswith=self.q)
                            ).distinct()
         return qs

@@ -1,4 +1,4 @@
-<!doctype html> {% load static %}
+<!doctype html> {% load static %}{% load render_table from django_tables2 %}
 <html lang="en">
 <head>
     <title>{{ page_name }}</title>
@@ -17,19 +17,19 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-3 col-sm-6">
+                   <a href="{% url 'point_of_sale:action_create_order' %}">
+                       <div class="col-lg-3 col-sm-6">
                         <div class="card card-hover">
                             <div class="content">
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-danger text-center">
-                                            <i class="ti-bell"></i>
+                                            <i class="ti-receipt"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
                                             <p>Create New Order</p>
-
                                         </div>
                                     </div>
                                 </div>
@@ -41,14 +41,16 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
+                       </div>
+                   </a>
+                    <a href="">
+                        <div class="col-lg-3 col-sm-6">
+                        <div class="card card-hover">
                             <div class="content">
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-success text-center">
-                                            <i class="ti-wallet"></i>
+                                            <i class="ti-back-right"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
@@ -61,32 +63,32 @@
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-calendar"></i> Last day
+                                        <i class="ti-back-right"></i> Last day
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        </div>
+                        </a>
                     <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="content">
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-danger text-center">
-                                            <i class="ti-pulse"></i>
+                                            <i class="ti-wallet"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Υπόλοιπο Λογαριασμών</p>
-                                                {{ bills }} {{ currency }}
+                                            <p>Costumers</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-timer"></i> <a href=''>Λογαριασμοί</a>
+                                        <i class="ti-timer"></i> <a href='{% url 'point_of_sale:costumer_list_view' %}'>Go to </a>
                                     </div>
                                 </div>
                             </div>
@@ -127,38 +129,7 @@
                                 <p class="category">Κίνήσεις Πωλήσεων</p>
                             </div>
                             <div class="content">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <td>#</td>
-                                            <th>Ημερομηνία</th>
-                                            <th>Τίτλος</th>
-                                            <th>Κατάσταση</th>
-                                            <th>Πελάτης</th>
-                                            <th>Είδος Παραστατικού</th>
-                                            <th>Αξία</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for order in last_orders %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                <td>{{ order.date_expired|date }}</td>
-                                                <td>{{ order.tag_fullname }}</td>
-                                                <td>{{ order.get_status_display }}</td>
-                                                <td>{{ order.costumer_account }}</td>
-                                                <td>{{ order.get_order_type_display }}</td>
-                                                <td>{{ order.tag_final_value }}</td>
-                                                <td><a href='{% url "dashboard:eshop_order_edit" order.id %}' class="btn btn-success">Details</a></td>
-                                            </tr>
-                                        {% empty %}
-                                            <tr>
-                                                <td colspan="8">Καμία Πώληση</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                {% render_table order_table %}
                             </div>
                         </div>
                     </div>

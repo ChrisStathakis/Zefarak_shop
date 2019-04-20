@@ -11,13 +11,20 @@ from .forms import OrderCreateForm, OrderItemCreateForm, OrderItemAttrForm, Orde
 from site_settings.models import PaymentMethod
 from accounts.models import Profile, User
 from accounts.forms import ProfileForm
-from .tables import ProfileTable
+from .tables import ProfileTable, OrderTable
 from django_tables2 import RequestConfig
 
 
 @method_decorator(staff_member_required, name='dispatch')
 class DashboardView(TemplateView):
     template_name = 'point_of_sale/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order_table = OrderTable(Order.objects.all()[:10])
+        RequestConfig(self.request).configure(order_table)
+        context.update(locals())
+        return context
 
 
 @method_decorator(staff_member_required, name='dispatch')

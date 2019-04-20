@@ -84,6 +84,8 @@ class Order(DefaultOrderModel):
         self.paid_value = self.final_value if self.is_paid else 0
         self.title = f'{self.get_order_type_display()}- 000{self.id}' if not self.title else self.title
         super().save(*args, **kwargs)
+        if self.profile:
+            self.profile.save()
 
     def get_edit_url(self):
         return reverse('point_of_sale:order_detail', kwargs={'pk': self.id})

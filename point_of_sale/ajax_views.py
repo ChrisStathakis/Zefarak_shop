@@ -13,6 +13,7 @@ def ajax_search_products(request, pk):
     instance = get_object_or_404(Order, id=pk)
     products = Product.my_query.active()
     search_name = request.GET.get('search_name', None)
+    search_name = search_name.capitalize() if search_name else search_name
     products = products.filter(Q(title__startswith=search_name) |
                                Q(sku__startswith=search_name)
                                ).distinct() if search_name else products

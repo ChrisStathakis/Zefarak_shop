@@ -1,5 +1,23 @@
 {% extends 'point_of_sale/dashboard.html' %} {% load static %}
 
+{% block extra_css %}
+    {% if is_return %}
+    <style>
+        .my_header {
+            background-color: #ff8f6e;
+
+        }
+    </style>
+    {% else %}
+         <style>
+        .my_header {
+            background-color: #a2ff82;
+
+        }
+    </style>
+
+    {% endif %}
+{% endblock %}
 {% block content %}
     <div class="content">
         <div class="container-fluid">
@@ -7,8 +25,8 @@
                 <div class="col-md-6">
                    <div class="card">
                        <div class="header">
-                           <h4 class="title text-center">Order {{ object.number }}</h4>
-                           <p class="category">Date... {{ object.date_expired }}</p>
+                           <h4 class="title text-center ">Add Product</h4>
+                           <p class="category"></p>
                            <br>
                            <form class="form">
                                <label>Search</label>
@@ -24,9 +42,10 @@
 
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="header">
-                            <div class="title">
+                        <div class="header my_header">
+                            <div class="title .my_header">
                                 <h3>Details</h3>
+                                <br>
                             </div>
                         </div>
                         <div class="content" id="order_items_container">
@@ -106,12 +125,13 @@
                         <div class="content">
                             <div class="row collapse" id="general_info">
                                 <div class="col-md-12">
-                                    <a onclick="return confirm('Are you sure?')" href="" class="btn btn-danger btn-lg btn-raised">Delete</a>
-                                    <a href="" class="btn btn-success btn-lg btn-raised">Paid</a>
-                                    <br>
+                                    <a href="" class="btn btn-danger">Cancel</a>
+                                    <a onclick="return confirm('Are you sure?')" href="{{ instance.get_delete_url }}" class="btn btn-warning"><i class="fa fa-remove"></i>Delete</a>
+                                    {% if not is_return %}
                                     <a href="" class="btn btn-primary">
                                         Δημιουργία Παραστατικού Επιστροφής
                                     </a>
+                                    {% endif %}
                                 </div>
 
                             </div>

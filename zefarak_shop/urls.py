@@ -15,5 +15,5 @@ urlpatterns = [
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.WAREHOUSE_ORDERS_TRANSCATIONS:
+if settings.USE_WAREHOUSE:
     urlpatterns += [path('warehouse/', include('warehouse.urls')), ]

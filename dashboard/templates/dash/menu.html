@@ -1,0 +1,64 @@
+<div class="nano">
+    <div class="nano-content">
+        <nav id="menu" class="nav-main" role="navigation">
+            <ul class="nav nav-main">
+                <li class="nav-active">
+                    <a href="{% url 'dashboard:home' %}">
+                        <i class="fa fa-home" aria-hidden="true"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'point_of_sale:order_list' %}">
+                        <span class="pull-right label label-primary">182</span>
+                        <i class="fa fa-money" aria-hidden="true"></i>
+                        <span>New Eshop Orders</span>
+                    </a>
+                </li>
+                <li class="nav-parent">
+                    <a>
+                        <i class="fa fa-product-hunt" aria-hidden="true"></i>
+                        <span>Catalogue</span>
+                    </a>
+                    <ul class="nav nav-children">
+                        <li>
+                            <a href="{% url 'dashboard:products' %}">
+                                Products
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:product_class_view' %}">
+                                Product Class
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:category_list' %}">
+                                Categories
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:attribute_class_list_view' %}">
+                                Attributes
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:characteristics_list_view' %}">
+                                Characteristics
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:characteristics_list_view' %}">
+                                Vendor
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:characteristics_list_view' %}">
+                                Warehouse Categories
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

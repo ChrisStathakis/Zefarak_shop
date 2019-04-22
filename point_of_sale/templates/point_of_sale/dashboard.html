@@ -43,7 +43,7 @@
                         </div>
                        </div>
                    </a>
-                    <a href="">
+                    <a href="{% url 'point_of_sale:action_return_order' %}">
                         <div class="col-lg-3 col-sm-6">
                         <div class="card card-hover">
                             <div class="content">
@@ -63,13 +63,13 @@
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-back-right"></i> Last day
+                                        <a href='{% url 'point_of_sale:action_return_order' %}'><i class="ti-link"></i>Return Order</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         </div>
-                        </a>
+                    </a>
                     <div class="col-lg-3 col-sm-6">
                         <div class="card">
                             <div class="content">
@@ -105,15 +105,14 @@
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Messages</p>
-                                            +45
+                                            <p>Orders</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-reload"></i> Updated now
+                                       <i class="ti-timer"></i> <a href='{% url 'point_of_sale:order_list' %}'>Go to </a>
                                     </div>
                                 </div>
                             </div>

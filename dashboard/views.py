@@ -57,7 +57,6 @@ class ProductsListView(ListView):
     total_products = 0
 
     def get_queryset(self):
-        queryset = Product.objects.all()[:50]
         queryset = Product.filters_data(self.request)
         self.total_products = queryset.count() if queryset else 0
         return queryset
@@ -136,7 +135,7 @@ def product_detail(request, pk):
     products, currency, page_title = True, CURRENCY, '%s' % instance.title
     images = instance.get_all_images()
     sizes = ''
-    form = ProductNoQty(instance=instance) if instance.product_class.have_attribute else ProductForm(instance=instance)
+    form = ProductForm(instance=instance)
     if 'save_' in request.POST:
         form = ProductNoQty(request.POST, instance=instance) if instance.product_class.have_attribute else ProductForm(request.POST, instance=instance)
         if form.is_valid():

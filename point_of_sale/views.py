@@ -95,6 +95,7 @@ class OrderUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         products = Product.my_query.active()[:12]
         instance = self.object
+        is_return = True if self.object.order_type in ['b', 'wr'] else False
         context.update(locals())
         return context
 

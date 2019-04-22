@@ -19,6 +19,7 @@ from site_settings.constants import MEDIA_URL, CURRENCY, UNIT
 from .managers import ProductManager
 
 WAREHOUSE_ORDERS_TRANSCATIONS = settings.WAREHOUSE_ORDERS_TRANSCATIONS
+RETAIL_TRANSCATIONS = settings.RETAIL_TRANSCATIONS
 
 
 class ProductClass(models.Model):
@@ -103,6 +104,10 @@ class Product(DefaultBasicModel):
         self.save()
 
     def order_calculations(self):
+        if not RETAIL_TRANSCATIONS:
+            self.qty_remove = 0
+            self.save()
+            return ''
         if self.product_class.is_service:
             pass
         if not self.product_class.have_transcations:
@@ -111,9 +116,9 @@ class Product(DefaultBasicModel):
         qty_analysis = order_items.values('order__order_type').annotate(total_qty=(Sum('qty'))).order_by(
             'order__order_type')
         for qty_data in qty_analysis:
-            qty = qty - qty_data['total_qty'] if qty_data['order__order_type'] in ['r', 'e', 'wa'] else qty
-            qty = qty + qty_data['total_qty'] if qty_data['order__order_type'] in ['b', 'wr'] else qty
-        self.qty_remove = qty
+            qty_remove = qty_data['total_qty'] if qty_data['order__order_type'] in ['r', 'e', 'wa'] else 0
+            qty = qty_remove - qty_data['total_qty'] if qty_data['order__order_type'] in ['b', 'wr'] else qty_remove
+        self.qty_remove = qty_remove
         self.save()
 
     def __str__(self):
@@ -164,8 +169,9 @@ class Product(DefaultBasicModel):
         return self.qty * self.qty_kilo
 
     @staticmethod
-    def filters_data(request):
-        queryset = Product.objects.all()
+    def filters_data(request, queryset=None):
+        if not queryset:
+            queryset = Product.objects.all()
         search_name = request.GET.get('search_name', None)
         cate_name = request.GET.getlist('cate_name', None)
         brand_name = request.GET.getlist('brand_name', None)

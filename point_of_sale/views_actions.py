@@ -9,3 +9,13 @@ def create_retail_order_view(request):
         payment_method=PaymentMethod.objects.get(id=1)
     )
     return redirect(reverse('point_of_sale:order_detail', kwargs={'pk': new_order.id}))
+
+
+def create_return_order_view(request):
+    new_order = Order.objects.create(
+        payment_method=PaymentMethod.objects.first(),
+        order_type='b',
+        status='5'
+
+    )
+    return redirect(reverse('point_of_sale:order_detail', kwargs={'pk': new_order.id}))

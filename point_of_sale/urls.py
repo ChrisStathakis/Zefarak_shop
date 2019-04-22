@@ -5,7 +5,7 @@ from .views import (DashboardView, OrderListView, EshopListView, CreateOrderView
                     CostumerCreateView, CostumerListView, CostumerUpdateView, delete_costumer_view
                     )
 from .ajax_views import ajax_order_item, ajax_search_products, ajax_add_product
-from .views_actions import create_retail_order_view
+from .views_actions import create_retail_order_view,create_return_order_view
 from .autocomplete_widget import ProfileAutoComplete
 
 app_name = 'point_of_sale'
@@ -30,6 +30,7 @@ urlpatterns = [
 
     #  actions
     path('action/create-order/', create_retail_order_view, name='action_create_order'),
+    path('action/return-order/', create_return_order_view, name='action_return_order'),
     path('action/order-done/<int:pk>/', done_order_view, name='action_order_done'),
     path('autocomplete/profile/', ProfileAutoComplete.as_view(), name='autocomplete_profile'),
 

@@ -27,7 +27,7 @@ from carts.models import Cart
 from catalogue.forms_popup import ProductPhotoUploadForm
 from site_settings.constants import CURRENCY
 from inventory_manager.models import Vendor, Category, OrderItem, Order
-from point_of_sale.models import RetailOrderItem
+from point_of_sale.models import RetailOrderItemf
 from transcations.models import Bill
 from frontend.models import CategorySite, Brands
 '''
@@ -132,6 +132,8 @@ class ProductCreateView(CreateView):
 @staff_member_required
 def product_detail(request, pk):
     instance = get_object_or_404(Product, id=pk)
+    for class_ in instance.attr_class.all():
+        print(class_)
     products, currency, page_title = True, CURRENCY, '%s' % instance.title
     images = instance.get_all_images()
     sizes = ''
@@ -287,10 +289,12 @@ class ProductAttributeManagerView(ListView):
     template_name = 'dashboard/catalogue/product_manager_view.html'
     model = AttributeClass
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         instance = get_object_or_404(Product, id=self.kwargs['pk'])
         page_title, attrs = 'Create Attribute', True
+        selected_data = instance.attr_class.all()
         context.update(locals())
         return context
 

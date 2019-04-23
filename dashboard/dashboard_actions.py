@@ -13,17 +13,22 @@ def copy_product_view(request, pk):
     object.qty = 0
     object.slug = None
     object.save()
+    object.refresh_from_db()
+    print('new_object', object.id, 'old_object', old_object.id)
     for ele in old_object.category_site.all():
         object.category_site.add(ele)
     for ele in old_object.characteristics.all():
         object.characteristics.add(ele)
-
-    for ele in old_object.attr_class.all():
-        new_attr_class = AttributeProductClass.objects.create(product_related=object, class_related=ele.class_related)
-        for title in ele.my_attributes.all():
-            Attribute.objects.create(
-                title=title,
-                class_related=new_attr_class
-            )
-    object.save()
+    
+    for attr_class in old_object.attr_class.all():
+        all_attributes = attr_class.my_attributes.all()
+        attr_class.id= None
+        attr_class.product_related = object
+        attr_class.save()
+        attr_class.refresh_from_db()
+        for title in all_attributes:
+            title.id=None
+            title.class_related = attr_class
+            title.qty = 0
+            title.save()
     return redirect(object.get_edit_url())

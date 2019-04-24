@@ -3,11 +3,11 @@ from django.shortcuts import reverse, get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
-
+from django.contrib import messages
 from catalogue.models import Product
 from catalogue.product_attritubes import Attribute
 from .models import Order, OrderItem, OrderItemAttribute
-from .forms import OrderCreateForm, OrderItemCreateForm, OrderItemAttrForm, OrderUpdateForm
+from .forms import OrderCreateForm, OrderItemCoffeeForm, OrderUpdateForm, forms
 from site_settings.models import PaymentMethod
 from accounts.models import Profile, User
 from accounts.forms import ProfileForm
@@ -108,7 +108,7 @@ def check_product(request, pk, dk):
     else:
         return redirect(reverse('point_of_sale:add_product', kwargs={'pk': pk, 'dk': dk}))
 
-
+'''
 @staff_member_required
 def order_add_product(request, pk, dk):
     instance = get_object_or_404(Product, id=dk)
@@ -131,20 +131,38 @@ def order_add_product_with_attr(request, pk, dk):
     all_attrs = Attribute.objects.filter(class_related=get_attr.first()) if get_attr.exists() else Attribute.objects.none()
     back_url = reverse('point_of_sale:order_detail', kwargs={'pk': pk})
     return render(request, 'point_of_sale/add_to_order_with_attr.html', context=locals())
+'''
+from .tools import generate_or_remove_queryset
 
 
 @staff_member_required
-def add_to_order_with_attr(request, pk, dk, lk):
+def add_to_order_with_attr(request, pk, dk):
     instance = get_object_or_404(Product, id=dk)
     order = get_object_or_404(Order, id=pk)
-    attribute = get_object_or_404(Attribute, id=lk)
-    order_item, i_created = OrderItem.objects.get_or_create(title=instance, order=order)
-    order_item_attr, created = OrderItemAttribute.objects.get_or_create(order_item=order_item,
-                                                                        title=attribute
-                                                                        )
-    order_item_attr.qty = 1 if created else order_item_attr.qty+1
-    order_item_attr.save()
-    return redirect(reverse('point_of_sale:order_detail', kwargs={'pk': pk}))
+    form_title, back_url = f'Add {instance.title}', order.get_edit_url()
+    all_attr_class = instance.attr_class.all()
+    print(instance, all_attr_class)
+    form = OrderItemCoffeeForm(request.POST or None)
+    fields_added = generate_or_remove_queryset(form, ['sugar', 'sugar_lvl', 'milk', 'ingredient'], all_attr_class)
+    if form.is_valid():
+        order_item, created = OrderItem.objects.get_or_create(title=instance, order=order)
+        if created:
+            order_item.value = instance.price
+            order_item.discount_value = instance.price_discount
+            order_item.qty = form.cleaned_data.get('qty', 1)
+            order_item.cost = instance.price_buy
+            order_item.save()
+
+        for field in fields_added:
+            attribute_selected = form.cleaned_data.get(field)
+            OrderItemAttribute.objects.create(
+                attribute=attribute_selected,
+                order_item=order_item,
+                qty=1
+            )
+        messages.success(request, f'{instance.title} Added')
+        return redirect(order.get_edit_url())
+    return render(request, 'point_of_sale/form.html', context=locals())
 
 
 @staff_member_required

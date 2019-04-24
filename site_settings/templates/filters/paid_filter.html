@@ -1,8 +1,9 @@
-<div class="checkbox">
-    <input id="check_active" name="paid_name" type="checkbox" value="1" {% if request.GET.paid_name == '1' %} checked {% endif %}>
-    <label for="check_active">Is Paid</label>
+
+<div class="form-group">
+  <label><input id="check_active" name="paid_name" type="checkbox" value="1" {% if request.GET.paid_name == '1' %} checked {% endif %}>Is Paid</label>
 </div>
-<div class="red checkbox">
-    <input id="de_check_active" name="paid_name" type="checkbox" value="2" {% if request.GET.paid_name == '2' %} checked {% endif %}>
-    <label for="de_check_active">Not Paid</label>
+<div class="form-group">
+  <label><input id="de_check_active" name="paid_name" type="checkbox" value="2" {% if request.GET.paid_name == '2' %} checked {% endif %}>Not Paid</label>
 </div>
+<br>
+

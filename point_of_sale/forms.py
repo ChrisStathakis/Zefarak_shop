@@ -1,6 +1,7 @@
 from django import forms
 from .models import Order, OrderItem, OrderItemAttribute
 from catalogue.models import Product
+from catalogue.product_attritubes import Attribute
 from dal import autocomplete
 
 
@@ -53,3 +54,11 @@ class OrderChangeTitle(BaseForm, forms.ModelForm):
     class Meta:
         model = Order
         fields = ['title', ]
+
+
+class OrderItemCoffeeForm(BaseForm, forms.Form):
+    sugar = forms.ModelChoiceField(queryset=Attribute.objects.all())
+    sugar_lvl = forms.ModelChoiceField(queryset=Attribute.objects.all())
+    milk = forms.ModelChoiceField(queryset=Attribute.objects.all())
+    ingredient = forms.ModelChoiceField(queryset=Attribute.objects.all())
+    qty = forms.IntegerField()

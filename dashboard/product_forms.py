@@ -12,15 +12,16 @@ RETAIL_TRANSCATIONS = settings.RETAIL_TRANSCATIONS
 class ProductForm(BaseForm, forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['title', 'sku',
+        fields = ['active', 'featured_product',
+                 'title', 'sku',
                   'vendor', 'order_code',
                   'price_buy', 'order_discount',
                   'brand', 'category',
                   'price', 'price_discount',
                   'qty_measure',
                   'measure_unit',
-                  'site_text', 'slug',
-                  'active', 'featured_product'
+                  'site_text', 'slug'
+
                   ]
         widgets = {
             'vendor': autocomplete.ModelSelect2(url='vendors_auto', attrs={'class': 'form-control'}),

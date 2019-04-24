@@ -8,7 +8,7 @@ from catalogue.categories import Category
 from catalogue.models import Product, ProductPhotos
 from catalogue.product_attritubes import AttributeTitle, AttributeProductClass, Attribute
 
-from catalogue.forms import CategorySiteForm, BrandForm
+from catalogue.forms import CategorySiteForm, BrandForm, VendorForm
 from site_settings.constants import CURRENCY
 from decimal import Decimal
 
@@ -129,6 +129,15 @@ def popup_brand(request):
             '<script>opener.closePopup(window, "%s", "%s", "#id_brand");</script>' % (instance.pk, instance))
     return render(request, "dashboard/settings/form.html", locals())
 
+
+def popup_vendor(request):
+    form = VendorForm(request.POST or None)
+    form_title = 'Create Vendor'
+    if form.is_valid():
+        instance = form.save()
+        return HttpResponse(
+            '<script>opener.closePopup(window, "%s", "%s", "#id_vendor");</script>' % (instance.pk, instance))
+    return render(request, "dashboard/settings/form.html", locals())
 
 @staff_member_required
 def ajax_product_calculate_view(request, question):

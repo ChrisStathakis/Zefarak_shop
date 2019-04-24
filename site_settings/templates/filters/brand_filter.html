@@ -1,36 +1,28 @@
 {% load zefarak_tags %}
 <div id="accordion" role="tablist" aria-multiselectable="true">
-                                   <div class="card">
-                                       <div class="card-header" role="tab" id="headingThree">
-                                           <h6 class="mb-0">
-                                               <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                                  href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                   Choose Brand
-                                               </a>
-                                           </h6>
-                                       </div>
-                                       <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-                                           <div class="card-block">
-                                               {% for brand in brands %}
-                                                  {% if brand.id|stringformat:"s" in request.GET|get_item:'brand_name' %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox" checked>
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
-                                                       </label>
-                                                   </div>
-                                                   {% else %}
-                                                   <div class="checkbox">
-                                                       <input name="brand_name" value="{{ brand.id }}"
-                                                              id="checkbox1" type="checkbox">
-                                                       <label for="checkbox1">
-                                                           {{ brand }}
-                                                       </label>
-                                                   </div>
-                                                   {% endif %}
-                                               {% endfor %}
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
+    <div class="card">
+        <div class="card-header" role="tab" id="headingThree">
+            <h6 class="mb-0">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                   href="#collapseBrand" aria-expanded="false" aria-controls="collapseBrand">
+                    Choose Brand
+                </a>
+            </h6>
+        </div>
+        <div id="collapseBrand" class="collapse" role="tabpanel" aria-labelledby="headingBrand">
+            <div class="card-block">
+                {% for brand in brands %}
+                    {% if brand.id|stringformat:"s" in request.GET|get_item:'brand_name' %}
+                        <div class="form-group">
+                            <label><input name="brand_name" value="{{ brand.id }}" id="checkbox1" type="checkbox" checked>{{ brand }}</label>
+                        </div>
+                    {% else %}
+                         <div class="form-group">
+                            <label><input name="brand_name" value="{{ brand.id }}" id="checkbox1" type="checkbox">{{ brand }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

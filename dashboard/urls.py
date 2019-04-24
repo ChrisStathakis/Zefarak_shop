@@ -3,6 +3,7 @@ from django.urls import path, include, re_path
 
 from .views import (DashBoard, ProductsListView, ProductCreateView,
                     product_detail, CategorySiteManagerView, ProductMultipleImagesView, CharacteristicsManagerView,
+                    delete_product,
                     ProductCharacteristicCreateView, ProductAttributeManagerView, create_attr_product_class,
                     ProductAttriClassManagerView, RelatedProductsView, product_characteristic_delete_view,
                     WarehouseCategoryCreateView, WarehouseCategoryListView, WarehouseCategoryUpdateView, warehouse_category_delete
@@ -19,7 +20,7 @@ from .settings_view import (ProductClassView, ProductClassCreateView,
 from .dashboard_actions import copy_product_view
 from .ajax_views import (ajax_category_site, ajax_product_images, ajax_add_or_delete_attribute,
                          ajax_change_qty_on_attribute,
-                         popup_category, popup_brand,
+                         popup_category, popup_brand, popup_vendor,
                          ajax_product_calculate_view,
                          )
 app_name = 'dashboard'
@@ -30,12 +31,14 @@ urlpatterns = [
     path('products/', ProductsListView.as_view(), name='products'),
     path('products/create/', ProductCreateView.as_view(), name='product_create'),
     path('products/detail/<int:pk>/', product_detail, name='product_detail'),
+    path('product/delete/<int:pk>/', delete_product, name='product_delete'),
     path('product/category-site-manager/<int:pk>/', CategorySiteManagerView.as_view(), name='category_manager_view'),
     path('add-multiply-images/<int:pk>/', ProductMultipleImagesView.as_view(), name='image_manager_view'),
 
     #popups
     path('product/popups/create-category/', popup_category, name='popup_category'),
     path('product/popups/create-brand/', popup_brand, name='popup_brand'),
+    path('product/popups/create-vendor/', popup_vendor, name='popup_vendor'),
 
     # actions
     path('products/copy/<int:pk>/',copy_product_view, name='copy_product'),

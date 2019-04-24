@@ -11,7 +11,11 @@
                                 <p>{{ product|truncatechars:30 }}</p>
                                 <p>Sku: {{ product.sku }}</p>
                                 <p>Price: {{ product.tag_final_price }}</p>
+                                {% if product.have_attr %}
+                                    <a href="{% url 'point_of_sale:add_to_order_attr' instance.id product.id %}" class="btn btn-success">Add</a>
+                                {% else %}
                                 <button data-href="{% url 'point_of_sale:ajax_add_product' instance.id product.id %}" class="btn btn-primary add_button">Add</button>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

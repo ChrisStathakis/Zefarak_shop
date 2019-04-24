@@ -9,7 +9,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.forms import formset_factory, inlineformset_factory
 from django.conf import settings
-from django.db import connection
+from django.db import connection, models
 from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta
 from django_tables2 import RequestConfig
@@ -132,8 +132,6 @@ class ProductCreateView(CreateView):
 @staff_member_required
 def product_detail(request, pk):
     instance = get_object_or_404(Product, id=pk)
-    for class_ in instance.attr_class.all():
-        print(class_)
     products, currency, page_title = True, CURRENCY, '%s' % instance.title
     images = instance.get_all_images()
     sizes = ''
@@ -158,6 +156,23 @@ def product_detail(request, pk):
                 print(error)
     context = locals()
     return render(request, 'dashboard/catalogue/product_detail.html', context)
+
+
+@staff_member_required
+def delete_product(request, pk):
+    instance = get_object_or_404(Product, id=pk)
+    try:
+        instance.delete()
+        for image in instance.images.all():
+            image.delete()
+        for char in instance.characteristics.all():
+            char.delete()
+        for ele in instance.attr_class.all():
+            ele.delete()
+    except models.ProtectedError:
+        messages.warning(request, 'You cant delete it because its already used.')
+        return redirect(instance.get_edit_url())
+    return HttpResponseRedirect(reverse('dashboard:products'))
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -355,13 +370,6 @@ class RelatedProductsView(ListView):
         table_title = 'Related Products'
         context.update(locals())
         return context
-
-
-@staff_member_required
-def delete_product(request, dk):
-    instance = get_object_or_404(Product, id=dk)
-    instance.delete()
-    return HttpResponseRedirect(reverse('dashboard:products'))
 
 
 @method_decorator(staff_member_required, name='dispatch')

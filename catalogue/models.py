@@ -124,6 +124,12 @@ class Product(DefaultBasicModel):
     def __str__(self):
         return self.title
 
+    def get_edit_url(self):
+        return reverse('dashboard:product_detail', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse('dashboard:product_delete',  kwargs={'pk': self.id})
+
     @property
     def have_attr(self):
         return self.product_class.have_attribute if self.product_class else False

@@ -12,17 +12,13 @@
                     </div>
                     <div class="content">
                         <a href="{% url 'dashboard:copy_product' instance.id %}" class="btn btn-success">Copy Product</a>
-                        <a href="" class="btn btn-warning">Διαγραφή</a>
                         <br><br>
-                        <button data-href="{% url 'dashboard:popup_brand' %}" class="btn btn-info" id="add_author" onclick="return addData(this);">Create Brand</button>
-                        <button data-href="{% url 'dashboard:popup_category' %}" class="btn btn-info" id="add_category" onclick="return addData(this);">Create Category</button>
-                        <button data-href="" class="btn btn-info" id="add_vendor" onclick="return addData(this);">Δημιουργία Vendor</button>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="header">
-                        <h4 class="title">Επεξεργασία</h4>
+                        <h4 class="title">Edit</h4>
                     </div>
                     <div class="content">
                         <form method="post">{% csrf_token %}
@@ -88,6 +84,9 @@
                         <div class="title">
                             <a href="{% url 'dashboard:products' %}" class="btn btn-warning">Back</a>
                             <h3>{{ instance.title }}</h3>
+                            <button data-href="{% url 'dashboard:popup_brand' %}" class="btn btn-info" id="add_author" onclick="return addData(this);">Create Brand</button>
+                        <button data-href="{% url 'dashboard:popup_category' %}" class="btn btn-info" id="add_category" onclick="return addData(this);">Create Category</button>
+                        <button data-href="{% url 'dashboard:popup_vendor' %}" class="btn btn-info" id="add_vendor" onclick="return addData(this);">Create Vendor</button>
                         </div>
                     </div>
                     <div class="content">
@@ -289,10 +288,12 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-
+                </div>
+            <a href="{{ instance.get_delete_url }}" onclick="return confirm('Are you sure?')" class="btn btn-warning">Διαγραφή</a>
             </div>
+
         </div>
+
     </div>
 </div>
 {% endblock %}

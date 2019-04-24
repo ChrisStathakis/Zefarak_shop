@@ -235,7 +235,7 @@ def create_unique_number(sender, instance, **kwargs):
 class OrderItem(DefaultOrderItemModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     cost = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-    title = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, related_name='retail_items')
+    title = models.ForeignKey(Product, on_delete=models.PROTECT, null=True, related_name='retail_items')
     #  warehouse_management
     is_find = models.BooleanField(default=False)
     is_return = models.BooleanField(default=False)
@@ -354,8 +354,7 @@ def update_warehouse(sender, instance, **kwargs):
 
 
 class OrderItemAttribute(models.Model):
-    attr_class = models.ForeignKey(AttributeClass, null=True, on_delete=models.SET_NULL)
-    title = models.ForeignKey(Attribute, on_delete=models.SET_NULL, null=True)
+    attribute = models.ForeignKey(Attribute, on_delete=models.SET_NULL, null=True)
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE, related_name='attributes')
     qty = models.DecimalField(default=1, decimal_places=2, max_digits=10)
 
